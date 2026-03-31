@@ -25,7 +25,17 @@
 1. macOS：使用系统命令 `ioreg` 读取 `IOPlatformUUID`。
    - 读取：`ioreg -rd1 -c IOPlatformExpertDevice`
    - 提取：在输出中找到 `IOPlatformUUID = "..."` 的值，并提取引号中的字符串作为 `device_id`
+     - 建议解析口径（用于实现 `src/device_id.rs`）：
+       - 正则：`IOPlatformUUID\\s*=\\s*"([^"]+)"`（取第一个匹配）
+       - trim：对匹配到的字符串做 `trim()`（不做大小写转换、不做字符替换）
    - 失败条件：提取不到或提取结果为空则返回错误
+   - 样例输出（用于 fixture/验证解析是否正确）：
+```text
+{
+  "IOPolledInterface" = "AppleARMWatchdogTimerHibernateHandler is not serializable"
+  "IOPlatformUUID" = "A4CEDE29-306E-56C3-A109-4CD9D2A45ADF"
+}
+```
 2. Linux：直接读取 `/etc/machine-id` 文件，`trim()` 后作为 `device_id`
    - 失败条件：文件读取失败或结果为空则返回错误
 3. Windows：若暂不提供可靠实现，则返回明确错误提示“暂不支持获取 device_id”，避免把空值发送给服务端导致鉴权绕过或误拒绝。
@@ -61,6 +71,11 @@ JSON-RPC 最小请求示例（用于说明字段层级契约）：
 - 2) 当 HTTP 非 2xx：直接报错（“MCP鉴权请求失败 (HTTP xxx)”）。
 - 3) 当 JSON-RPC 返回 `result.ok=false`：优先透传 `result.error` 字符串（服务端的 401 提示文案）；否则给出通用“鉴权失败”错误。
 
+建议的 JSON-RPC 响应契约（便于实现阶段直接对照）：
+- 鉴权成功：`{ "result": { "ok": true } }`
+- 鉴权失败：`{ "result": { "ok": false, "error": "<服务端提示文案>" } }`
+- JSON-RPC error：`{ "error": { "message": "<服务端提示文案>" } }`
+
 #### 2) `customer/*` 业务调用注入 auth
 现状：
 - `src/cmd/call.rs` 对 `customer/*`（排除 `customer/is_available`）注入 `arguments.auth = { user_key, user_secret }`。
@@ -72,12 +87,11 @@ JSON-RPC 最小请求示例（用于说明字段层级契约）：
 保持兼容：
 - `customer/is_available` 继续不注入 auth（除非后端另有要求）。
 
-注入位置的最小结构示例（用于说明字段层级契约）：
+请求体最小结构示例（用于说明字段层级契约；以 `src/cmd/call.rs` 当前实现为准）：
 ```json
 {
   "jsonrpc": "2.0",
   "method": "tools/call",
-  "id": "...",
   "params": {
     "name": "customer/search",
     "arguments": {
@@ -100,6 +114,8 @@ JSON-RPC 最小请求示例（用于说明字段层级契约）：
 
 `customer/*` 的鉴权注入失败语义：
 - 若 `device_id` 获取失败：在发送 `tools/call` 前直接报错并中止该命令（不发送空 `device_id`）。
+- 若 `arguments` 里已经存在 `auth` 字段：CLI 不会覆盖该字段（沿用当前 `call.rs` 的行为）。
+- 其它请求参数解析错误（例如 `args` 不是 JSON object）：沿用当前行为（不在本 spec 里变更）。
 
 ### 新命令：`lfy-cli stats`
 行为：
