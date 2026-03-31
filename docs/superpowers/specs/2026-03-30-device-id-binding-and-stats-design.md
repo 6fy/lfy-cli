@@ -22,8 +22,12 @@
 
 ### `device_id` 获取策略（方案 1：OS 稳定机器标识）
 实现一个统一入口 `get_device_id()`：
-1. macOS：读取 `IOPlatformUUID`（`IOPlatformExpertDevice` 的平台 UUID），解析成字符串作为 `device_id`。
-2. Linux：读取 `/etc/machine-id`，去除首尾空白后作为 `device_id`。
+1. macOS：使用系统命令 `ioreg` 读取 `IOPlatformUUID`。
+   - 读取：`ioreg -rd1 -c IOPlatformExpertDevice`
+   - 提取：在输出中找到 `IOPlatformUUID = "..."` 的值，并提取引号中的字符串作为 `device_id`
+   - 失败条件：提取不到或提取结果为空则返回错误
+2. Linux：直接读取 `/etc/machine-id` 文件，`trim()` 后作为 `device_id`
+   - 失败条件：文件读取失败或结果为空则返回错误
 3. Windows：若暂不提供可靠实现，则返回明确错误提示“暂不支持获取 device_id”，避免把空值发送给服务端导致鉴权绕过或误拒绝。
 
 进程内缓存：
@@ -38,7 +42,7 @@
 - 在 `mcp/auth/validate` 的 JSON-RPC `params` 中新增字段：
   - `device_id: <当前设备ID>`
 
-JSON-RPC 最小请求示例（字段层级以当前 CLI 实现为准）：
+JSON-RPC 最小请求示例（用于说明字段层级契约）：
 ```json
 {
   "jsonrpc": "2.0",
@@ -53,7 +57,9 @@ JSON-RPC 最小请求示例（字段层级以当前 CLI 实现为准）：
 ```
 
 失败语义：
-- CLI 侧保持现有解析逻辑：当 HTTP 非 2xx 直接报错；当 JSON-RPC 返回 `result.ok=false` 时，优先透传 `result.error` 字符串；否则给出通用的“鉴权失败/鉴权请求失败”错误。
+- 1) 当 `device_id` 获取失败：`init` 在调用 `mcp/auth/validate` 之前中止，并返回错误（不向服务端发送鉴权请求）。
+- 2) 当 HTTP 非 2xx：直接报错（“MCP鉴权请求失败 (HTTP xxx)”）。
+- 3) 当 JSON-RPC 返回 `result.ok=false`：优先透传 `result.error` 字符串（服务端的 401 提示文案）；否则给出通用“鉴权失败”错误。
 
 #### 2) `customer/*` 业务调用注入 auth
 现状：
@@ -66,7 +72,7 @@ JSON-RPC 最小请求示例（字段层级以当前 CLI 实现为准）：
 保持兼容：
 - `customer/is_available` 继续不注入 auth（除非后端另有要求）。
 
-注入位置的最小结构示例（结合当前 `tools/call` 请求封装方式）：
+注入位置的最小结构示例（用于说明字段层级契约）：
 ```json
 {
   "jsonrpc": "2.0",
@@ -91,6 +97,9 @@ JSON-RPC 最小请求示例（字段层级以当前 CLI 实现为准）：
   - `init` 会调用 `mcp/auth/validate`
   - `call.rs` 只会在 `category_name == "customer"` 且 `full_method != "customer/is_available"` 时注入 `arguments.auth`
 - 因此本 spec 仅要求对现有 `customer/*` 鉴权注入；如果后续增加其它鉴权类 category，需要在实现阶段同步扩展注入规则。
+
+`customer/*` 的鉴权注入失败语义：
+- 若 `device_id` 获取失败：在发送 `tools/call` 前直接报错并中止该命令（不发送空 `device_id`）。
 
 ### 新命令：`lfy-cli stats`
 行为：
