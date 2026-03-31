@@ -135,8 +135,12 @@ async fn validate_user_credentials_on_server(
                 return Ok(());
             }
 
+            // Check error message to determine error type
             if let Some(msg) = result.get("error").and_then(|v| v.as_str()) {
-                anyhow::bail!(msg.to_string());
+                if msg == "当前设备未授权" {
+                    anyhow::bail!("当前设备未授权");
+                }
+                anyhow::bail!("您的个人Key或Secret已失效或不正确。");
             }
 
             anyhow::bail!("鉴权失败");
@@ -149,7 +153,10 @@ async fn validate_user_credentials_on_server(
         .and_then(|e| e.get("message"))
         .and_then(|v| v.as_str())
     {
-        anyhow::bail!(msg.to_string());
+        if msg == "当前设备未授权" {
+            anyhow::bail!("当前设备未授权");
+        }
+        anyhow::bail!("您的个人Key或Secret已失效或不正确。");
     }
 
     anyhow::bail!("鉴权失败：{rpc_res}");
