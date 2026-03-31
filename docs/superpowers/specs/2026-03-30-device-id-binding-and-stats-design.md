@@ -16,6 +16,9 @@
 1. `device_id` 取值策略：使用“同一台机器稳定的系统标识”，并在进程内缓存；不保证跨重装系统（与你选择的 A 一致）。
 2. 字段名：对齐后端约定，统一使用 `device_id`（下划线）。
 3. 稳定性：同一机器、每次取值一致（重装系统可能变化）。
+4. 标准化规则（为避免“同一机器但字符串不一致”导致误拒绝）：
+   - CLI 侧仅做 `trim()`（去除首尾空白与换行），不做大小写转换、不对字符做替换。
+   - macOS 解析出来的 `IOPlatformUUID` 中若包含连字符，连字符原样保留。
 
 ### `device_id` 获取策略（方案 1：OS 稳定机器标识）
 实现一个统一入口 `get_device_id()`：
@@ -32,11 +35,25 @@
 - `init` 调用 `mcp/auth/validate` 校验 `user_key/user_secret`。
 
 变更：
-- 在 `mcp/auth/validate` 的 `params` 中新增字段：
+- 在 `mcp/auth/validate` 的 JSON-RPC `params` 中新增字段：
   - `device_id: <当前设备ID>`
 
+JSON-RPC 最小请求示例（字段层级以当前 CLI 实现为准）：
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "mcp/auth/validate",
+  "id": "...",
+  "params": {
+    "user_key": "....",
+    "user_secret": "....",
+    "device_id": "...."
+  }
+}
+```
+
 失败语义：
-- 当服务端判定 `user_key/user_secret/device_id` 不匹配，应保持当前行为：将服务端返回的 401 提示错误信息透传给用户。
+- CLI 侧保持现有解析逻辑：当 HTTP 非 2xx 直接报错；当 JSON-RPC 返回 `result.ok=false` 时，优先透传 `result.error` 字符串；否则给出通用的“鉴权失败/鉴权请求失败”错误。
 
 #### 2) `customer/*` 业务调用注入 auth
 现状：
@@ -48,6 +65,32 @@
 
 保持兼容：
 - `customer/is_available` 继续不注入 auth（除非后端另有要求）。
+
+注入位置的最小结构示例（结合当前 `tools/call` 请求封装方式）：
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "id": "...",
+  "params": {
+    "name": "customer/search",
+    "arguments": {
+      "keywords": "科技",
+      "auth": {
+        "user_key": "....",
+        "user_secret": "....",
+        "device_id": "...."
+      }
+    }
+  }
+}
+```
+
+鉴权覆盖范围说明（当前 CLI 实现的“可推导范围”）：
+- 目前代码中只有：
+  - `init` 会调用 `mcp/auth/validate`
+  - `call.rs` 只会在 `category_name == "customer"` 且 `full_method != "customer/is_available"` 时注入 `arguments.auth`
+- 因此本 spec 仅要求对现有 `customer/*` 鉴权注入；如果后续增加其它鉴权类 category，需要在实现阶段同步扩展注入规则。
 
 ### 新命令：`lfy-cli stats`
 行为：
