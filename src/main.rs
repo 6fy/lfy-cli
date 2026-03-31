@@ -15,7 +15,14 @@ use clap::Args;
 use clap::Command;
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() {
+    if let Err(e) = run().await {
+        eprintln!("\x1b[31mError: {}\x1b[0m", e);
+        std::process::exit(1);
+    }
+}
+
+async fn run() -> Result<()> {
     dotenvy::dotenv().ok();
 
     logging::init_logging();

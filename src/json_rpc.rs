@@ -30,9 +30,6 @@ pub async fn send(
 
     let timeout = std::time::Duration::from_millis(timeout_ms.unwrap_or(30000) as u64);
 
-    // 打印mcp_url
-    println!("mcp_url: {}", mcp_url);
-
     let request = reqwest::Client::builder()
         .build()?
         .post(&mcp_url)
@@ -42,9 +39,9 @@ pub async fn send(
 
     let response = request.send().await.map_err(|err| {
         if err.is_timeout() {
-            anyhow::anyhow!("MCP 请求超时 ({}ms)", timeout.as_millis())
+            anyhow::anyhow!("网络请求超时 ({}ms)", timeout.as_millis())
         } else {
-            anyhow::anyhow!("MCP 网络请求失败: {err}")
+            anyhow::anyhow!("网络请求失败 ({})", mcp_url)
         }
     })?;
 
