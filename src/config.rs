@@ -1,0 +1,17 @@
+#[derive(Debug, Clone)]
+pub struct CategoryInfo {
+    pub name: &'static str,
+    pub description: &'static str,
+}
+
+/// 支持的 CLI 品类（与 MCP `biz_type` 对应）。按字母序追加。
+pub fn get_categories() -> Vec<CategoryInfo> {
+    let mut categories = vec![];
+
+    categories.push(CategoryInfo {
+        name: "customer",
+        description: "客户 - 客户增删改及可用性查询",
+    });
+
+    categories
+}

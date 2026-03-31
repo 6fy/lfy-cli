@@ -1,0 +1,25 @@
+{
+  "name": "@lfy/cli",
+  "version": "0.3.0",
+  "description": "LFY CLI",
+  "keywords": [
+    "lfy-cli"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "lfy-cli": "./bin/lfy.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "optionalDependencies": {
+    "@lfy/cli-darwin-arm64": "file:packages/darwin-arm64",
+    "@lfy/cli-darwin-x64": "0.1.0",
+    "@lfy/cli-linux-x64": "0.1.0",
+    "@lfy/cli-win32-x64": "0.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

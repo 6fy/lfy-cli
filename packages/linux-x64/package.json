@@ -1,0 +1,12 @@
+{
+  "name": "@lfy/cli-linux-x64",
+  "version": "0.1.0",
+  "description": "The linux-x64 binary for @lfy/cli",
+  "license": "MIT",
+  "files": ["bin"],
+  "engines": {
+    "node": ">=18"
+  },
+  "os": ["linux"],
+  "cpu": ["x64"]
+}

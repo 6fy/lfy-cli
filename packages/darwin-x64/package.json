@@ -1,0 +1,12 @@
+{
+  "name": "@lfy/cli-darwin-x64",
+  "version": "0.1.0",
+  "description": "The darwin-x64 binary for @lfy/cli",
+  "license": "MIT",
+  "files": ["bin"],
+  "engines": {
+    "node": ">=18"
+  },
+  "os": ["darwin"],
+  "cpu": ["x64"]
+}
