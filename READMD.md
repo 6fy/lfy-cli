@@ -21,6 +21,12 @@ lfy-cli customer search '{"keywords":"科技"}'
 npm unlink @lfy/cli
 ```
 
+## 身份认证
+
+```bash
+# 查看当前device_id
+lfy-cli stats
+```
 
 # 业务场景
 

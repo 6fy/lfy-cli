@@ -94,7 +94,11 @@ pub async fn fetch_mcp_config() -> Result<Vec<McpConfigItem>> {
     Ok(resp.list)
 }
 
-async fn validate_user_credentials_on_server(user_key: &str, user_secret: &str) -> Result<()> {
+async fn validate_user_credentials_on_server(
+    user_key: &str,
+    user_secret: &str,
+    device_id: &str,
+) -> Result<()> {
     let endpoint = constants::mcp_config_endpoint();
 
     let body = serde_json::json!({
@@ -104,6 +108,7 @@ async fn validate_user_credentials_on_server(user_key: &str, user_secret: &str) 
         "params": {
             "user_key": user_key,
             "user_secret": user_secret,
+            "device_id": device_id,
         }
     });
 
@@ -150,12 +155,12 @@ async fn validate_user_credentials_on_server(user_key: &str, user_secret: &str) 
     anyhow::bail!("鉴权失败：{rpc_res}");
 }
 
-/// Validate user_key/user_secret by calling server `mcp/auth/validate`.
+/// Validate user_key/user_secret/device_id by calling server `mcp/auth/validate`.
 ///
 /// On invalid credentials, this returns an error whose message is exactly the server's
 /// 401 prompt (e.g. `您的个人Key或Secret已失效或不正确。`).
-pub async fn validate_user_credentials(user_key: &str, user_secret: &str) -> Result<()> {
-    validate_user_credentials_on_server(user_key, user_secret).await
+pub async fn validate_user_credentials(user_key: &str, user_secret: &str, device_id: &str) -> Result<()> {
+    validate_user_credentials_on_server(user_key, user_secret, device_id).await
 }
 
 pub async fn get_mcp_url(category: &str) -> Result<String> {

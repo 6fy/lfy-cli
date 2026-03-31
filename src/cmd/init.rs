@@ -1,5 +1,6 @@
 use crate::mcp;
 use crate::auth;
+use crate::device_id;
 use anyhow::Result;
 use clap::ArgMatches;
 use clap::Args;
@@ -51,7 +52,8 @@ pub async fn handle_init_cmd(matches: &ArgMatches) -> Result<()> {
 
     // Validate credentials first.
     // When invalid, server returns 401 prompt; we forward the error message to caller.
-    mcp::config::validate_user_credentials(&user_key, &user_secret).await?;
+    let device_id = device_id::get_device_id()?;
+    mcp::config::validate_user_credentials(&user_key, &user_secret, &device_id).await?;
 
     let creds = auth::UserCredentials::new(user_key, user_secret);
     auth::set_credentials(&creds)?;

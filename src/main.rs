@@ -8,6 +8,7 @@ mod help;
 mod json_rpc;
 mod logging;
 mod mcp;
+mod device_id;
 
 use anyhow::Result;
 use clap::Args;
@@ -31,6 +32,9 @@ async fn main() -> Result<()> {
             cmd::init::InitArgs::augment_args(Command::new("init")).about("初始化并保存 User Key / User Secret"),
         );
 
+    // Standalone command: show current machine device_id.
+    cmd = cmd.subcommand(Command::new("stats").about("查看当前机器的 device_id"));
+
     for category in categories.iter() {
         cmd = cmd.subcommand(cmd::call::CallArgs::augment_args(
             Command::new(category.name)
@@ -44,6 +48,7 @@ async fn main() -> Result<()> {
 
     match matches.subcommand() {
         Some(("init", matches)) => cmd::init::handle_init_cmd(matches).await,
+        Some(("stats", matches)) => cmd::stats::handle_stats_cmd(matches).await,
         Some((category, matches)) => cmd::call::handle_call_cmd(category, matches).await,
         _ => anyhow::bail!("未知命令"),
     }

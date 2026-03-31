@@ -1,4 +1,4 @@
-use crate::{auth, config, help, json_rpc};
+use crate::{auth, config, device_id, help, json_rpc};
 
 use anyhow::Result;
 use clap::{ArgMatches, Args, FromArgMatches};
@@ -75,12 +75,14 @@ pub async fn handle_call_cmd(category_name: &str, matches: &ArgMatches) -> Resul
         if !obj.contains_key("auth") {
             let creds = auth::get_credentials()
                 .ok_or_else(|| anyhow::anyhow!("未找到凭证，请先运行 `lfy-cli init`"))?;
+            let current_device_id = device_id::get_device_id()?;
 
             obj.insert(
                 "auth".to_string(),
                 json!({
                     "user_key": creds.user_key,
-                    "user_secret": creds.user_secret
+                    "user_secret": creds.user_secret,
+                    "device_id": current_device_id
                 }),
             );
         }
