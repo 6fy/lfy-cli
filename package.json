@@ -1,6 +1,6 @@
 {
   "name": "@lfy/cli",
-  "version": "0.3.0",
+  "version": "0.6.1",
   "description": "LFY CLI",
   "keywords": [
     "lfy-cli"
@@ -14,10 +14,10 @@
     "bin"
   ],
   "optionalDependencies": {
-    "@lfy/cli-darwin-arm64": "file:packages/darwin-arm64",
-    "@lfy/cli-darwin-x64": "0.1.0",
-    "@lfy/cli-linux-x64": "0.1.0",
-    "@lfy/cli-win32-x64": "0.1.0"
+    "@lfy/cli-darwin-arm64": "0.6.1",
+    "@lfy/cli-darwin-x64": "0.6.1",
+    "@lfy/cli-linux-x64": "0.6.1",
+    "@lfy/cli-win32-x64": "0.6.1"
   },
   "engines": {
     "node": ">=18"
