@@ -1,6 +1,6 @@
 {
   "name": "@lfy/cli",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "LFY CLI",
   "keywords": [
     "lfy-cli"
@@ -11,15 +11,35 @@
     "lfy-cli": "./bin/lfy.js"
   },
   "files": [
-    "bin"
+    "bin",
+    "README.md"
   ],
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks"
+  },
   "optionalDependencies": {
-    "@lfy/cli-darwin-arm64": "0.6.1",
-    "@lfy/cli-darwin-x64": "0.6.1",
-    "@lfy/cli-linux-x64": "0.6.1",
-    "@lfy/cli-win32-x64": "0.6.1"
+    "@lfy/cli-darwin-arm64": "0.7.0",
+    "@lfy/cli-darwin-x64": "0.7.0",
+    "@lfy/cli-linux-x64": "0.7.0",
+    "@lfy/cli-win32-x64": "0.7.0"
   },
   "engines": {
-    "node": ">=18"
-  }
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.30.0",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^10.0.1",
+    "@tsconfig/node-lts": "^24.0.0",
+    "@types/node": "^25.5.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.4.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.57.2"
+  },
+  "packageManager": "pnpm@10.32.1"
 }
