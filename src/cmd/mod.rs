@@ -1,3 +1,3 @@
 pub mod call;
 pub mod init;
-pub mod stats;
+pub mod status;

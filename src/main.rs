@@ -41,7 +41,7 @@ async fn run() -> Result<()> {
         );
 
     // Standalone command: show current machine device_id.
-    cmd = cmd.subcommand(Command::new("stats").about("查看当前机器的 device_id"));
+    cmd = cmd.subcommand(Command::new("status").about("查看当前机器的 device_id"));
 
     for category in categories.iter() {
         cmd = cmd.subcommand(cmd::call::CallArgs::augment_args(
@@ -56,7 +56,7 @@ async fn run() -> Result<()> {
 
     match matches.subcommand() {
         Some(("init", matches)) => cmd::init::handle_init_cmd(matches).await,
-        Some(("stats", matches)) => cmd::stats::handle_stats_cmd(matches).await,
+        Some(("status", matches)) => cmd::status::handle_status_cmd(matches).await,
         Some((category, matches)) => cmd::call::handle_call_cmd(category, matches).await,
         _ => anyhow::bail!("未知命令"),
     }

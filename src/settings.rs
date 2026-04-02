@@ -37,7 +37,7 @@ pub fn save_settings(settings: &Settings) -> anyhow::Result<()> {
     Ok(())
 }
 
-/// 返回 MCP config endpoint，优先级：环境变量 > 配置文件 > 默认值
+/// 返回 MCP config endpoint，优先级：环境变量 LFY_SERVER_URL > 配置文件 > 默认值
 pub fn mcp_config_endpoint() -> String {
     // 1. 环境变量（最高优先）
     if let Ok(url) = std::env::var(env::MCP_CONFIG_ENDPOINT) {

@@ -5,7 +5,7 @@ pub mod env {
     pub const CONFIG_DIR: &str = "LFY_CLI_CONFIG_DIR";
 
     /// MCP config endpoint（init 用于拉取品类 -> URL）
-    pub const MCP_CONFIG_ENDPOINT: &str = "LFY_MCP_CONFIG_ENDPOINT";
+    pub const MCP_CONFIG_ENDPOINT: &str = "LFY_SERVER_URL";
 
     /// 日志级别
     pub const LOG_LEVEL: &str = "LFY_CLI_LOG_LEVEL";
@@ -15,7 +15,7 @@ pub mod env {
 }
 
 /// 默认的 MCP config endpoint（本地 server 地址）
-pub const DEFAULT_MCP_CONFIG_ENDPOINT: &str = "http://localhost:16000";
+pub const DEFAULT_MCP_CONFIG_ENDPOINT: &str = "https://open-api.6fenyi.com/cli";
 
 /// 返回配置目录（环境变量覆盖或 `~/.config/lfy`）。
 pub fn config_dir() -> PathBuf {

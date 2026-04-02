@@ -3,7 +3,7 @@ use crate::device_id;
 use anyhow::Result;
 use clap::ArgMatches;
 
-pub async fn handle_stats_cmd(_matches: &ArgMatches) -> Result<()> {
+pub async fn handle_status_cmd(_matches: &ArgMatches) -> Result<()> {
     let id = device_id::get_device_id()?;
     let version = env!("CARGO_PKG_VERSION");
     // 冒号位置固定，key 左对齐，value 从同一列开始显示
