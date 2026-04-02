@@ -31,6 +31,11 @@ pub async fn handle_init_cmd(matches: &ArgMatches) -> Result<()> {
         settings_data.server_url = Some(url.clone());
         settings::save_settings(&settings_data)?;
         println!("Server 地址已保存: {}", url);
+
+        // 如果只提供了 --server-url，保存后直接退出
+        if args.user_key.is_none() && args.user_secret.is_none() && !args.refresh {
+            return Ok(());
+        }
     }
 
     let non_interactive = args.user_key.is_some() && args.user_secret.is_some();
