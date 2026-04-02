@@ -9,6 +9,7 @@ mod json_rpc;
 mod logging;
 mod mcp;
 mod device_id;
+mod settings;
 
 use anyhow::Result;
 use clap::Args;
