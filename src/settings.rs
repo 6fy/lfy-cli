@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::constants::config_dir;
+use crate::constants::{config_dir, env, DEFAULT_MCP_CONFIG_ENDPOINT};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
@@ -35,4 +35,25 @@ pub fn save_settings(settings: &Settings) -> anyhow::Result<()> {
     let mut file = std::fs::File::create(&path)?;
     write!(file, "{}", serde_json::to_string_pretty(settings)?)?;
     Ok(())
+}
+
+/// 返回 MCP config endpoint，优先级：环境变量 > 配置文件 > 默认值
+pub fn mcp_config_endpoint() -> String {
+    // 1. 环境变量（最高优先）
+    if let Ok(url) = std::env::var(env::MCP_CONFIG_ENDPOINT) {
+        if !url.is_empty() {
+            return url;
+        }
+    }
+
+    // 2. 配置文件
+    let settings = load_settings();
+    if let Some(url) = settings.server_url {
+        if !url.is_empty() {
+            return url;
+        }
+    }
+
+    // 3. 默认值
+    DEFAULT_MCP_CONFIG_ENDPOINT.to_string()
 }

@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{constants, crypto, fs_util};
+use crate::{crypto, fs_util};
 
 use super::gen_req_id;
 
@@ -51,7 +51,7 @@ pub fn save_mcp_config(items: &[McpConfigItem]) -> Result<()> {
 
 async fn fetch_mcp_config_from_server() -> Result<GetMcpConfigResponse> {
     // JSON-RPC endpoint: we reuse the base URL; server accepts all paths.
-    let endpoint = constants::mcp_config_endpoint();
+    let endpoint = crate::settings::mcp_config_endpoint();
 
     let body = serde_json::json!({
         "jsonrpc": "2.0",
@@ -99,7 +99,7 @@ async fn validate_user_credentials_on_server(
     user_secret: &str,
     device_id: &str,
 ) -> Result<()> {
-    let endpoint = constants::mcp_config_endpoint();
+    let endpoint = crate::settings::mcp_config_endpoint();
 
     let body = serde_json::json!({
         "jsonrpc": "2.0",

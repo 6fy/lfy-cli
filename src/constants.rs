@@ -15,7 +15,7 @@ pub mod env {
 }
 
 /// 默认的 MCP config endpoint（本地 server 地址）
-const DEFAULT_MCP_CONFIG_ENDPOINT: &str = "http://localhost:16000";
+pub const DEFAULT_MCP_CONFIG_ENDPOINT: &str = "http://localhost:16000";
 
 /// 返回配置目录（环境变量覆盖或 `~/.config/lfy`）。
 pub fn config_dir() -> PathBuf {
@@ -26,10 +26,4 @@ pub fn config_dir() -> PathBuf {
         .unwrap_or_else(|| PathBuf::from("."))
         .join(".config")
         .join("lfy")
-}
-
-/// 返回 MCP config endpoint（环境变量覆盖或使用默认值）。
-pub fn mcp_config_endpoint() -> String {
-    std::env::var(env::MCP_CONFIG_ENDPOINT)
-        .unwrap_or_else(|_| DEFAULT_MCP_CONFIG_ENDPOINT.to_string())
 }
