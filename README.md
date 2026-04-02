@@ -1,15 +1,37 @@
-## 快速使用
+
+# 安装与快速开始
+
+## 环境要求
+
+- Node.js >= 22 (`npm` / `npx`)
+- 陆份仪用户 Key / Secret（可通过陆份仪服务渠道获取）
+
+## 安装
 
 ```bash
 # 安装 CLI
-npm install -g @lfy/cli --registry http://nexus.6fenyi.com:8081/repository/npm-hosted-cc/
+npm install -g @lfy/cli
 
-# 卸载
-npm uninstall -g @lfy/cli
-
-# 卸载完成后验证
-lfy-cli --version
+# 安装 CLI SKILL（必需）
+npx skills add lfy-cli -y -g
 ```
+
+## 快速开始
+
+```bash
+# 获取当前机器的 device_id
+lfy-cli stats
+
+# 配置 Key / Secret
+lfy-cli init --user-key <your_user_key> --user-secret <your_user_secret>
+
+# 调用客户搜索
+lfy-cli customer search '{"keywords":"科技"}'
+```
+
+# Agent Skills
+
+---
 
 ```bash
 # 初始化并刷新 MCP 配置
