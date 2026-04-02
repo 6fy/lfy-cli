@@ -26,8 +26,17 @@ dirs = "6.0.0"
 base64 = "0.22"
 rand = "0.9"
 aes-gcm = "0.10"
-keyring = { version = "3", features = ["apple-native", "linux-native"] }
 tempfile = "3.27.0"
 cliclack = "0.5"
 reqwest = { version = "0.13.2", default-features = false, features = ["json", "rustls"] }
 hex = "0.4"
+
+# 按目标平台选 keyring 后端（交叉编译 Windows 时需 windows-native，不能带 apple/linux）
+[target.'cfg(target_os = "windows")'.dependencies]
+keyring = { version = "3", features = ["windows-native"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "3", features = ["apple-native"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3", features = ["linux-native"] }

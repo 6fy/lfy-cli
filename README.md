@@ -29,6 +29,22 @@ lfy-cli init --user-key <your_user_key> --user-secret <your_user_secret>
 lfy-cli customer search '{"keywords":"科技"}'
 ```
 
+## 升级与卸载
+
+```bash
+# 升级 CLI
+npm install -g @lfy/cli
+
+# 升级 CLI SKILL
+npx skills update 6fy/lfy-cli -y -g
+
+# 卸载 CLI
+npm uninstall -g @lfy/cli
+
+# 卸载 CLI SKILL
+npx skills remove 6fy/lfy-cli -y -g
+```
+
 # Agent Skills
 
 ---
@@ -87,6 +103,22 @@ LFY_MCP_CONFIG_ENDPOINT=http://127.0.0.1:16000 lfy-cli init
 ```
 
 **优先级：** 环境变量 > 命令行参数 > 默认值（http://localhost:16000）
+
+## 构建 Windows x64 二进制（供 `@lfy/cli-win32-x64`）
+
+在 macOS 上交叉编译 `x86_64-pc-windows-gnu` 需要 **MinGW-w64** 工具链（提供 `x86_64-w64-mingw32-gcc` 等），否则 `aws-lc-sys`、`windows-sys` 等会报找不到编译器 / dlltool。
+
+```bash
+# 1. 安装工具链（仅需一次）
+brew install mingw-w64
+rustup target add x86_64-pc-windows-gnu
+
+# 2. 编译并复制到 packages/win32-x64/bin/lfy-cli.exe
+pnpm build
+# 等价：bash scripts/publish-win32-x64.sh
+```
+
+在 Windows 本机开发可直接：`cargo build --release`，再把 `target/release/lfy-cli.exe` 复制到 `packages/win32-x64/bin/`。
 
 ## 发布 npm 包
 

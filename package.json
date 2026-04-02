@@ -15,7 +15,11 @@
     "README.md"
   ],
   "scripts": {
-    "prepare": "git config core.hooksPath .githooks"
+    "prepare": "git config core.hooksPath .githooks",
+    "build:win32-x64": "bash scripts/build-win32-x64.sh",
+    "build:darwin-x64": "bash scripts/build-darwin-x64.sh",
+    "build:darwin-arm64": "bash scripts/build-darwin-arm64.sh",
+    "build:linux-x64": "bash scripts/build-linux-x64.sh"
   },
   "optionalDependencies": {
     "@lfy/cli-darwin-arm64": "0.7.0",
