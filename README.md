@@ -51,6 +51,20 @@ lfy-cli customer search '{"keywords":"科技"}'
 
 ```
 
+**lfy-cli init**
+
+```bash
+# 首次配置、修改 Key / Secret
+lfy-cli init --user-key <your_user_key> --user-secret <your_user_secret>
+
+# 变更服务器地址（方式一：命令行参数）
+lfy-cli init --server-url http://127.0.0.1:16000
+
+# 变更服务器地址（方式二：环境变量）
+LFY_MCP_CONFIG_ENDPOINT=http://127.0.0.1:16000 lfy-cli init
+```
+
+**优先级：** 环境变量 > 命令行参数 > 默认值（http://localhost:16000）
 
 ## 发布 npm 包
 
