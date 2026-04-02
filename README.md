@@ -4,7 +4,7 @@
 ## 环境要求
 
 - Node.js >= 22 (`npm` / `npx`)
-- 陆份仪用户 Key / Secret（可通过陆份仪服务渠道获取）
+- 陆份仪用户 Key / Secret（由陆份仪官方授权后提供）
 
 ## 安装
 
@@ -22,7 +22,7 @@ npx skills add 6fy/lfy-cli -y -g
 # 获取当前机器的 device_id
 lfy-cli status
 
-# 配置 Key / Secret
+# 配置 Key / Secret (由陆份仪官方授权后提供)
 lfy-cli init --user-key <your_user_key> --user-secret <your_user_secret>
 
 # 调用客户搜索
