@@ -13,7 +13,7 @@
 npm install -g @lfy/cli
 
 # 安装 CLI SKILL（必需）
-npx skills add lfy-cli -y -g
+npx skills add 6fy/lfy-cli -y -g
 ```
 
 ## 快速开始
