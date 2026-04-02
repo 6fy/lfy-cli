@@ -1,6 +1,7 @@
-use crate::mcp;
 use crate::auth;
 use crate::device_id;
+use crate::mcp;
+use crate::settings;
 use anyhow::Result;
 use clap::ArgMatches;
 use clap::Args;
@@ -16,10 +17,21 @@ pub struct InitArgs {
 
     #[arg(long, help = "User Secret（非交互时可传入，注意 shell 历史）")]
     user_secret: Option<String>,
+
+    #[arg(long, help = "MCP Server 地址")]
+    server_url: Option<String>,
 }
 
 pub async fn handle_init_cmd(matches: &ArgMatches) -> Result<()> {
     let args = InitArgs::from_arg_matches(matches)?;
+
+    // 处理 server_url 配置
+    if let Some(url) = &args.server_url {
+        let mut settings_data = settings::load_settings();
+        settings_data.server_url = Some(url.clone());
+        settings::save_settings(&settings_data)?;
+        println!("Server 地址已保存: {}", url);
+    }
 
     let non_interactive = args.user_key.is_some() && args.user_secret.is_some();
 
