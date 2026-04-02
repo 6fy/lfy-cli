@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { execFileSync } from 'node:child_process';
-import { createRequire } from 'node:module';
-import os from 'node:os';
-import { join } from 'node:path';
+import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
+import os from "node:os";
+import { join } from "node:path";
 
 const require = createRequire(import.meta.url);
 
@@ -12,10 +12,10 @@ function getPlatformPackage() {
   const arch = os.arch();
 
   const platformMap = {
-    'darwin-arm64': '@lfy/cli-darwin-arm64',
-    'darwin-x64': '@lfy/cli-darwin-x64',
-    'linux-x64': '@lfy/cli-linux-x64',
-    'win32-x64': '@lfy/cli-win32-x64',
+    "darwin-arm64": "@6fy/cli-darwin-arm64",
+    "darwin-x64": "@6fy/cli-darwin-x64",
+    "linux-x64": "@6fy/cli-linux-x64",
+    "win32-x64": "@6fy/cli-win32-x64",
   };
 
   const key = `${platform}-${arch}`;
@@ -24,7 +24,7 @@ function getPlatformPackage() {
   if (!pkg) {
     console.error(
       `Error: unsupported platform ${platform}-${arch}.\n` +
-        `Supported platforms: ${Object.keys(platformMap).join(', ')}`
+        `Supported platforms: ${Object.keys(platformMap).join(", ")}`,
     );
     process.exit(1);
   }
@@ -34,18 +34,18 @@ function getPlatformPackage() {
 
 function getBinaryPath() {
   const pkg = getPlatformPackage();
-  const binaryName = os.platform() === 'win32' ? 'lfy-cli.exe' : 'lfy-cli';
+  const binaryName = os.platform() === "win32" ? "lfy-cli.exe" : "lfy-cli";
 
   try {
     const pkgDir = require.resolve(`${pkg}/package.json`);
-    return join(pkgDir, '..', 'bin', binaryName);
+    return join(pkgDir, "..", "bin", binaryName);
   } catch {
     console.error(
-      `Error: cannot find @lfy/cli binary.\n` +
-        `Please try reinstalling: npm install @lfy/cli\n\n` +
+      `Error: cannot find @6fy/cli binary.\n` +
+        `Please try reinstalling: npm install @6fy/cli\n\n` +
         `If the problem persists, check:\n` +
         `  1. Your npm config does not disable optional dependencies (--no-optional)\n` +
-        `  2. Your platform (${os.platform()}-${os.arch()}) is supported`
+        `  2. Your platform (${os.platform()}-${os.arch()}) is supported`,
     );
     process.exit(1);
   }
@@ -55,7 +55,7 @@ const binaryPath = getBinaryPath();
 
 try {
   execFileSync(binaryPath, process.argv.slice(2), {
-    stdio: 'inherit',
+    stdio: "inherit",
     env: process.env,
   });
 } catch (error) {

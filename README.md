@@ -10,7 +10,7 @@
 
 ```bash
 # 安装 CLI
-npm install -g @lfy/cli
+npm install -g @6fy/cli
 
 # 安装 CLI SKILL（必需）
 npx skills add 6fy/lfy-cli -y -g
@@ -33,13 +33,13 @@ lfy-cli customer search '{"keywords":"科技"}'
 
 ```bash
 # 升级 CLI
-npm install -g @lfy/cli
+npm install -g @6fy/cli
 
 # 升级 CLI SKILL
 npx skills update 6fy/lfy-cli -y -g
 
 # 卸载 CLI
-npm uninstall -g @lfy/cli
+npm uninstall -g @6fy/cli
 
 # 卸载 CLI SKILL
 npx skills remove 6fy/lfy-cli -y -g
@@ -68,7 +68,7 @@ lfy-cli init
 # lfy-cli init --refresh
 lfy-cli customer search '{"keywords":"科技"}'
 
-npm unlink @lfy/cli
+npm unlink @6fy/cli
 ```
 
 ## 身份认证
@@ -100,41 +100,4 @@ lfy-cli init --server-url http://127.0.0.1:16000
 
 # 变更服务器地址（方式二：环境变量）
 LFY_MCP_CONFIG_ENDPOINT=http://127.0.0.1:16000 lfy-cli init
-```
-
-**优先级：** 环境变量 > 命令行参数 > 默认值（http://localhost:16000）
-
-## 构建 Windows x64 二进制（供 `@lfy/cli-win32-x64`）
-
-在 macOS 上交叉编译 `x86_64-pc-windows-gnu` 需要 **MinGW-w64** 工具链（提供 `x86_64-w64-mingw32-gcc` 等），否则 `aws-lc-sys`、`windows-sys` 等会报找不到编译器 / dlltool。
-
-```bash
-# 1. 安装工具链（仅需一次）
-brew install mingw-w64
-rustup target add x86_64-pc-windows-gnu
-
-# 2. 编译并复制到 packages/win32-x64/bin/lfy-cli.exe
-pnpm build
-# 等价：bash scripts/publish-win32-x64.sh
-```
-
-在 Windows 本机开发可直接：`cargo build --release`，再把 `target/release/lfy-cli.exe` 复制到 `packages/win32-x64/bin/`。
-
-## 发布 npm 包
-
-确保 package.json 中以下版本与 主包版本号一致
-
-```json
-"optionalDependencies": {
-    "@lfy/cli-darwin-arm64": "0.6.1",
-    "@lfy/cli-darwin-x64": "0.6.1",
-    "@lfy/cli-linux-x64": "0.6.1",
-    "@lfy/cli-win32-x64": "0.6.1"
-}
-```
-
-把 packages 目录下逐个发布到 npm 仓库，最后发布主包
-
-```bash
-npm publish --registry http://nexus.6fenyi.com:8081/repository/npm-hosted-cc/ --access public
 ```

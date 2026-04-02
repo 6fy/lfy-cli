@@ -1,6 +1,6 @@
 {
-  "name": "@lfy/cli",
-  "version": "0.7.0",
+  "name": "@6fy/cli",
+  "version": "0.8.0",
   "description": "LFY CLI",
   "keywords": [
     "lfy-cli"
@@ -8,7 +8,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "lfy-cli": "./bin/lfy.js"
+    "lfy-cli": "bin/lfy.js"
   },
   "files": [
     "bin",
@@ -22,10 +22,10 @@
     "build:linux-x64": "bash scripts/build-linux-x64.sh"
   },
   "optionalDependencies": {
-    "@lfy/cli-darwin-arm64": "0.7.0",
-    "@lfy/cli-darwin-x64": "0.7.0",
-    "@lfy/cli-linux-x64": "0.7.0",
-    "@lfy/cli-win32-x64": "0.7.0"
+    "@6fy/cli-darwin-arm64": "0.8.0",
+    "@6fy/cli-darwin-x64": "0.8.0",
+    "@6fy/cli-linux-x64": "0.8.0",
+    "@6fy/cli-win32-x64": "0.8.0"
   },
   "engines": {
     "node": ">=22"
@@ -45,5 +45,8 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.57.2"
   },
-  "packageManager": "pnpm@10.32.1"
+  "packageManager": "pnpm@10.32.1",
+  "dependencies": {
+    "user": "^0.0.0"
+  }
 }

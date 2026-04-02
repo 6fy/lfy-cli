@@ -1,7 +1,7 @@
 {
-  "name": "@lfy/cli-darwin-arm64",
-  "version": "0.7.0",
-  "description": "The darwin-arm64 binary for @lfy/cli",
+  "name": "@6fy/cli-darwin-arm64",
+  "version": "0.8.0",
+  "description": "The darwin-arm64 binary for @6fy/cli",
   "license": "MIT",
   "files": [
     "bin"

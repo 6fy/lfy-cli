@@ -1,7 +1,7 @@
 {
-  "name": "@lfy/cli-win32-x64",
-  "version": "0.7.0",
-  "description": "The win32-x64 binary for @lfy/cli",
+  "name": "@6fy/cli-win32-x64",
+  "version": "0.8.0",
+  "description": "The win32-x64 binary for @6fy/cli",
   "license": "MIT",
   "files": [
     "bin"

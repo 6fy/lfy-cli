@@ -4,11 +4,11 @@
   "commit": false,
   "fixed": [
     [
-      "@lfy/cli",
-      "@lfy/cli-darwin-arm64",
-      "@lfy/cli-darwin-x64",
-      "@lfy/cli-linux-x64",
-      "@lfy/cli-win32-x64"
+      "@6fy/cli",
+      "@6fy/cli-darwin-arm64",
+      "@6fy/cli-darwin-x64",
+      "@6fy/cli-linux-x64",
+      "@6fy/cli-win32-x64"
     ]
   ],
   "linked": [],
