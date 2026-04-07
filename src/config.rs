@@ -13,5 +13,10 @@ pub fn get_categories() -> Vec<CategoryInfo> {
         description: "客户 - 客户增删改及可用性查询",
     });
 
+    categories.push(CategoryInfo {
+        name: "pipeline",
+        description: "Pipeline - 商机管道相关查询",
+    });
+
     categories
 }

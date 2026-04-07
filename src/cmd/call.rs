@@ -64,10 +64,12 @@ pub async fn handle_call_cmd(category_name: &str, matches: &ArgMatches) -> Resul
         format!("{}/{}", category_name, method)
     };
 
-    // Inject auth for customer/* tools (except customer/is_available).
+    // Inject auth for customer/* and pipeline/* tools.
     // The server expects credentials under `arguments.auth`.
     let mut parsed_args = parsed_args;
-    if category_name == "customer" && full_method != "customer/is_available" {
+    if (category_name == "customer" && full_method != "customer/is_available")
+        || category_name == "pipeline"
+    {
         let obj = parsed_args.as_object_mut().ok_or_else(|| {
             anyhow::anyhow!("参数必须是 JSON 对象，以便注入 auth")
         })?;
@@ -95,8 +97,30 @@ pub async fn handle_call_cmd(category_name: &str, matches: &ArgMatches) -> Resul
 
     let res = json_rpc::send(category_name, "tools/call", Some(params), None).await?;
 
-    if let Some(result) = res.get("result") {
-        println!("{}", result);
+    // Check for JSON-RPC error field first.
+    if let Some(err_obj) = res.get("error").and_then(|e| e.as_object()) {
+        let msg = err_obj.get("message").and_then(|m| m.as_str()).unwrap_or("unknown error");
+        eprintln!("\x1b[31mError: {}\x1b[0m", msg);
+        std::process::exit(1);
+    }
+
+    if let Some(result) = res.get("result").and_then(|r| r.as_object()) {
+        // Server may embed an "ok: false, error_message: ..." shape.
+        if result.get("ok").and_then(|o| o.as_bool()) == Some(false) {
+            let msg = result.get("error_message")
+                .or(result.get("error"))
+                .and_then(|m| m.as_str())
+                .unwrap_or("unknown error");
+            eprintln!("\x1b[31mError: {}\x1b[0m", msg);
+            std::process::exit(1);
+        }
+        // Success: print the full result object (preserving existing behavior).
+        if let Some(result_val) = res.get("result") {
+            println!("{}", result_val);
+        }
+    } else if let Some(result_val) = res.get("result") {
+        // Non-object result (e.g. array), print as-is.
+        println!("{}", result_val);
     }
 
     Ok(())
