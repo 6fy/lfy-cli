@@ -43,6 +43,9 @@ async fn run() -> Result<()> {
     // Standalone command: show current machine device_id.
     cmd = cmd.subcommand(Command::new("status").about("查看当前机器的 device_id"));
 
+    // Standalone command: refresh MCP config cache.
+    cmd = cmd.subcommand(cmd::restart::RestartArgs::augment_args(Command::new("restart")).about("强制刷新 MCP 配置（URL 和其他配置）"));
+
     for category in categories.iter() {
         cmd = cmd.subcommand(cmd::call::CallArgs::augment_args(
             Command::new(category.name)
@@ -57,6 +60,7 @@ async fn run() -> Result<()> {
     match matches.subcommand() {
         Some(("init", matches)) => cmd::init::handle_init_cmd(matches).await,
         Some(("status", matches)) => cmd::status::handle_status_cmd(matches).await,
+        Some(("restart", matches)) => cmd::restart::handle_restart_cmd(matches).await,
         Some((category, matches)) => cmd::call::handle_call_cmd(category, matches).await,
         _ => anyhow::bail!("未知命令"),
     }
