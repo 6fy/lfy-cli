@@ -119,7 +119,7 @@ pub async fn show_tool_help(category: &str, tool_name: &str) -> Result<()> {
             println!("```");
         }
     } else {
-        println!("未找到工具: {} 在品类 {} 中", tool_name, category);
+        println!("未找到工具: {} {}", category, tool_name);
     }
 
     Ok(())
