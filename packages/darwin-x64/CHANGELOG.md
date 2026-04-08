@@ -1,5 +1,11 @@
 # @6fy/cli-darwin-x64
 
+## 0.10.0
+
+### Minor Changes
+
+- 新增品类 ops , pipeline, schedule, user
+
 ## 0.9.0
 
 ### Minor Changes
