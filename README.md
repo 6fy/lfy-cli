@@ -39,35 +39,11 @@ npm install -g @6fy/cli
 npx skills update 6fy/lfy-cli -y -g
 
 # 刷新工具配置
-lfy-cli restart
-
-# 强制刷新 MCP 配置
-lfy-cli restart --force
+lfy-cli upgrade
 
 # 卸载 CLI
 npm uninstall -g @6fy/cli
 
 # 卸载 CLI SKILL
 npx skills remove 6fy/lfy-cli -y -g
-```
-
-
-# Agent Skills
-
----
-
-## 客户
-
-```bash
-# 关键字查询客户
-lfy-cli customer search '{"keywords":"科技"}'
-
-
-```
-
-**lfy-cli login**
-
-```bash
-# 登录、修改 Key / Secret
-lfy-cli login --user-key <your_user_key> --user-secret <your_user_secret>
 ```
