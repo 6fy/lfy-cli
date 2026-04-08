@@ -10,27 +10,27 @@ pub fn get_categories() -> Vec<CategoryInfo> {
 
     categories.push(CategoryInfo {
         name: "customer",
-        description: "客户 - 客户增删改及可用性查询",
+        description: "客户 - 提供销售核心场景部分可用性查询",
     });
 
     categories.push(CategoryInfo {
         name: "pipeline",
-        description: "Pipeline - 商机管道相关查询",
+        description: "商机 - 提供销售核心场景部分可用性查询",
     });
 
     categories.push(CategoryInfo {
         name: "user",
-        description: "用户 - 获取本人用户信息",
+        description: "用户 - 提供用户信息/销售人员查询",
     });
 
     categories.push(CategoryInfo {
         name: "ops",
-        description: "Ops - 企业运营相关查询",
+        description: "企基 - 提供企业运营基础数据查询",
     });
 
     categories.push(CategoryInfo {
         name: "schedule",
-        description: "Schedule - 日程任务相关查询",
+        description: "日程 - 提供日历中工作任务相关查询",
     });
 
     categories

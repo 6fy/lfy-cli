@@ -37,14 +37,14 @@ async fn run() -> Result<()> {
         .arg_required_else_help(true)
         .disable_help_subcommand(true)
         .subcommand(
-            cmd::login::LoginArgs::augment_args(Command::new("login")).about("登录并保存 User Key / User Secret"),
+            cmd::login::LoginArgs::augment_args(Command::new("login")).about("登录陆份仪官方系统，完成账号绑定"),
         );
 
     // Standalone command: show current machine device_id.
-    cmd = cmd.subcommand(Command::new("status").about("查看当前机器的 device_id"));
+    cmd = cmd.subcommand(Command::new("status").about("查看状态"));
 
     // Standalone command: refresh MCP config cache.
-    cmd = cmd.subcommand(Command::new("upgrade").about("强制刷新 MCP 配置（URL 和其他配置）"));
+    cmd = cmd.subcommand(Command::new("upgrade").about("升级工具，为智能体扩展能力"));
 
     for category in categories.iter() {
         cmd = cmd.subcommand(cmd::call::CallArgs::augment_args(
