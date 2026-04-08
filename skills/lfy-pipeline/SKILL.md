@@ -35,6 +35,18 @@ lfy-cli pipeline search '{"keywords": "<keywords>"}'
 
 ---
 
+### get_sales_stage — 获取商机阶段
+
+```bash
+lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
+```
+
+根据 GTM ID 获取商机阶段列表，包括阶段名称、里程碑目标、价值主张等信息。
+
+参见 [API 详情](references/get_sales_stage.md)。
+
+---
+
 ## 返回格式
 
 ### search 返回格式
@@ -52,6 +64,30 @@ lfy-cli pipeline search '{"keywords": "<keywords>"}'
 | --------------- | ------- | ---------- |
 | `pipeline_id`   | integer | 商机唯一 ID |
 | `pipeline_name` | string  | 商机名称    |
+
+---
+
+### get_sales_stage 返回格式
+
+```json
+[
+  {
+    "stage_id": 123,
+    "stage_name": "0% 线索阶段",
+    "milestone_goal": "里程碑目标",
+    "value_proposition": "价值主张",
+    "suggested_stage_days": 14
+  }
+]
+```
+
+| 字段                   | 类型    | 说明           |
+| ---------------------- | ------- | -------------- |
+| `stage_id`             | integer | 阶段唯一 ID    |
+| `stage_name`           | string  | 阶段名称       |
+| `milestone_goal`       | string  | 里程碑目标     |
+| `value_proposition`    | string  | 价值主张       |
+| `suggested_stage_days` | integer | 建议阶段天数   |
 
 ---
 
@@ -74,23 +110,61 @@ lfy-cli pipeline search '{"keywords": "<keywords>"}'
 **展示结果：**
 
 找到商机时：
-```
+
 📇 找到商机：
-- 商机名称：<pipeline_name>
-- 商机ID：<pipeline_id>
-```
+
+| 商机名称 |
+|----------|
+| <pipeline_name> |
+
+**字段映射**：
+
+| 原始字段 | 中文表头 | 备注 |
+|---------|---------|------|
+| pipeline_name | 商机名称 | 默认展示 |
+| pipeline_id | - | 技术字段，默认隐藏 |
 
 多个匹配时：
-```
+
 🔍 找到多个匹配商机，请确认您要查询的是哪个：
 
-1. <pipeline_name_1>（ID：<pipeline_id_1>）
-2. <pipeline_name_2>（ID：<pipeline_id_2>）
+| 商机名称 |
+|----------|
+| <pipeline_name_1> |
+| <pipeline_name_2> |
 
 请问您要查询的是哪一个？
-```
 
 未找到时：
-```
+
 未找到包含"<keywords>"的商机，请尝试其他关键字。
-```
+
+### 获取商机阶段
+
+**经典 query 示例：**
+- "帮我查一下这个商机的阶段信息"
+- "获取商机阶段"
+- "这个商机进行到哪一步了"
+
+**流程：**
+1. 提取用户提供的 `gtm_id`
+2. 调用 `get_sales_stage` 命令获取阶段信息
+3. 展示阶段列表信息
+
+**展示结果：**
+
+📋 商机阶段信息：
+
+| 阶段名称 | 里程碑目标 | 价值主张 | 建议天数 |
+|----------|-----------|---------|---------|
+| <stage_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
+
+**字段映射**：
+
+| 原始字段 | 中文表头 | 备注 |
+|---------|---------|------|
+| stage_name | 阶段名称 | 默认展示 |
+| milestone_goal | 里程碑目标 | 默认展示 |
+| value_proposition | 价值主张 | 默认展示 |
+| suggested_stage_days | 建议天数 | 默认展示 |
+| stage_id | - | 技术字段，默认隐藏 |
