@@ -71,6 +71,7 @@ pub async fn handle_call_cmd(category_name: &str, matches: &ArgMatches) -> Resul
         || category_name == "pipeline"
         || category_name == "user"
         || category_name == "ops"
+        || category_name == "schedule"
     {
         let obj = parsed_args.as_object_mut().ok_or_else(|| {
             anyhow::anyhow!("参数必须是 JSON 对象，以便注入 auth")

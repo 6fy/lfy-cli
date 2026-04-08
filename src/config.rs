@@ -28,5 +28,10 @@ pub fn get_categories() -> Vec<CategoryInfo> {
         description: "Ops - 企业运营相关查询",
     });
 
+    categories.push(CategoryInfo {
+        name: "schedule",
+        description: "Schedule - 日程任务相关查询",
+    });
+
     categories
 }
