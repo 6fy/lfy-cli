@@ -64,12 +64,13 @@ pub async fn handle_call_cmd(category_name: &str, matches: &ArgMatches) -> Resul
         format!("{}/{}", category_name, method)
     };
 
-    // Inject auth for customer/*, pipeline/* and user/* tools.
+    // Inject auth for customer/*, pipeline/*, user/* and ops/* tools.
     // The server expects credentials under `arguments.auth`.
     let mut parsed_args = parsed_args;
     if (category_name == "customer" && full_method != "customer/is_available")
         || category_name == "pipeline"
         || category_name == "user"
+        || category_name == "ops"
     {
         let obj = parsed_args.as_object_mut().ok_or_else(|| {
             anyhow::anyhow!("参数必须是 JSON 对象，以便注入 auth")

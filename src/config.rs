@@ -23,5 +23,10 @@ pub fn get_categories() -> Vec<CategoryInfo> {
         description: "用户 - 获取本人用户信息",
     });
 
+    categories.push(CategoryInfo {
+        name: "ops",
+        description: "Ops - 企业运营相关查询",
+    });
+
     categories
 }
