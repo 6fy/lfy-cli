@@ -37,7 +37,7 @@ async fn run() -> Result<()> {
         .arg_required_else_help(true)
         .disable_help_subcommand(true)
         .subcommand(
-            cmd::init::InitArgs::augment_args(Command::new("init")).about("初始化并保存 User Key / User Secret"),
+            cmd::login::LoginArgs::augment_args(Command::new("login")).about("登录并保存 User Key / User Secret"),
         );
 
     // Standalone command: show current machine device_id.
@@ -58,7 +58,7 @@ async fn run() -> Result<()> {
     let matches = cmd.get_matches();
 
     match matches.subcommand() {
-        Some(("init", matches)) => cmd::init::handle_init_cmd(matches).await,
+        Some(("login", matches)) => cmd::login::handle_login_cmd(matches).await,
         Some(("status", matches)) => cmd::status::handle_status_cmd(matches).await,
         Some(("restart", matches)) => cmd::restart::handle_restart_cmd(matches).await,
         Some((category, matches)) => cmd::call::handle_call_cmd(category, matches).await,

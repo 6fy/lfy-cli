@@ -1,6 +1,6 @@
 [package]
 name = "lfy-cli"
-version = "26.4.2"
+version = "26.4.8"
 edition = "2021"
 
 # 开发阶段：减少噪声；后续可收紧或逐项修复
@@ -31,12 +31,3 @@ cliclack = "0.5"
 reqwest = { version = "0.13.2", default-features = false, features = ["json", "rustls"] }
 hex = "0.4"
 
-# 按目标平台选 keyring 后端（交叉编译 Windows 时需 windows-native，不能带 apple/linux）
-[target.'cfg(target_os = "windows")'.dependencies]
-keyring = { version = "3", features = ["windows-native"] }
-
-[target.'cfg(target_os = "macos")'.dependencies]
-keyring = { version = "3", features = ["apple-native"] }
-
-[target.'cfg(target_os = "linux")'.dependencies]
-keyring = { version = "3", features = ["linux-native"] }

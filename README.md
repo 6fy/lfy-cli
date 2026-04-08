@@ -22,8 +22,8 @@ npx skills add 6fy/lfy-cli -y -g
 # 获取当前机器的 device_id
 lfy-cli status
 
-# 配置 Key / Secret (由陆份仪官方授权后提供)
-lfy-cli init --user-key <your_user_key> --user-secret <your_user_secret>
+# 登录（由陆份仪官方授权后提供）
+lfy-cli login --user-key "your_user_key" --user-secret "your_user_secret"
 
 # 调用客户搜索
 lfy-cli customer search '{"keywords":"科技"}'
@@ -41,7 +41,7 @@ npx skills update 6fy/lfy-cli -y -g
 # 刷新工具配置
 lfy-cli restart
 
-# 强制刷新 MCP 配置（忽略本地缓存）
+# 强制刷新 MCP 配置
 lfy-cli restart --force
 
 # 卸载 CLI
@@ -65,9 +65,9 @@ lfy-cli customer search '{"keywords":"科技"}'
 
 ```
 
-**lfy-cli init**
+**lfy-cli login**
 
 ```bash
-# 首次配置、修改 Key / Secret
-lfy-cli init --user-key <your_user_key> --user-secret <your_user_secret>
+# 登录、修改 Key / Secret
+lfy-cli login --user-key <your_user_key> --user-secret <your_user_secret>
 ```
