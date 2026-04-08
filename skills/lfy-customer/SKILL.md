@@ -11,7 +11,7 @@ metadata:
 
 > `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
-通过 `lfy-cli customer <接口名> ' '` 与客户系统交互。
+通过 `lfy-cli customer <接口名> '<json入参>'` 与陆份仪平台的客户系统交互。
 
 ## 注意事项
 
@@ -45,44 +45,6 @@ lfy-cli customer get_gtms '{}'
 
 ---
 
-## 返回格式
-
-### search 返回格式
-
-```json
-[
-  {
-    "customer_id": <customer_id>,
-    "customer_name": "<customer_name>",
-    "gtm_id": <gtm_id>
-  }
-]
-```
-
-| 字段           | 类型    | 说明                      |
-| -------------- | ------- | ------------------------- |
-| `customer_id`  | integer | 客户唯一 ID               |
-| `customer_name` | string  | 客户名称                  |
-| `gtm_id`       | integer | GTM 分类 ID（业务线标识） |
-
-### get_gtms 返回格式
-
-```json
-[
-  {
-    "gtm_id": <gtm_id>,
-    "gtm_name": "<gtm_name>"
-  }
-]
-```
-
-| 字段       | 类型    | 说明           |
-| ---------- | ------- | -------------- |
-| `gtm_id`   | integer | GTM 业务线 ID  |
-| `gtm_name` | string  | GTM 业务线名称 |
-
----
-
 ## 典型工作流
 
 ### 搜索客户
@@ -91,6 +53,7 @@ lfy-cli customer get_gtms '{}'
 - "帮我搜索一下'科技'相关的客户"
 - "找一下包含'未来'的客户"
 - "搜索关键字为'成都'的客户有哪些？"
+- "我在北京的客户有哪些？"
 
 **流程：**
 1. 提取用户提供的关键字
