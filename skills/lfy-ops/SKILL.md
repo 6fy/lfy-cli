@@ -17,12 +17,13 @@ metadata:
 
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - 财年信息由企业设定，日期按北京时间返回
+- `week_no` 等技术字段默认不展示
 
 ---
 
 ## 接口列表
 
-### get_fiscal_year — 获取当前财年信息
+### 获取当前财年信息 (get_fiscal_year)
 
 ```bash
 lfy-cli ops get_fiscal_year '{}'
@@ -32,7 +33,7 @@ lfy-cli ops get_fiscal_year '{}'
 
 参见 [API 详情](references/get_fiscal_year.md)。
 
-### get_current_week — 获取当前周数
+### 获取当前周数 (get_current_week)
 
 ```bash
 lfy-cli ops get_current_week '{}'
@@ -41,44 +42,6 @@ lfy-cli ops get_current_week '{}'
 获取当前属于第几周，按财年起始日期开始计算。
 
 参见 [API 详情](references/get_current_week.md)。
-
----
-
-## 返回格式
-
-### get_fiscal_year 返回格式
-
-```json
-{
-  "current_fiscal_year": 2026,
-  "start_date": "2026-01-01",
-  "end_date": "2026-12-31"
-}
-```
-
-| 字段                 | 类型   | 说明             |
-| -------------------- | ------ | ---------------- |
-| `current_fiscal_year` | integer | 当前财年年份     |
-| `start_date`         | string | 财年开始日期     |
-| `end_date`           | string | 财年结束日期     |
-
-### get_current_week 返回格式
-
-```json
-{
-  "week_no": 5,
-  "week_name": "W14",
-  "start_date": "2026-03-30",
-  "end_date": "2026-04-05"
-}
-```
-
-| 字段        | 类型    | 说明             |
-| ----------- | ------- | ---------------- |
-| `week_no`   | integer | 第几周（从1开始） |
-| `week_name` | string  | 周名称（如 W14）  |
-| `start_date` | string  | 本周开始日期     |
-| `end_date`  | string  | 本周结束日期     |
 
 ---
 
@@ -103,14 +66,6 @@ lfy-cli ops get_current_week '{}'
 |------|---------|---------|
 | <current_fiscal_year>年 | <start_date> | <end_date> |
 
-**字段映射**：
-
-| 原始字段 | 中文表头 | 备注 |
-|---------|---------|------|
-| current_fiscal_year | 财年 | 默认展示 |
-| start_date | 开始日期 | 默认展示 |
-| end_date | 结束日期 | 默认展示 |
-
 ---
 
 ### 获取当前周数
@@ -131,12 +86,3 @@ lfy-cli ops get_current_week '{}'
 | 周名称 | 开始日期 | 结束日期 |
 |--------|---------|---------|
 | <week_name> | <start_date> | <end_date> |
-
-**字段映射**：
-
-| 原始字段 | 中文表头 | 备注 |
-|---------|---------|------|
-| week_name | 周名称 | 默认展示 |
-| start_date | 开始日期 | 默认展示 |
-| end_date | 结束日期 | 默认展示 |
-| week_no | - | 技术字段，默认隐藏 |

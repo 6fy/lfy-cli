@@ -23,7 +23,7 @@ metadata:
 
 ## 接口列表
 
-### search — 搜索客户
+### 搜索客户 (search)
 
 ```bash
 lfy-cli customer search '{"keywords": "<keywords>"}'
@@ -33,7 +33,7 @@ lfy-cli customer search '{"keywords": "<keywords>"}'
 
 参见 [API 详情](references/search.md)。
 
-### get_gtms — 获取 GTM 列表
+### 获取 GTM 列表 (get_gtms)
 
 ```bash
 lfy-cli customer get_gtms '{}'
@@ -60,43 +60,21 @@ lfy-cli customer get_gtms '{}'
 2. 调用 `search` 命令搜索客户
 3. 在结果中筛选 `customer_name` 包含关键字的客户
 4. 若找到唯一匹配，直接展示结果
-5. 若找到多个匹配，展示候选列表请用户确认
+5. 若找到多个匹配，最多展示前10个，并告知用户如果需要精准匹配请提供更具体的客户名称
 
 **展示结果：**
 
 找到客户时：
 
-📇 找到客户：
-
-| 客户名称 |
-|----------|
-| <customer_name> |
-
-**字段映射**：
-
-| 原始字段 | 中文表头 | 备注 |
-|---------|---------|------|
-| customer_name | 客户名称 | 默认展示 |
-| customer_id | - | 技术字段，默认隐藏 |
-| gtm_id | - | 技术字段，默认隐藏 |
-
-多个匹配时：
-
-🔍 找到多个匹配客户，请确认您要查询的是哪家：
-
-| 客户名称 |
-|----------|
-| <customer_name_1> |
-| <customer_name_2> |
-
-请问您要查询的是哪一家？
-
-未找到时：
 ```
-未找到包含"<keywords>"的客户，请尝试其他关键字。
+👥 为您找到 2 个客户： <customer_name_1>, <customer_name_2>
 ```
 
----
+找不到客户时：
+
+```
+没有匹配到包含"<keywords>"的客户，请尝试更具体的方式问我，比如： "帮我搜索一下'科技'相关的客户"。
+```
 
 ### 获取 GTM 列表
 
@@ -109,19 +87,7 @@ lfy-cli customer get_gtms '{}'
 1. 调用 `get_gtms` 命令获取 GTM 列表
 2. 展示 GTM 列表供用户查看
 
-**展示结果：**
+## 注意事项
 
-📋 GTM 业务线列表：
-
-| GTM业务线 |
-|-----------|
-| 华北区 |
-| 华东区 |
-| 华南区 |
-
-**字段映射**：
-
-| 原始字段 | 中文表头 | 备注 |
-|---------|---------|------|
-| gtm_name | GTM业务线 | 默认展示 |
-| gtm_id | - | 技术字段，默认隐藏 |
+- `gtm_id`, `customer_id` 等技术字段默认不展示
+- 当前版本不支持对用户进行任何修改操作

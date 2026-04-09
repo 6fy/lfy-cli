@@ -6,7 +6,9 @@
 
 ## 功能范围
 
-| 命令       | 功能范围                              |
+覆盖陆份仪核心业务品类：
+
+| 命令/品类   | 功能范围                              |
 | ---------- | ----------------------------------- |
 | `login`    | 登录陆份仪官方系统，完成账号绑定      |
 | `status`   | 查看状态                              |
@@ -27,19 +29,22 @@
 ### 安装 & 使用
 
 ```bash
-# 安装 CLI
+# 1. 安装 CLI
 npm install -g @6fy/cli
 
-# 安装 CLI Skill（必需）
+# 2. 安装 CLI Skill（必需）
 npx skills add 6fy/lfy-cli -y -g
 
-# 获取当前机器的 device_id(联系陆份仪官方授权)
+# 3. 📌 国内用户安装 CLI Skill（可选）
+npx skills add https://gitee.com/lfy-team/lfy-cli.git -y -g
+
+# 4. 获取当前机器的 device_id(联系陆份仪官方授权)
 lfy-cli status
 
-# 登录（由陆份仪官方授权后提供），仅需一次
+# 5. 登录（由陆份仪官方授权后提供），仅需一次
 lfy-cli login --user-key "your_user_key" --user-secret "your_user_secret"
 
-# 搜索客户
+# 6. 搜索客户
 lfy-cli customer search '{"keywords":"科技"}'
 ```
 

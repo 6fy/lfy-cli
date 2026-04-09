@@ -18,12 +18,13 @@ metadata:
 - `keywords` 为空时可能返回错误或不完整结果
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - 若搜索结果为空，告知用户未找到对应商机
+- `pipeline_id`、`stage_id` 等技术字段默认不展示
 
 ---
 
 ## 接口列表
 
-### search — 搜索商机
+### 搜索商机 (search)
 
 ```bash
 lfy-cli pipeline search '{"keywords": "<keywords>"}'
@@ -33,9 +34,7 @@ lfy-cli pipeline search '{"keywords": "<keywords>"}'
 
 参见 [API 详情](references/search.md)。
 
----
-
-### get_sales_stage — 获取商机阶段
+### 获取商机阶段 (get_sales_stage)
 
 ```bash
 lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
@@ -44,50 +43,6 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 根据 GTM ID 获取商机阶段列表，包括阶段名称、里程碑目标、价值主张等信息。
 
 参见 [API 详情](references/get_sales_stage.md)。
-
----
-
-## 返回格式
-
-### search 返回格式
-
-```json
-[
-  {
-    "pipeline_id": <pipeline_id>,
-    "pipeline_name": "<pipeline_name>"
-  }
-]
-```
-
-| 字段            | 类型    | 说明       |
-| --------------- | ------- | ---------- |
-| `pipeline_id`   | integer | 商机唯一 ID |
-| `pipeline_name` | string  | 商机名称    |
-
----
-
-### get_sales_stage 返回格式
-
-```json
-[
-  {
-    "stage_id": 123,
-    "stage_name": "0% 线索阶段",
-    "milestone_goal": "里程碑目标",
-    "value_proposition": "价值主张",
-    "suggested_stage_days": 14
-  }
-]
-```
-
-| 字段                   | 类型    | 说明           |
-| ---------------------- | ------- | -------------- |
-| `stage_id`             | integer | 阶段唯一 ID    |
-| `stage_name`           | string  | 阶段名称       |
-| `milestone_goal`       | string  | 里程碑目标     |
-| `value_proposition`    | string  | 价值主张       |
-| `suggested_stage_days` | integer | 建议阶段天数   |
 
 ---
 
@@ -105,39 +60,17 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 2. 调用 `search` 命令搜索商机
 3. 在结果中筛选 `pipeline_name` 包含关键字的商机
 4. 若找到唯一匹配，直接展示结果
-5. 若找到多个匹配，展示候选列表请用户确认
+5. 若找到多个匹配，最多展示前10个，并告知用户如果需要精准匹配请提供更具体的商机名称
 
 **展示结果：**
 
-找到商机时：
+📇 为您找到 1 个商机：<pipeline_name>
 
-📇 找到商机：
+找不到时：
 
-| 商机名称 |
-|----------|
-| <pipeline_name> |
-
-**字段映射**：
-
-| 原始字段 | 中文表头 | 备注 |
-|---------|---------|------|
-| pipeline_name | 商机名称 | 默认展示 |
-| pipeline_id | - | 技术字段，默认隐藏 |
-
-多个匹配时：
-
-🔍 找到多个匹配商机，请确认您要查询的是哪个：
-
-| 商机名称 |
-|----------|
-| <pipeline_name_1> |
-| <pipeline_name_2> |
-
-请问您要查询的是哪一个？
-
-未找到时：
-
-未找到包含"<keywords>"的商机，请尝试其他关键字。
+```
+没有匹配到包含"<keywords>"的商机，请尝试更具体的方式问我，比如："帮我搜索一下'科技'相关的商机"。
+```
 
 ### 获取商机阶段
 
@@ -158,13 +91,3 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 | 阶段名称 | 里程碑目标 | 价值主张 | 建议天数 |
 |----------|-----------|---------|---------|
 | <stage_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
-
-**字段映射**：
-
-| 原始字段 | 中文表头 | 备注 |
-|---------|---------|------|
-| stage_name | 阶段名称 | 默认展示 |
-| milestone_goal | 里程碑目标 | 默认展示 |
-| value_proposition | 价值主张 | 默认展示 |
-| suggested_stage_days | 建议天数 | 默认展示 |
-| stage_id | - | 技术字段，默认隐藏 |
