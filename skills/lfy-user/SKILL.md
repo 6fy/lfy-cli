@@ -17,7 +17,7 @@ metadata:
 
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - `get_sales` 返回的销售人员可能较多，可按团队筛选
-- `user_id`、`sales_id`、`team_id` 等技术字段默认不展示
+- `user_id`, `team_id`, `parent_id`, `sales_id`, `teams` 等技术字段默认不展示
 - 当前版本不支持对用户进行任何修改操作
 
 ---
@@ -84,10 +84,3 @@ lfy-cli user get_sales '{}'
 **销售一组**: 张三、李四、王五
 **销售二组**: 赵六、孙七、周八
 ```
-
-
-
-## 注意事项
-
-- `user_id`, `team_id`, `parent_id`, `sales_id`, `teams` 等技术字段默认不展示
-- 当前版本不支持对用户进行任何修改操作
