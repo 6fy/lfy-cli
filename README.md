@@ -1,4 +1,7 @@
-## lfy-cli
+# lfy-cli
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust](https://img.shields.io/badge/rust-%3E%3D1.75-orange.svg)](https://www.rust-lang.org/)
 
 
 ## 功能范围
@@ -33,7 +36,7 @@ npx skills add 6fy/lfy-cli -y -g
 # 获取当前机器的 device_id(联系陆份仪官方授权)
 lfy-cli status
 
-# 登录（由陆份仪官方授权后提供）
+# 登录（由陆份仪官方授权后提供），仅需一次
 lfy-cli login --user-key "your_user_key" --user-secret "your_user_secret"
 
 # 搜索客户
@@ -41,3 +44,11 @@ lfy-cli customer search '{"keywords":"科技"}'
 ```
 
 > 有关升级与卸载的详细说明，请参见 [升级与卸载.md](docs/升级与卸载.md)。
+
+## Agent Skills
+
+🤖 支持的 Skills 使用说明，请参阅 [Skills 文档](docs/skills.md)。
+
+## 许可证
+
+本项目基于 [MIT 许可证](./LICENSE) 开源。
