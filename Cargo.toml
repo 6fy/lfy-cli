@@ -1,6 +1,7 @@
 [package]
 name = "lfy-cli"
-version = "26.4.8"
+version = "0.11.0"
+release-date = "26.04.09"
 edition = "2021"
 
 # 开发阶段：减少噪声；后续可收紧或逐项修复

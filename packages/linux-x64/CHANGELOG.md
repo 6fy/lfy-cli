@@ -1,5 +1,11 @@
 # @6fy/cli-linux-x64
 
+## 0.11.0
+
+### Minor Changes
+
+- 对齐版本号
+
 ## 0.10.0
 
 ### Minor Changes
