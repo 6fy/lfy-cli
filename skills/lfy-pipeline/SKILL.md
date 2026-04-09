@@ -20,7 +20,7 @@ metadata:
 - 若搜索结果为空，告知用户未找到对应商机
 - `pipeline_id`、`stage_id` 等技术字段默认不展示
 - 当前版本不支持对商机进行任何修改操作
----
+- 访问商机详情页面：https://app.6fenyi.com/pipelines/{{pipeline_id}}
 
 ## 接口列表
 

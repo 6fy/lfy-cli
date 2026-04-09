@@ -20,6 +20,7 @@ metadata:
 - 任务按开始时间排序
 - `task_id`、`task_type`、`status_value` 等技术字段默认不展示
 - 当前版本不支持对日程任务进行任何修改操作
+- 访问日程任务页面：https://app.6fenyi.com/tasks/{{task_id}}
 
 ---
 

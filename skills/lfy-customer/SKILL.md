@@ -20,7 +20,7 @@ metadata:
 - 若搜索结果为空，告知用户未找到对应客户
 - `gtm_id`, `customer_id` 等技术字段默认不展示
 - 当前版本不支持对客户进行任何修改操作
----
+- 访问客户详情页面：https://app.6fenyi.com/customers/{{customer_id}}
 
 ## 接口列表
 
