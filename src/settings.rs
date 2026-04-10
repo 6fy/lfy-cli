@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::constants::{config_dir, env, DEFAULT_MCP_CONFIG_ENDPOINT};
+use crate::constants::{config_dir, env, DEFAULT_MCP_CONFIG_ENDPOINT, LOCAL_MCP_CONFIG_ENDPOINT};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
@@ -38,6 +38,8 @@ pub fn save_settings(settings: &Settings) -> anyhow::Result<()> {
 }
 
 /// 返回 MCP config endpoint，优先级：环境变量 LFY_SERVER_URL > 配置文件 > 默认值
+/// - debug 模式：默认值为本地地址 http://127.0.0.1:16000
+/// - release 模式：默认值为生产地址
 pub fn mcp_config_endpoint() -> String {
     // 1. 环境变量（最高优先）
     if let Ok(url) = std::env::var(env::MCP_CONFIG_ENDPOINT) {
@@ -54,6 +56,10 @@ pub fn mcp_config_endpoint() -> String {
         }
     }
 
-    // 3. 默认值
-    DEFAULT_MCP_CONFIG_ENDPOINT.to_string()
+    // 3. 默认值（debug 模式走本地，release 走生产）
+    if cfg!(debug_assertions) {
+        LOCAL_MCP_CONFIG_ENDPOINT.to_string()
+    } else {
+        DEFAULT_MCP_CONFIG_ENDPOINT.to_string()
+    }
 }

@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::Serialize;
 use serde_json::Value;
 
-use crate::mcp;
+use crate::{mcp, settings};
 
 #[derive(Debug, Clone, Serialize)]
 struct JsonRpcRequest {
@@ -19,7 +19,8 @@ pub async fn send(
     params: Option<Value>,
     timeout_ms: Option<i32>,
 ) -> Result<Value> {
-    let mcp_url = mcp::get_mcp_url(category).await?;
+    let base = settings::mcp_config_endpoint();
+    let mcp_url = format!("{}/{}", base.trim_end_matches('/'), category);
 
     let body = JsonRpcRequest {
         jsonrpc: "2.0",

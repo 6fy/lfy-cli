@@ -15,6 +15,8 @@ use anyhow::Result;
 use clap::Args;
 use clap::Command;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[tokio::main]
 async fn main() {
     if let Err(e) = run().await {
@@ -31,7 +33,7 @@ async fn run() -> Result<()> {
     let categories = config::get_categories();
 
     let mut cmd = Command::new(env!("CARGO_BIN_NAME"))
-        .version(env!("CARGO_PKG_VERSION"))
+        .version(VERSION)
         .about("陆份仪 LFY CLI")
         .subcommand_required(true)
         .arg_required_else_help(true)
