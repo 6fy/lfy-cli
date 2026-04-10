@@ -1,6 +1,6 @@
 {
   "name": "@6fy/cli",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "LFY CLI",
   "keywords": [
     "lfy-cli"
@@ -30,10 +30,10 @@
     "build:linux-x64": "bash scripts/build-linux-x64.sh"
   },
   "optionalDependencies": {
-    "@6fy/cli-darwin-arm64": "0.11.0",
-    "@6fy/cli-darwin-x64": "0.11.0",
-    "@6fy/cli-linux-x64": "0.11.0",
-    "@6fy/cli-win32-x64": "0.11.0"
+    "@6fy/cli-darwin-arm64": "0.12.0",
+    "@6fy/cli-darwin-x64": "0.12.0",
+    "@6fy/cli-linux-x64": "0.12.0",
+    "@6fy/cli-win32-x64": "0.12.0"
   },
   "engines": {
     "node": ">=22"

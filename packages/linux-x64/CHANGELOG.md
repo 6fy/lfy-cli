@@ -1,5 +1,11 @@
 # @6fy/cli-linux-x64
 
+## 0.12.0
+
+### Minor Changes
+
+- 优化服务地址识别
+
 ## 0.11.0
 
 ### Minor Changes
