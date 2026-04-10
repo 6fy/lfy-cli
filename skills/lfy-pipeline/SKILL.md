@@ -1,6 +1,7 @@
 ---
 name: lfy-pipeline
 description: 商机查询技能。适用于通过关键字搜索商机列表。当用户需要按关键字搜索商机时使用此技能。
+version: 1.0.0
 metadata:
   requires:
     bins: ["lfy-cli"]

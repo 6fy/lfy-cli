@@ -5,6 +5,14 @@
   "keywords": [
     "lfy-cli"
   ],
+  "homepage": "https://github.com/6fy/lfy-cli#readme",
+  "bugs": {
+    "url": "https://github.com/6fy/lfy-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/6fy/lfy-cli.git"
+  },
   "license": "MIT",
   "type": "module",
   "bin": {
