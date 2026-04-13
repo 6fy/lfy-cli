@@ -64,11 +64,12 @@ pub async fn handle_call_cmd(category_name: &str, matches: &ArgMatches) -> Resul
         format!("{}/{}", category_name, method)
     };
 
-    // Inject auth for customer/*, pipeline/*, user/* and ops/* tools.
+    // Inject auth for customer/*, pipeline/*, report/*, user/*, ops/* and schedule/* tools.
     // The server expects credentials under `arguments.auth`.
     let mut parsed_args = parsed_args;
     if (category_name == "customer" && full_method != "customer/is_available")
         || category_name == "pipeline"
+        || category_name == "report"
         || category_name == "user"
         || category_name == "ops"
         || category_name == "schedule"
