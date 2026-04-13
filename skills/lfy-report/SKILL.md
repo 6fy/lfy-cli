@@ -49,9 +49,9 @@ lfy-cli report sales_target '{"sales_id": 123}'
 
 **流程：**
 
-1. 确认（或解析）目标 `sales_id`（与当前登录用户可不同，须同组织内合法 ID）。
+1. 先确认销售人员的ID是否已知，已知的话直接进行第2步；否则先通过 `lfy-cli user get_sales '{}'` 获取销售人员名单，自动根据销售的名字匹配到对应的 sales_id，如果匹配到多个人名，需要让用户确认是哪个销售。
 2. 执行 `lfy-cli report sales_target '{"sales_id": <id>}'`。
-3. 若成功：结合返回中的 `year_target`、`quarterly`、`monthly` 与 `is_set` 向用户说明；未配置槽位 `is_set` 为 `false`。
+3. 若成功：结合返回中的 `year_target`、`quarterly`、`monthly` 与 `is_set` 向用户说明； `is_set` 为 `false` 时表示尚未配置该季度/月度的目标。
 4. 若失败：根据终端 `Error:` 或 JSON `error_message` 说明（例如暂未设置财年目标）。
 
 **展示结果（示例结构，非固定话术）：**
