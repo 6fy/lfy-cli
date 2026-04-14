@@ -1,5 +1,11 @@
 # @6fy/cli-win32-x64
 
+## 0.13.0
+
+### Minor Changes
+
+- 新增支持 report 品类
+
 ## 0.12.0
 
 ### Minor Changes

@@ -14,6 +14,9 @@ pub fn atomic_write(path: &Path, data: &[u8], mode: Option<u32>) -> Result<()> {
 
     let mut tmp = tempfile::NamedTempFile::new_in(parent)?;
 
+    #[cfg(not(unix))]
+    let _ = mode;
+
     #[cfg(unix)]
     if let Some(m) = mode {
         use std::os::unix::fs::PermissionsExt;
