@@ -1,6 +1,6 @@
 ---
 name: lfy-pipeline
-description: 商机查询技能。适用于通过关键字搜索商机列表。当用户需要按关键字搜索商机时使用此技能。
+description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置。当用户需要搜索商机、查看某条商机详情或阶段信息时使用此技能。
 version: 1.0.0
 metadata:
   requires:
@@ -44,6 +44,16 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 根据 GTM ID 获取商机阶段列表，包括阶段名称、里程碑目标、价值主张等信息。
 
 参见 [API 详情](references/get_sales_stage.md)。
+
+### 获取商机详情 (get_pipeline_info)
+
+```bash
+lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
+```
+
+根据商机 ID 获取详情（主档、推荐周期、当前阶段、商机侧与客户侧联系人等）。需具备商机模块 **detail** 权限且负责人在可见 `sales_ids` 范围内。
+
+参见 [API 详情](references/get_pipeline_info.md)。
 
 ---
 
@@ -92,3 +102,16 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 | 阶段名称 | 里程碑目标 | 价值主张 | 建议天数 |
 |----------|-----------|---------|---------|
 | <stage_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
+
+### 获取商机详情
+
+**经典 query 示例：**
+- "查一下商机 123 的详情"
+- "这个 pipeline 的联系人、阶段、预测金额是什么"
+
+**流程：**
+1. 若只有名称没有 ID，先用 `search` 得到 `pipeline_id`
+2. 调用 `get_pipeline_info`，传入 `pipeline_id`
+3. 将 `current_sales_stage`、`pipeline_contacts`、`customer_contacts` 等按用户问题整理展示；无阶段时说明 `current_sales_stage` 为空
+
+**错误时：** 根据返回的 `error_message` 原文告知用户（如「商机不存在」「您没有访问此商机的权限」）。
