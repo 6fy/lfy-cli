@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
 description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置。当用户需要搜索商机、查看某条商机详情或阶段信息时使用此技能。
-version: 1.0.0
+version: 1.0.1
 metadata:
   requires:
     bins: ["lfy-cli"]
