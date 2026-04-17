@@ -1,7 +1,7 @@
 ---
 name: lfy-report
-description: 报表查询技能。适用于通过 lfy-cli 的 report 品类读取陆份仪侧只读报表数据。当用户需要：(1) 查询指定销售人员当前财年的合同目标（年/季/月及是否已配置），(2) 后续在 report 下扩展的其他只读报表接口时使用此技能；具体命令与参数以本技能 references 为准。
-version: 1.0.2
+description: 报表查询技能。适用于通过 lfy-cli 的 report 品类读取陆份仪侧只读报表数据。当用户需要：(1) 查询指定销售人员当前财年的合同目标（年/季/月及是否已配置），(2) 查看当前财年销售大局观（实际/预测签单与商机池按日趋势），(3) 后续在 report 下扩展的其他只读报表接口时使用此技能；具体命令与参数以本技能 references 为准。
+version: 1.1.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -35,6 +35,16 @@ lfy-cli report sales_target '{"sales_id": 123}'
 
 参见 [API 详情](references/sales_target.md)。
 
+### 销售大局观 (get_sales_overall)
+
+```bash
+lfy-cli report get_sales_overall '{"gtm_id": 0, "sales_id": 0, "customer_ids": []}'
+```
+
+查询当前财年下的**实际签单**、**预测签单**、**商机池**三条按日时间序列；可按 GTM、销售、客户维度过滤（`0` / 空数组表示不过滤）。
+
+参见 [API 详情](references/get_sales_overall.md)。
+
 ---
 
 ## 典型工作流
@@ -65,3 +75,15 @@ lfy-cli report sales_target '{"sales_id": 123}'
 季度：Q1 … Q4（已配置项 is_set=true，未配置为 false）
 月度：M1 … M12（同上）
 ```
+
+### 分析销售大局观（结合目标）
+
+**适用场景：** 需要「签单实际 / 预测 + 商机池 + 销售目标」一起做管理视角分析。
+
+**流程：**
+
+1. 明确维度：全员 / 某 GTM / 某销售 / 某客户；在 `get_sales_overall` 中设置 `gtm_id`、`sales_id`、`customer_ids`（未用的维度保持 `0` 或 `[]`）。
+2. 执行 `lfy-cli report get_sales_overall '{...}'`，获取 `sum_actual`、`sum_forecast`、`total_opportunity`。
+3. 当 **`sales_id` 非 0** 时，建议再执行 `lfy-cli report sales_target '{"sales_id": <同一 sales_id>}'`，将年/季/月目标与大局观曲线对照（目标完成度、预测与目标的缺口、商机池变化等）。
+4. 当 **`sales_id` 为 0**（按 GTM、客户或全员看大盘）时，通常不调用 `sales_target`（目标接口面向单个销售），仅基于大局观数据解读即可。
+5. 任一步若出现 `Error:` 或 `error_message`，如实告知用户，勿编造数值。
