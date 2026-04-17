@@ -6,7 +6,7 @@
 
 - `sum_actual`：实际签单金额（仅返回 `amount > 0` 的日期）。
 - `sum_forecast`：预测签单金额（仅返回 `amount > 0` 的日期）。
-- `total_opportunity`：商机池快照（Elasticsearch `b_pl_analysis_log` 按日 `date_histogram`，`count` 为 bucket 的 `doc_count`，`total_amount` 为 `Forecast` 字段求和；ES 返回哪天则输出哪天）。
+- `total_opportunity`：商机池快照（Elasticsearch `b_pl_analysis_log` 按日聚合后，**仅当相对上一输出日的 `count` 或 `total_amount` 发生变化时才输出该日**，连日数值相同则合并省略，减少无效重复点）。
 
 财年起止由服务端根据 `b_o_money` 当前财年记录自动解析，调用方无需传财年。
 
@@ -59,6 +59,8 @@ lfy-cli report get_sales_overall '{"gtm_id": 1001, "sales_id": 0, "customer_ids"
 | `date` | string | `YYYY-MM-DD` |
 | `total_amount` | number | 当日 `Forecast` 求和 |
 | `count` | number | 当日命中文档数（`doc_count`） |
+
+**稀疏规则**：按日期升序遍历；第一条有效数据必输出；之后仅当 `(count, total_amount)` 与**上一条已输出**的取值不同时再输出（表示池子相对前一日发生了变化）。
 
 ## 错误示例
 
