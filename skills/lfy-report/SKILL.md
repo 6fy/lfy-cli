@@ -1,7 +1,7 @@
 ---
 name: lfy-report
 description: 报表查询技能。适用于通过 lfy-cli 的 report 品类读取陆份仪侧只读报表数据。当用户需要：(1) 查询指定销售人员当前财年的合同目标（年/季/月及是否已配置），(2) 查看当前财年销售大局观（实际/预测签单与商机池按日趋势），(3) 后续在 report 下扩展的其他只读报表接口时使用此技能；具体命令与参数以本技能 references 为准。
-version: 1.1.1
+version: 1.1.2
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -20,6 +20,9 @@ metadata:
 - 当前 **report** 品类下接口均为 **只读**，不支持通过本技能发起修改类操作。
 - `sales_id` 等同 org 内技术 ID，面向业务用户展示时可优先展示 `sales_name` 等业务字段。
 - 每新增一个 `report/<子命令>`，应在 `references/` 下增加对应文档，并在下方「接口列表」补充一节。
+- **`get_sales_overall` 稀疏含义**（向用户解释时不要猜数）：
+  - `sum_actual` / `sum_forecast` 为 **`[]`**：当前过滤下财年区间内该项**每天可视为 0**；若数组有数据但**缺某日**：该日**实际或预测签单金额为 0**（接口只返回 `amount > 0` 的日期）。
+  - `total_opportunity` **缺某日**：多为**相对上一日池子总量与条数未变**（变点压缩）；两日之间的未列出日期与**上一输出点**的 `count`、`total_amount` 含义一致，直至下一条变点。详见 [get_sales_overall 文档](references/get_sales_overall.md#稀疏返回怎么解读重要)。
 
 ---
 
@@ -83,7 +86,7 @@ lfy-cli report get_sales_overall '{"gtm_id": 0, "sales_id": 0, "customer_ids": [
 **流程：**
 
 1. 明确维度：全员 / 某 GTM / 某销售 / 某客户；在 `get_sales_overall` 中设置 `gtm_id`、`sales_id`、`customer_ids`（未用的维度保持 `0` 或 `[]`）。
-2. 执行 `lfy-cli report get_sales_overall '{...}'`，获取 `sum_actual`、`sum_forecast`、`total_opportunity`。
+2. 执行 `lfy-cli report get_sales_overall '{...}'`，获取 `sum_actual`、`sum_forecast`、`total_opportunity`。解读稀疏数组时遵守上文「稀疏含义」：`sum_*` 缺日/空数组表示 0；`total_opportunity` 缺日表示池子相对前一日未变（变点序列）。
 3. 当 **`sales_id` 非 0** 时，建议再执行 `lfy-cli report sales_target '{"sales_id": <同一 sales_id>}'`，将年/季/月目标与大局观曲线对照（目标完成度、预测与目标的缺口、商机池变化等）。
 4. 当 **`sales_id` 为 0**（按 GTM、客户或全员看大盘）时，通常不调用 `sales_target`（目标接口面向单个销售），仅基于大局观数据解读即可。
 5. 任一步若出现 `Error:` 或 `error_message`，如实告知用户，勿编造数值。
