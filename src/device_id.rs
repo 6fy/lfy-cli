@@ -47,8 +47,32 @@ fn get_device_id_uncached() -> Result<String> {
         Ok(id.to_string())
     }
 
-    // Windows / 其它
-    #[cfg(not(any(target_os = "macos", target_os = "linux")))]
+    // Windows：HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid
+    #[cfg(target_os = "windows")]
+    {
+        use winreg::enums::HKEY_LOCAL_MACHINE;
+        use winreg::RegKey;
+
+        let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
+        let key = hklm
+            .open_subkey("SOFTWARE\\Microsoft\\Cryptography")
+            .map_err(|e| anyhow::anyhow!("打开注册表 Cryptography 失败: {e}"))?;
+        let guid: String = key
+            .get_value("MachineGuid")
+            .map_err(|e| anyhow::anyhow!("读取 MachineGuid 失败: {e}"))?;
+        let id = guid.trim();
+        if id.is_empty() {
+            bail!("MachineGuid 为空，无法获取 device_id");
+        }
+        Ok(id.to_string())
+    }
+
+    // 其它平台
+    #[cfg(not(any(
+        target_os = "macos",
+        target_os = "linux",
+        target_os = "windows"
+    )))]
     {
         bail!("暂不支持获取 device_id（当前平台）");
     }

@@ -21,7 +21,7 @@ pub const DEFAULT_MCP_CONFIG_ENDPOINT: &str = "https://open-api.6fenyi.com/cli";
 pub const LOCAL_MCP_CONFIG_ENDPOINT: &str = "http://127.0.0.1:16000";
 
 /// CLI 发布日期
-pub const RELEASE_DATE: &str = "26.04.10";
+pub const RELEASE_DATE: &str = "26.04.17";
 
 /// 返回配置目录（环境变量覆盖或 `~/.config/lfy`）。
 pub fn config_dir() -> PathBuf {

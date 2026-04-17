@@ -1,6 +1,6 @@
 [package]
 name = "lfy-cli"
-version = "0.13.0"
+version = "0.14.0"
 edition = "2021"
 
 # 开发阶段：减少噪声；后续可收紧或逐项修复
@@ -30,4 +30,7 @@ tempfile = "3.27.0"
 cliclack = "0.5"
 reqwest = { version = "0.13.2", default-features = false, features = ["json", "rustls"] }
 hex = "0.4"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.52"
 

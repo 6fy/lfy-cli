@@ -1,5 +1,11 @@
 # @6fy/cli-darwin-x64
 
+## 0.14.0
+
+### Minor Changes
+
+- 支持windows平台
+
 ## 0.13.0
 
 ### Minor Changes
