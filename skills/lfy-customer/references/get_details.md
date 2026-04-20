@@ -37,6 +37,7 @@ lfy-cli customer get_details '{"customer_id": <customer_id>}'
 | `pipelines`                  | object  | 商机列表包装 |
 | `contacts`                   | array   | 联系人列表 |
 | `previous_followup_records`  | array   | 跟进记录列表 |
+| `schedule`                   | array   | 客户相关近期任务列表（过期30天~未来30天，最多50条） |
 
 ### pipelines 对象
 
@@ -63,6 +64,18 @@ lfy-cli customer get_details '{"customer_id": <customer_id>}'
 | `sales_name` | string | 销售名称 |
 | `content`    | string | 事件内容 |
 | `create_time`| string | 创建时间 `YYYY-MM-DD HH:mm` |
+
+### schedule 数组元素
+
+| 字段名       | 类型    | 说明 |
+| ------------ | ------- | ---- |
+| `task_id`    | integer | 任务 ID |
+| `task_no`    | string  | 任务编号 |
+| `task_name`  | string  | 任务名称 |
+| `task_status`| string  | 状态名（如 "待办"、"进行中"、"已完成"） |
+| `start_time` | string  | 开始时间 `YYYY-MM-DD HH:mm`；无值时为 `""` |
+| `due_time`   | string  | 截止时间 `YYYY-MM-DD HH:mm`；无值时为 `""` |
+| `owner_name` | string  | 负责人姓名 |
 
 ## 错误处理
 
