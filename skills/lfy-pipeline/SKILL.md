@@ -10,7 +10,7 @@ metadata:
 
 # 商机查询技能
 
-> `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
+> `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
 通过 `lfy-cli pipeline <接口名> ' '` 与商机系统交互。
 

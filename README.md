@@ -6,11 +6,11 @@
 
 ## 功能范围
 
-覆盖陆份仪核心业务品类：
+覆盖LFY核心业务品类：
 
 | 命令/品类  | 功能范围                              |
 | ---------- | ------------------------------------- |
-| `login`    | 登录陆份仪官方系统，完成账号绑定      |
+| `login`    | 登录LFY官方系统，完成账号绑定      |
 | `status`   | 查看状态                              |
 | `upgrade`  | 升级工具，为智能体扩展能力            |
 | `customer` | 客户 - 提供销售核心场景部分可用性查询 |
@@ -27,7 +27,7 @@
 ### 环境要求
 
 - Node.js >= 22 (`npm` / `npx`)
-- 陆份仪用户 Key / Secret（由陆份仪官方授权后提供）
+- LFY用户 Key / Secret（由LFY官方授权后提供）
 
 ### 安装 & 使用
 
@@ -41,10 +41,10 @@ npx skills add 6fy/lfy-cli -y -g
 # 3. 📌 国内用户安装 CLI Skill（可选）
 npx skills add https://gitee.com/lfy-team/lfy-cli.git -y -g
 
-# 4. 获取当前机器的 device_id(联系陆份仪官方授权)
+# 4. 获取当前机器的 device_id(联系LFY官方授权)
 lfy-cli status
 
-# 5. 登录（由陆份仪官方授权后提供），仅需一次
+# 5. 登录（由LFY官方授权后提供），仅需一次
 lfy-cli login --user-key "your_user_key" --user-secret "your_user_secret"
 
 # 6. 搜索客户

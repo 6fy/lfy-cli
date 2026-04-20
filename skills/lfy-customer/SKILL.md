@@ -10,9 +10,9 @@ metadata:
 
 # 客户查询技能
 
-> `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
+> `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
-通过 `lfy-cli customer <接口名> '<json入参>'` 与陆份仪平台的客户系统交互。
+通过 `lfy-cli customer <接口名> '<json入参>'` 与LFY平台的客户系统交互。
 
 ## 注意事项
 
