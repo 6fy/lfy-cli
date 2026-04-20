@@ -37,7 +37,7 @@ lfy-cli customer get_details '{"customer_id": <customer_id>}'
 | `pipelines`                  | object  | 商机列表包装 |
 | `contacts`                   | array   | 联系人列表 |
 | `previous_followup_records`  | array   | 跟进记录列表 |
-| `schedule`                   | array   | 客户相关近期任务列表（过期30天~未来30天，最多50条） |
+| `schedule`                   | array   | 客户相关近期任务列表（过期30天~未来30天，最多50条）；无数据时为 `[]` |
 
 ### pipelines 对象
 
