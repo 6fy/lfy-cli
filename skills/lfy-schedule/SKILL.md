@@ -1,7 +1,7 @@
 ---
 name: lfy-schedule
-description: 日程任务查询技能。适用于获取最近两周的日程和任务信息。当用户需要查看近期任务安排时使用此技能。
-version: 1.0.1
+description: 日程任务查询技能。适用于获取最近两周或本自然周的日程和任务信息。当用户需要查看近期或本周任务安排时使用此技能。
+version: 1.1.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -37,6 +37,16 @@ lfy-cli schedule get_recent_tasks '{}'
 
 参见 [API 详情](references/get_recent_tasks.md)。
 
+### 获取本自然周任务 (get_current_week)
+
+```bash
+lfy-cli schedule get_current_week '{"gtm_id":0,"sales_id":0,"customer_ids":[],"limit":50}'
+```
+
+查询本自然周（周一~周日，北京时区）的任务列表，支持按 GTM / 销售 / 客户过滤。`sales_id=0` 表示查**所有人**（不走权限表）。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`owners`、关联的客户和商机。
+
+参见 [API 详情](references/get_current_week.md)。
+
 ---
 
 ## 典型工作流
@@ -71,4 +81,37 @@ lfy-cli schedule get_recent_tasks '{}'
 
 ```
 目前您没有安排任何任务，您可以访问陆份仪平台创建自己未来3天的工作计划，或者让我来帮你梳理一下未来3天的工作计划？
+```
+
+### 查看本周任务
+
+**经典 query 示例：**
+- "本周有哪些任务？"
+- "这周我的工作安排"
+- "本周销售张三的任务"
+- "本周跟 XX 客户相关的任务"
+
+**流程：**
+1. 未指定销售时 `sales_id=0`（所有人）；指定某人时先用 `lfy-cli user get_sales` 找到 id
+2. 未指定客户时 `customer_ids=[]`；指定时先用 `lfy-cli customer search` 找到 id 列表
+3. 调用 `get_current_week`
+4. 若 `tasks` 为空，明确告知 "本周暂无任务"
+5. 按 `date_key` 分组展示（周一到周日），同一天内按 `due_time` 顺序展示
+6. 已完成（`status_value=30`）用 ✅；过期（`due_time < now` 且未完成）用 ❌ 提醒
+7. 有 `pipeline_name`/`customer_name` 的任务一并展示关联商机/客户
+
+**展示建议：**
+
+📅 本周任务（`<start_date>` ~ `<end_date>`，共 `<count>` 项）：
+
+**周一 `<YYYY-MM-DD>`**
+
+| 编号 | 任务 | 客户 | 商机 | 截止 | 负责人 | 状态 | 优先级 |
+|------|------|------|------|------|--------|------|--------|
+| #`<task_no>` | `<task_name>` | `<customer_name>` | `<pipeline_name>` | `<due_time>` | `<owner.name列表>` | `<status_name>` | `<priority_name>` |
+
+找不到时：
+
+```
+本周暂无任务。可以让我帮你规划一下本周的工作重点？
 ```
