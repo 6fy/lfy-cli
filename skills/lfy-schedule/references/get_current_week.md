@@ -39,6 +39,7 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_id":0,"customer_ids":[],"l
       "status_value": 20,
       "status_name": "进行中",
       "priority_name": "高",
+      "priority_color": "",
       "customer_id": 0,
       "customer_name": "",
       "pipeline_id": 0,
@@ -68,6 +69,7 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_id":0,"customer_ids":[],"l
 | `tasks[].status_value` | integer | `10` 待开始 / `20` 进行中 / `30` 已完成 |
 | `tasks[].status_name` | string | 状态中文名 |
 | `tasks[].priority_name` | string | 优先级中文名 |
+| `tasks[].priority_color` | string | 优先级颜色（库中 `b_sets_options.color` 原样；无优先级时为 `""`） |
 | `tasks[].customer_id` | integer | 客户 ID；未挂 0 |
 | `tasks[].customer_name` | string | 客户名；未挂 `""` |
 | `tasks[].pipeline_id` | integer | 商机 ID；未挂 0 |
