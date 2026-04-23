@@ -7,7 +7,7 @@
 ## 命令
 
 ```bash
-lfy-cli schedule get_current_week '{"gtm_id":0,"sales_id":0,"customer_ids":[],"limit":50}'
+lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'
 ```
 
 ## 参数
@@ -15,7 +15,7 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_id":0,"customer_ids":[],"l
 | 参数名         | 类型      | 必填 | 默认 | 说明 |
 | -------------- | --------- | ---- | ---- | ---- |
 | `gtm_id`       | integer   | 否   | 0    | 0=全部；>0 按 GTM 过滤（需任务挂在客户下） |
-| `sales_id`     | integer   | 否   | 0    | 0=查所有人（不走权限表）；>0 按负责人精确过滤 |
+| `sales_ids`    | integer[] | 否   | []   | 空数组=查所有人（不走权限表）；非空=`c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50 |
 | `customer_ids` | integer[] | 否   | []   | 空数组=不过滤；非空按客户 ID 精确过滤 |
 | `limit`        | integer   | 否   | 50   | <=0 取 50，>100 截为 100 |
 
@@ -96,7 +96,9 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_id":0,"customer_ids":[],"l
 
 ## 权限
 
-`sales_id=0` 时**完全不做负责人过滤**（返回全公司本周任务）；`sales_id=X(X>0)` 时按 `bp_task_collaborator.user_id = X AND user_type = 2` 精确匹配。不走 `per_user` 权限表。
+`sales_ids=[]` 时**完全不做负责人过滤**（返回全公司本周任务）；`sales_ids` 非空时按 `bp_task_collaborator.user_id IN (sales_ids) AND user_type = 2` 多人精确匹配。不走 `per_user` 权限表。
+
+服务端对 `sales_ids` 做如下整形：过滤 `<=0` 的元素、按首次出现保序去重、长度上限 50（超出截断）。如果调用方仍然传老字段 `sales_id`，服务端**静默忽略**，等价于 `sales_ids=[]`（全公司）。
 
 > `gtm_id>0` 或 `customer_ids` 非空时，由于 WHERE 引用 `cust_assoc`，**没挂客户的任务会被排除**。这是预期行为（"看某 gtm/某些客户下的任务"）。
 
