@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
-description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机。当用户需要搜索商机、查看某条商机详情、阶段信息或待签单列表时使用此技能。
-version: 1.2.0
+description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机（支持按 GTM / 销售 / 客户多维过滤）。当用户需要搜索商机、查看某条商机详情、阶段信息或待签单列表时使用此技能。
+version: 1.3.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -58,10 +58,16 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 ### 获取最近待签单商机 (get_pending_signature)
 
 ```bash
-lfy-cli pipeline get_pending_signature '{"stage": 0, "page_size": 10, "page": 1}'
+lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"stage":0,"page_size":10,"page":1}'
 ```
 
-查询当前销售名下、正在进行中的商机，按「距离签单近」的顺序排序。支持按阶段过滤（`stage=0` 表示全部）和分页。
+查询当前用户 **list 权限范围内** 所有进行中的商机，按「距离签单近」的顺序排序。支持：
+
+- `gtm_id`：按 GTM 业务线过滤（0=全部）
+- `sales_ids`：按销售人员过滤；`[]` 表示 list 权限全集，非空时会与白名单求交集，自动过滤超范围的 id，最多 50 个
+- `customer_ids`：按客户过滤；`[]` 表示不过滤
+- `stage`：阶段过滤（0=全部）
+- 分页：`page`/`page_size`
 
 参见 [API 详情](references/get_pending_signature.md)。
 
@@ -134,14 +140,20 @@ lfy-cli pipeline get_pending_signature '{"stage": 0, "page_size": 10, "page": 1}
 - "我最近有哪些待签单商机？"
 - "列一下 80% 阶段的商机"
 - "看一下我的下一批要签的单子"
+- "X 销售最近要签哪些单？"（主管视角）
+- "A 客户下有哪些要签的单？"
 
 **流程：**
 
-1. 若用户未指定阶段，`stage` 取 0（全部进行中）；若提及「XX 阶段/XX%」，将其映射为对应的 `logic_phase`（如 80、90）
-2. `page_size` 默认 10；`page` 默认 1
-3. 调用 `get_pending_signature`
-4. `total == 0` 或 `pipelines` 为空时，明确告知用户「暂无进行中的待签单商机」
-5. 展示每条的 `pipeline_name`、`customer_name`、`stage_name`（`stage_value`%）、`forecast_amount`（`forecast_set=false` 时标注「未填写预测金额」）、`stage_checklist` 进度
+1. 若未指定阶段，`stage` 取 0；若提及「XX 阶段/XX%」映射为对应 `logic_phase`（如 80、90）
+2. 若用户点名某销售（且在自己权限内），先通过 `lfy-user` 技能拿到销售 `user_id`，填入 `sales_ids`；未点名则保持 `[]`
+3. 若用户点名某客户，先通过 `lfy-customer` 技能拿到 `customer_id`，填入 `customer_ids`；未点名则 `[]`
+4. 若按业务线，填入 `gtm_id`（可通过 `lfy-customer` 技能获取 GTM 列表）
+5. `page_size` 默认 10；`page` 默认 1
+6. 调用 `get_pending_signature`
+7. `error_message == "您暂无权限"` → 告知用户无商机 list 权限
+8. `total == 0` 或 `pipelines` 为空 → 告知「暂无符合条件的进行中待签单商机」
+9. 展示每条的 `pipeline_name`、`customer_name`、`stage_name`（`stage_value`%）、`forecast_amount`（`forecast_set=false` 时标注「未填写预测金额」）、`stage_checklist` 进度
 
 **展示建议：**
 
