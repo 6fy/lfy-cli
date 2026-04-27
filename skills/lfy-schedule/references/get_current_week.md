@@ -2,7 +2,7 @@
 
 ## 接口说明
 
-查询本自然周（周一~周日，北京时区）的任务列表。主查询一次 SQL 拿任务主行，再按 `task_id` 批量查负责人，最终装配为带 `date_key` / `owners` 的结构。排序 `pd_date ASC, task_id ASC`。
+查询本自然周（周一~周日，北京时区）的任务列表。主查询一次 SQL 拿任务主行（含 `status_name` / `status_color` / `priority_color` 等），再按 `task_id` **批量**查负责人与任务标签，最终装配为带 `date_key` / `owners` / `tags` 的结构。排序 `pd_date ASC, task_id ASC`。
 
 ## 命令
 
@@ -38,13 +38,15 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],
       "due_time": "2024-03-05 18:00:00",
       "status_value": 20,
       "status_name": "进行中",
+      "status_color": "",
       "priority_name": "高",
       "priority_color": "",
       "customer_id": 0,
       "customer_name": "",
       "pipeline_id": 0,
       "pipeline_name": "",
-      "owners": [{"id": 1, "name": "张三"}]
+      "owners": [{"id": 1, "name": "张三"}],
+      "tags": [{"id": 1, "name": "标签1", "color": "#CCCCCC"}]
     }
   ]
 }
@@ -68,6 +70,7 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],
 | `tasks[].due_time` | string | `YYYY-MM-DD HH:mm:ss`，不会为 `""` |
 | `tasks[].status_value` | integer | `10` 待开始 / `20` 进行中 / `30` 已完成 |
 | `tasks[].status_name` | string | 状态中文名 |
+| `tasks[].status_color` | string | 任务状态颜色（状态项 `b_sets_options.color`；无或未配置时为 `""`） |
 | `tasks[].priority_name` | string | 优先级中文名 |
 | `tasks[].priority_color` | string | 优先级颜色（库中 `b_sets_options.color` 原样；无优先级时为 `""`） |
 | `tasks[].customer_id` | integer | 客户 ID；未挂 0 |
@@ -77,6 +80,10 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],
 | `tasks[].owners` | array | 负责人列表；无则 `[]` |
 | `tasks[].owners[].id` | integer | 用户 ID |
 | `tasks[].owners[].name` | string | 用户名 |
+| `tasks[].tags` | array | 任务标签（`b_tag_relationships` 等批量查询）；无则 `[]` |
+| `tasks[].tags[].id` | integer | 标签 ID |
+| `tasks[].tags[].name` | string | 标签名称 |
+| `tasks[].tags[].color` | string | 标签颜色（可为 `""`） |
 
 ## 任务类型 (task_type)
 

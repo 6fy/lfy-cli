@@ -1,7 +1,7 @@
 ---
 name: lfy-schedule
 description: 日程任务查询技能。适用于获取最近两周或本自然周的日程和任务信息。当用户需要查看近期或本周任务安排时使用此技能。
-version: 1.2.0
+version: 1.3.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -43,7 +43,7 @@ lfy-cli schedule get_recent_tasks '{}'
 lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'
 ```
 
-查询本自然周（周一~周日，北京时区）的任务列表，支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`owners`、关联的客户和商机。
+查询本自然周（周一~周日，北京时区）的任务列表，支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机。
 
 参见 [API 详情](references/get_current_week.md)。
 
