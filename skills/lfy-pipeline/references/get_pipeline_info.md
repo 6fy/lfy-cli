@@ -45,6 +45,8 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 | `milestone_goal`       | string  | 里程碑目标；无值时为 `""` |
 | `value_proposition`    | string  | 价值主张；无值时为 `""` |
 | `suggested_stage_days` | integer | 建议阶段天数 |
+| `type_value`           | integer | 阶段类型值：10 线索 / 20 机会 / 30 交付 / 40 回款；无类型配置时为 `0` |
+| `type_name`            | string  | 阶段类型名称；无类型配置时为 `""` |
 | `recommend_tasks`      | array   | 该商机已挂接的推荐任务；无则 `[]` |
 
 `recommend_tasks` 数组元素字段：

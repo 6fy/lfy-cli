@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
 description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机（支持按 GTM / 销售 / 客户多维过滤）。当用户需要搜索商机、查看某条商机详情、阶段信息或待签单列表时使用此技能。
-version: 1.3.0
+version: 1.4.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -115,9 +115,9 @@ lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids
 
 📋 商机阶段信息：
 
-| 阶段名称 | 里程碑目标 | 价值主张 | 建议天数 |
-|----------|-----------|---------|---------|
-| <stage_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
+| 阶段名称 | 阶段类型值 | 类型名称 | 里程碑目标 | 价值主张 | 建议天数 |
+|----------|------------|----------|-----------|---------|---------|
+| <stage_name> | <type_value>（10 线索 / 20 机会 / 30 交付 / 40 回款；无则为 0） | <type_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
 
 ### 获取商机详情
 
