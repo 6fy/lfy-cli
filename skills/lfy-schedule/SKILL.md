@@ -1,7 +1,7 @@
 ---
 name: lfy-schedule
-description: 日程任务查询技能。适用于获取最近两周或本自然周的日程和任务信息。当用户需要查看近期或本周任务安排时使用此技能。
-version: 1.3.0
+description: 日程任务查询技能。适用于获取最近两周或本自然周的日程和任务信息（不含周期/重复任务）。当用户需要查看近期或本周任务安排时使用此技能。
+version: 1.4.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -16,8 +16,9 @@ metadata:
 
 ## 注意事项
 
+- **不支持周期任务**：`get_recent_tasks` 与 `get_current_week` 仅面向**非周期性**日程任务；不查询、不展开、不展示重复/周期任务规则下的子任务序列；若用户问「每周例会」「循环任务」等，需说明本命令行能力不包含周期任务
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
-- 返回的时间范围为：今天 + 前7天 + 后7天，共15天
+- `get_recent_tasks` 返回的时间范围为：今天 + 前7天 + 后7天，共15天
 - 任务按开始时间排序
 - `task_id`、`task_type`、`status_value` 等技术字段默认不展示
 - 当前版本不支持对日程任务进行任何修改操作
@@ -33,17 +34,19 @@ metadata:
 lfy-cli schedule get_recent_tasks '{}'
 ```
 
-获取最近15天的日程和任务列表（今天 + 前7天 + 后7天）。
+- 无业务参数，请求体固定为 `{}`（`org_id` / `user_id` 由 lfy-cli-server 从登录态注入）
+- 获取最近15天的日程和任务列表（今天 + 前7天 + 后7天），**不含周期任务**（见上方注意事项）
 
 参见 [API 详情](references/get_recent_tasks.md)。
 
 ### 获取本自然周任务 (get_current_week)
 
 ```bash
-lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'
+lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit": 50}'
 ```
 
-查询本自然周（周一~周日，北京时区）的任务列表，支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机。
+- 查询本自然周（周一~周日，北京时区）的任务列表，**不含周期任务**（见上方注意事项）
+- 支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机
 
 参见 [API 详情](references/get_current_week.md)。
 

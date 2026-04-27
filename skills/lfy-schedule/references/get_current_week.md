@@ -4,10 +4,12 @@
 
 查询本自然周（周一~周日，北京时区）的任务列表。主查询一次 SQL 拿任务主行（含 `status_name` / `status_color` / `priority_color` 等），再按 `task_id` **批量**查负责人与任务标签，最终装配为带 `date_key` / `owners` / `tags` 的结构。排序 `pd_date ASC, task_id ASC`。
 
+**不支持周期任务**：与 `get_recent_tasks` 一致，仅非周期性任务；不处理周期/重复任务序列。
+
 ## 命令
 
 ```bash
-lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'
+lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit": 50}'
 ```
 
 ## 参数
