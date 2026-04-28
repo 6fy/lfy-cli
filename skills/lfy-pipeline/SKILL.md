@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
-description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置。当用户需要搜索商机、查看某条商机详情或阶段信息时使用此技能。
-version: 1.1.0
+description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机（支持按 GTM / 销售 / 客户多维过滤）。当用户需要搜索商机、查看某条商机详情、阶段信息或待签单列表时使用此技能。
+version: 1.4.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -55,6 +55,22 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 
 参见 [API 详情](references/get_pipeline_info.md)。
 
+### 获取最近待签单商机 (get_pending_signature)
+
+```bash
+lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"stage":0,"page_size":10,"page":1}'
+```
+
+查询当前用户 **list 权限范围内** 所有进行中的商机，按「距离签单近」的顺序排序。支持：
+
+- `gtm_id`：按 GTM 业务线过滤（0=全部）
+- `sales_ids`：按销售人员过滤；`[]` 表示 list 权限全集，非空时会与白名单求交集，自动过滤超范围的 id，最多 50 个
+- `customer_ids`：按客户过滤；`[]` 表示不过滤
+- `stage`：阶段过滤（0=全部）
+- 分页：`page`/`page_size`
+
+参见 [API 详情](references/get_pending_signature.md)。
+
 ---
 
 ## 典型工作流
@@ -99,9 +115,9 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 
 📋 商机阶段信息：
 
-| 阶段名称 | 里程碑目标 | 价值主张 | 建议天数 |
-|----------|-----------|---------|---------|
-| <stage_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
+| 阶段名称 | 阶段类型值 | 类型名称 | 里程碑目标 | 价值主张 | 建议天数 |
+|----------|------------|----------|-----------|---------|---------|
+| <stage_name> | <type_value>（10 线索 / 20 机会 / 30 交付 / 40 回款；无则为 0） | <type_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
 
 ### 获取商机详情
 
@@ -116,3 +132,33 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 3. 将 `current_sales_stage`、`sales_stages`、`schedule`、`pipeline_contacts`、`customer_contacts` 等按用户问题整理展示；无阶段时说明 `current_sales_stage` 为空；`sales_stages` / `schedule` 为 `[]` 时明确告知「该商机暂无阶段配置 / 暂无近期任务」
 
 **错误时：** 根据返回的 `error_message` 原文告知用户（如「商机不存在」「您没有访问此商机的权限」）。
+
+### 查看最近待签单商机
+
+**经典 query 示例：**
+
+- "我最近有哪些待签单商机？"
+- "列一下 80% 阶段的商机"
+- "看一下我的下一批要签的单子"
+- "X 销售最近要签哪些单？"（主管视角）
+- "A 客户下有哪些要签的单？"
+
+**流程：**
+
+1. 若未指定阶段，`stage` 取 0；若提及「XX 阶段/XX%」映射为对应 `logic_phase`（如 80、90）
+2. 若用户点名某销售（且在自己权限内），先通过 `lfy-user` 技能拿到销售 `user_id`，填入 `sales_ids`；未点名则保持 `[]`
+3. 若用户点名某客户，先通过 `lfy-customer` 技能拿到 `customer_id`，填入 `customer_ids`；未点名则 `[]`
+4. 若按业务线，填入 `gtm_id`（可通过 `lfy-customer` 技能获取 GTM 列表）
+5. `page_size` 默认 10；`page` 默认 1
+6. 调用 `get_pending_signature`
+7. `error_message == "您暂无权限"` → 告知用户无商机 list 权限
+8. `total == 0` 或 `pipelines` 为空 → 告知「暂无符合条件的进行中待签单商机」
+9. 展示每条的 `pipeline_name`、`customer_name`、`stage_name`（`stage_value`%）、`forecast_amount`（`forecast_set=false` 时标注「未填写预测金额」）、`stage_checklist` 进度
+
+**展示建议：**
+
+📌 最近待签单商机（共 total 条，当前第 page 页）：
+
+| 商机 | 客户 | 阶段 | 预测金额 | 行动清单 |
+|------|------|------|----------|----------|
+| pipeline_name | customer_name | stage_name (stage_value%) | forecast_amount | completed_count/total_count（completion_rate） |

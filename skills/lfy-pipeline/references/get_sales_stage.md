@@ -22,7 +22,9 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
     "stage_name": "0% 线索阶段",
     "milestone_goal": "里程碑目标",
     "value_proposition": "价值主张",
-    "suggested_stage_days": 14
+    "suggested_stage_days": 14,
+    "type_value": 10,
+    "type_name": "线索阶段"
   }
 ]
 ```
@@ -34,6 +36,8 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 | `milestone_goal`       | string  | 里程碑目标       |
 | `value_proposition`    | string  | 价值主张         |
 | `suggested_stage_days` | integer | 建议阶段天数     |
+| `type_value`           | integer | 阶段类型值：10 线索阶段，20 机会阶段，30 交付阶段，40 回款阶段；无类型配置时为 `0` |
+| `type_name`            | string  | 阶段类型名称；无类型配置时为 `""` |
 
 ## 错误处理
 
