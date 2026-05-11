@@ -1,7 +1,7 @@
 ---
 name: lfy-customer
-description: 客户查询技能。适用于通过关键字搜索客户列表、获取客户 GTMs 分类、获取客户详情等需求。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 业务线列表，(3) 获取客户详情时使用此技能。
-version: 1.1.0
+description: 客户查询与创建技能。适用于搜索客户、获取 GTM、客户详情、创建客户等。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 业务线列表，(3) 获取客户详情，(4) 创建新客户时使用此技能。
+version: 1.2.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -20,7 +20,7 @@ metadata:
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - 若搜索结果为空，告知用户未找到对应客户
 - `gtm_id`, `customer_id` 等技术字段默认不展示
-- 当前版本不支持对客户进行任何修改操作
+- **创建客户**需要 per_user 客户模块 **create** 场景权限；负责人默认本人，若指定 `sales_id` 须在 create 的 `sales_ids` 白名单内
 - 访问客户详情页面：https://app.6fenyi.com/customers/{{customer_id}}
 
 ## 接口列表
@@ -54,6 +54,14 @@ lfy-cli customer get_gtms '{}'
 获取所有 GTM 业务线列表。
 
 参见 [API 详情](references/get-gtms.md)。
+
+### 创建客户 (create_customer)
+
+```bash
+lfy-cli customer create_customer '{"gtm_id": 1, "customer_name": "名称", "sales_id": 0}'
+```
+
+参见 [API 详情](references/create_customer.md)。
 
 ---
 
