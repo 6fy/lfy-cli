@@ -1,14 +1,14 @@
 ---
 name: lfy-customer
-description: 客户查询与创建技能。适用于搜索客户、获取 GTM、客户详情、创建客户等。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 业务线列表，(3) 获取客户详情，(4) 创建新客户时使用此技能。
-version: 1.2.0
+description: 客户查询、创建与修改技能。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 列表，(3) 客户详情，(4) 创建客户，(5) 修改客户字段时使用此技能。
+version: 1.3.0
 metadata:
   requires:
     bins: ["lfy-cli"]
   cliHelp: "lfy-cli customer --help"
 ---
 
-# 客户查询技能
+# 客户技能
 
 > `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
@@ -21,6 +21,7 @@ metadata:
 - 若搜索结果为空，告知用户未找到对应客户
 - `gtm_id`, `customer_id` 等技术字段默认不展示
 - **创建客户**需要 per_user 客户模块 **create** 场景权限；负责人默认本人，若指定 `sales_id` 须在 create 的 `sales_ids` 白名单内
+- **修改客户**需要 **detail** 权限与销售范围（同 `get_details`）；成功 JSON 含 `code: 200`
 - 访问客户详情页面：https://app.6fenyi.com/customers/{{customer_id}}
 
 ## 接口列表
@@ -62,6 +63,14 @@ lfy-cli customer create_customer '{"gtm_id": 1, "customer_name": "名称", "sale
 ```
 
 参见 [API 详情](references/create_customer.md)。
+
+### 修改客户 (update_customer)
+
+```bash
+lfy-cli customer update_customer '{"customer_id": 123, "updates": {"customer_alias": "简称"}}'
+```
+
+参见 [API 详情](references/update_customer.md)。
 
 ---
 
