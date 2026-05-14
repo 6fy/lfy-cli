@@ -16,4 +16,6 @@ cargo run -- base get_options '{"object_id": 87357490413632, "property": "custom
 cargo run -- base get_options '{"object_id": 87357490413632, "property": "customer_region", "cli": true}'
 
 cargo run -- base get_options '{"object_id": 87357490413632, "property": "customer_industry", "cli": true}'
+
+cargo run -- pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":[],"sales_ids":[],"page_size":20,"page":1}'
 ```

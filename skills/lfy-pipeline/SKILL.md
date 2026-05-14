@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
-description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机（支持按 GTM / 销售 / 客户多维过滤）。当用户需要搜索商机、查看某条商机详情、阶段信息或待签单列表时使用此技能。
-version: 1.4.0
+description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机（支持按 GTM / 销售 / 客户多维过滤）、商机列表分页查询（支持按 GTM / 名称 / 状态 / 销售人员过滤）。当用户需要搜索商机、查看某条商机详情、阶段信息、待签单列表或浏览商机列表时使用此技能。
+version: 1.5.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -70,6 +70,16 @@ lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids
 - 分页：`page`/`page_size`
 
 参见 [API 详情](references/get_pending_signature.md)。
+
+### 商机列表 (get_list)
+
+```bash
+lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":[],"sales_ids":[],"page_size":20,"page":1}'
+```
+
+分页查询当前用户 list 权限范围内的商机，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应外层为 `{code, message, data:{name, total, pipelines}}`。
+
+参见 [API 详情](references/get_list.md)。
 
 ---
 
@@ -162,3 +172,30 @@ lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids
 | 商机 | 客户 | 阶段 | 预测金额 | 行动清单 |
 |------|------|------|----------|----------|
 | pipeline_name | customer_name | stage_name (stage_value%) | forecast_amount | completed_count/total_count（completion_rate） |
+
+### 查询商机列表
+
+**经典 query 示例：**
+
+- "看一下我的商机列表"
+- "搜一下名字带'科技'的商机，第 2 页"
+- "X 销售名下的商机有哪些？"
+- "状态为'进行中'的商机第一页"
+
+**流程：**
+
+1. 若用户限定 GTM / 销售 / 客户，先通过对应技能拿 ID；否则相关字段保持 `0` 或 `[]`
+2. `pipeline_name` trim 后空串则不传或传 `""`
+3. `page_size` 默认 20（与命令示例一致），`page` 从 1 开始
+4. 调用 `get_list`
+5. `error_message == "您暂无权限"` → 告知用户无 list 权限
+6. `data.total == 0` 或 `data.pipelines` 为空 → 告知「未匹配到商机」
+7. 展示每条的 `pipeline_name`、`customer_name`、`phase_name`（`phase_value%`）、`status_name`、`forecast`、`owner_name`、`last_interaction_time`、`tags`
+
+**展示建议：**
+
+📋 商机列表（共 total 条，当前第 page 页）：
+
+| 商机 | 客户 | 阶段 | 状态 | 预测金额 | 负责人 | 最近互动 |
+|------|------|------|------|----------|--------|---------|
+| pipeline_name | customer_name | phase_name (phase_value%) | status_name | forecast | owner_name | last_interaction_time |
