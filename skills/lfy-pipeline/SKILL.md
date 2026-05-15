@@ -1,18 +1,18 @@
 ---
 name: lfy-pipeline
-description: 商机查询技能。适用于按关键字搜索商机列表、按 pipeline_id 获取商机详情、按 gtm 拉取阶段配置、分页获取最近待签单商机（支持按 GTM / 销售 / 客户多维过滤）、商机列表分页查询（支持按 GTM / 名称 / 状态 / 销售人员过滤）。当用户需要搜索商机、查看某条商机详情、阶段信息、待签单列表或浏览商机列表时使用此技能。
-version: 1.5.0
+description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建一条商机时使用此技能。
+version: 1.6.0
 metadata:
   requires:
     bins: ["lfy-cli"]
   cliHelp: "lfy-cli pipeline --help"
 ---
 
-# 商机查询技能
+# 商机技能
 
 > `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
-通过 `lfy-cli pipeline <接口名> ' '` 与商机系统交互。
+通过 `lfy-cli pipeline <方法名> '<json>'` 与商机系统交互。
 
 ## 注意事项
 
@@ -20,7 +20,7 @@ metadata:
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - 若搜索结果为空，告知用户未找到对应商机
 - `pipeline_id`、`stage_id` 等技术字段默认不展示
-- 当前版本不支持对商机进行任何修改操作
+- **创建**：支持 `create`（需商机 create 权限与客户 sales 门禁）；其它编辑类操作仍不支持
 - 访问商机详情页面：https://app.6fenyi.com/pipelines/{{pipeline_id}}
 
 ## 接口列表
@@ -80,6 +80,16 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 分页查询当前用户 list 权限范围内的商机，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应外层为 `{code, message, data:{name, total, pipelines}}`。
 
 参见 [API 详情](references/get_list.md)。
+
+### 创建商机 (create)
+
+```bash
+lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"商机名称","customer_id":67,"phase_id":78,"sales_id":81,"forecast":9800,"forecast_date":"2026-07-12","tag_ids":[53]}'
+```
+
+在未掌握 `gtm_id`、`customer_id`、`phase_id` 等 ID 前，应先通过其它查询能力取得后再调用。
+
+参见 [API 详情](references/create.md)。
 
 ---
 
@@ -199,3 +209,17 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 | 商机 | 客户 | 阶段 | 状态 | 预测金额 | 负责人 | 最近互动 |
 |------|------|------|------|----------|--------|---------|
 | pipeline_name | customer_name | phase_name (phase_value%) | status_name | forecast | owner_name | last_interaction_time |
+
+### 创建商机
+
+**经典 query 示例：**
+
+- 「帮我新建一个商机，名称 XX，挂在客户 YY 名下」
+- 「创建一条商机，阶段是第一阶段」
+
+**流程：**
+
+1. 若缺失 `gtm_id`、`customer_id`、`phase_id` 等，先用客户/商机查询类能力取得 ID  
+2. 拼装 JSON，调用 `create`  
+3. `error_message`/CLI `Error` 中含「暂无权限」→ 说明无 create 或客户不在白名单  
+4. 成功后展示返回的 `pipeline_id`、`pipeline_name`、`created_time`
