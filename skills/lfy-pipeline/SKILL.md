@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
-description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建一条商机时使用此技能。
-version: 1.6.0
+description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建/修改一条商机时使用此技能。
+version: 1.7.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -20,7 +20,7 @@ metadata:
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - 若搜索结果为空，告知用户未找到对应商机
 - `pipeline_id`、`stage_id` 等技术字段默认不展示
-- **创建**：支持 `create`（需商机 create 权限与客户 sales 门禁）；其它编辑类操作仍不支持
+- **创建 / 修改**：`create` 需商机 create 权限；`update_pipeline` 需商机 detail 权限与 `sales_ids` 门禁；删除等其它操作仍不支持
 - 访问商机详情页面：https://app.6fenyi.com/pipelines/{{pipeline_id}}
 
 ## 接口列表
@@ -90,6 +90,16 @@ lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"商机名称","customer_i
 在未掌握 `gtm_id`、`customer_id`、`phase_id` 等 ID 前，应先通过其它查询能力取得后再调用。
 
 参见 [API 详情](references/create.md)。
+
+### 修改商机 (update_pipeline)
+
+```bash
+lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"新名称","forecast":98.5,"tags":"1,2"}}'
+```
+
+按需更新商机主档字段与标签（部分字段）。`updates` 仅出现的键会生效；ID 类字段（`phase`、`win_possibility`、`sales_id`、`delivery_status`、`revenue_status`）非法值自动跳过该项；`tags` 空串清空；日期字段空串清空。
+
+参见 [API 详情](references/update_pipeline.md)。
 
 ---
 
@@ -223,3 +233,21 @@ lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"商机名称","customer_i
 2. 拼装 JSON，调用 `create`  
 3. `error_message`/CLI `Error` 中含「暂无权限」→ 说明无 create 或客户不在白名单  
 4. 成功后展示返回的 `pipeline_id`、`pipeline_name`、`created_time`
+
+### 修改商机
+
+**经典 query 示例：**
+
+- 「把商机 123 的名字改成 XX」
+- 「这个商机阶段调到 80%」
+- 「调整这条商机的预测金额到 98000」
+- 「把这条商机的负责人改成销售 A」
+
+**流程：**
+
+1. 若用户只给了名称，先用 `search` 拿到 `pipeline_id`
+2. 若涉及阶段/可能性/状态等枚举 ID，先用 `lfy-cli pipeline get_sales_stage` 或 `lfy-cli base get_options` 拿到 ID（参见 update_pipeline.md 中的 property 列表）
+3. 若涉及负责人改派，用 `lfy-user get_sales` 拿 `user_id` 作为 `sales_id`
+4. 拼装 `updates` JSON，调用 `update_pipeline`
+5. `error_message`/CLI `Error` 含「您暂无权限」→ 说明无 detail 或 sales 不在白名单；含「商机不存在」→ 重新检查 `pipeline_id`
+6. 成功后展示 `pipeline_id` 与 `updated_time`，并对已修改字段做回显确认
