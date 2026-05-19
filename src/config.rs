@@ -38,5 +38,10 @@ pub fn get_categories() -> Vec<CategoryInfo> {
         description: "日程 - 提供日历中工作任务相关查询",
     });
 
+    categories.push(CategoryInfo {
+        name: "base",
+        description: "基础能力 - 客户编辑下拉选项等",
+    });
+
     categories
 }

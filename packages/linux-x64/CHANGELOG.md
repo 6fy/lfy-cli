@@ -1,5 +1,11 @@
 # @6fy/cli-linux-x64
 
+## 0.15.0
+
+### Minor Changes
+
+- 增加创建,编辑客户和商机等
+
 ## 0.14.0
 
 ### Minor Changes
