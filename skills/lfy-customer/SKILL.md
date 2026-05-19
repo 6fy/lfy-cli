@@ -1,7 +1,7 @@
 ---
 name: lfy-customer
-description: 客户查询、创建与修改技能。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 列表，(3) 客户详情，(4) 创建客户，(5) 修改客户字段时使用此技能。
-version: 1.3.1
+description: 客户查询、创建与修改技能。当用户需要：(1) 我的客户列表/清单（须用 get_list，勿用 search），(2) 按关键字搜索客户，(3) 获取 GTM 列表，(4) 客户详情，(5) 创建客户，(6) 修改客户字段时使用此技能。
+version: 1.6.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -24,6 +24,19 @@ metadata:
 - **修改客户**需要 **detail** 权限与销售范围（同 `get_details`）；成功 JSON 含 `code: 200`
 - 访问客户详情页面：https://app.6fenyi.com/customers/{{customer_id}}
 
+## search 与 get_list 如何选
+
+| 用户意图 | 使用接口 | 说明 |
+| -------- | -------- | ---- |
+| 我的客户列表 / 我的客户清单 / LFY 我的客户清单 | **`get_list`** | 无明确「搜索关键字」、要看权限内分页清单时**必须**走此接口 |
+| 列出/查看我负责的客户、全部客户一览 | **`get_list`** | `sales_ids` 默认 `[]` 即 list 权限范围 |
+| 名字带「XX」的客户（可带分页） | **`get_list`** | `customer_name` 填关键字 |
+| 按 GTM / 状态 / 某销售筛选客户 | **`get_list`** | 对应筛选参数 |
+| 按关键字快速找客户 ID（为详情/修改铺路） | **`search`** | 轻量模糊搜，结果少、无业务指标 |
+| 明确说「搜索」「找一下包含 XX」 | **`search`** | 用户强调搜索动作且无列表/清单语义时 |
+
+**禁止**：用户问「我的客户列表」「我的客户清单」「LFY 我的客户清单」等时调用 `search`。
+
 ## 接口列表
 
 ### 搜索客户 (search)
@@ -32,7 +45,7 @@ metadata:
 lfy-cli customer search '{"keywords": "<keywords>"}'
 ```
 
-按关键字搜索客户，支持模糊匹配。
+按关键字搜索客户，支持模糊匹配。**不用于**「我的客户列表/清单」类需求（见上文路由表，应使用 `get_list`）。
 
 参见 [API 详情](references/search.md)。
 
@@ -52,7 +65,7 @@ lfy-cli customer get_details '{"customer_id": 123}'
 lfy-cli customer get_gtms '{}'
 ```
 
-获取所有 GTM 业务线列表。
+获取所有 GTM 列表。
 
 参见 [API 详情](references/get-gtms.md)。
 
@@ -72,24 +85,44 @@ lfy-cli customer update_customer '{"customer_id": 123, "updates": {"customer_ali
 
 参见 [API 详情](references/update_customer.md)。
 
+### 客户列表 (get_list)
+
+```bash
+lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":[],"sales_ids":[],"page_size":20,"page":1}'
+```
+
+分页查询当前用户 list 权限范围内的客户，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应为 `{name, total, customers}`（lfy-cli-server 已剥离 `code`）。
+
+与 `search` 互补：`search` 用于轻量关键字搜 ID；`get_list` 用于带筛选、分页与业务指标的列表。
+
+**展示结果**：必须使用 [HTML 模板](templates/get_list.html) 生成客户清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](references/get_list_report.md)），不要在对话中贴大段 Markdown 表格。
+
+参见 [API 详情](references/get_list.md)。
+
 ---
 
 ## 典型工作流
 
 ### 搜索客户
 
+**适用条件：** 用户明确要**按关键字搜索**找客户，且**不是**要查看「我的客户列表/清单」。若用户要列表/清单，改走下方「查询客户列表」并使用 `get_list`。
+
 **经典 query 示例：**
 - "帮我搜索一下'科技'相关的客户"
 - "找一下包含'未来'的客户"
-- "搜索关键字为'成都'的客户有哪些？"
-- "我在北京的客户有哪些？"
+- "搜索关键字为'成都'的客户"
+
+**不适用（应走 `get_list`）：**
+- "我的客户列表" / "我的客户清单" / "LFY 我的客户清单"
+- "看一下我有哪些客户" / "列出我的客户"
 
 **流程：**
-1. 提取用户提供的关键字
-2. 调用 `search` 命令搜索客户
-3. 在结果中筛选 `customer_name` 包含关键字的客户
-4. 若找到唯一匹配，直接展示结果
-5. 若找到多个匹配，最多展示前10个，并告知用户如果需要精准匹配请提供更具体的客户名称
+1. 先判断：若属于列表/清单类意图 → **不要**调用 `search`，改走 `get_list` 工作流
+2. 提取用户提供的关键字
+3. 调用 `search` 命令搜索客户
+4. 在结果中筛选 `customer_name` 包含关键字的客户
+5. 若找到唯一匹配，直接展示结果
+6. 若找到多个匹配，最多展示前10个，并告知用户如果需要精准匹配请提供更具体的客户名称
 
 **展示结果：**
 
@@ -143,10 +176,41 @@ Error: 客户不存在
 ### 获取 GTM 列表
 
 **经典 query 示例：**
-- "GTM 业务线有哪些？"
-- "帮我查一下 GTM 分类列表"
+- "GTM 有哪些？"
+- "帮我查一下 GTM 列表"
 - "都有哪些 GTM？""
 
 **流程：**
 1. 调用 `get_gtms` 命令获取 GTM 列表
 2. 展示 GTM 列表供用户查看
+
+### 查询客户列表
+
+**适用条件：** 用户要查看**客户清单/列表**（含「我的」），或带筛选/分页的列表查询。**默认接口**，优先于 `search`。
+
+**经典 query 示例：**
+
+- "看一下我的客户列表"
+- "我的客户清单"
+- "LFY 我的客户清单"
+- "我有哪些客户"
+- "列出我负责的客户"
+- "搜一下名字带'科技'的客户，第 2 页"
+- "X 销售负责的客户有哪些？"
+- "状态为'意向'的客户第一页"
+
+**流程：**
+
+1. 确认意图为列表/清单（含上述示例）→ **必须**调用 `get_list`，**禁止**改用 `search`
+2. 若用户限定 GTM / 销售 / 状态，先通过对应技能拿 ID；否则相关字段保持 `0` 或 `[]`
+2. `customer_name` trim 后空串则不传或传 `""`
+3. `page_size` 默认 20，`page` 从 1 开始
+4. 调用 `get_list`
+5. 错误含「无权限」→ 告知用户无 list 权限
+6. `total == 0` 或 `customers` 为空 → 页眉注明「未匹配到客户」，`tbody` 可为空
+7. **按 HTML 模板输出**（必须执行）：
+   - 读取 `templates/get_list.html` 的版式与样式
+   - 用 `total`、`page`、`customers` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](references/get_list_report.md)）
+   - 写入临时 HTML 文件（如 `/tmp/lfy-customer-get_list-<时间戳>.html`）
+   - **用浏览器打开**：macOS 执行 `open "<绝对路径>"`；Linux 执行 `xdg-open "<绝对路径>"`
+8. 对话中仅简要说明：报告已在浏览器打开、共 total 条、当前第 page 页、文件路径；勿再贴 Markdown 大表

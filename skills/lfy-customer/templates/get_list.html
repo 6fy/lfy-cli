@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客户清单</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #F0F4F8; padding: 24px; }
+  .header { background: linear-gradient(135deg, #1F4E79, #2E75B6); color: white; padding: 24px 32px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(31,78,121,0.3); }
+  .header h1 { font-size: 24px; margin-bottom: 4px; }
+  .header p { font-size: 14px; opacity: 0.85; }
+  .summary { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+  .badge-blue { background: #D9E8F7; color: #1F4E79; }
+  .badge-green { background: #C6EFCE; color: #375623; }
+  .badge-gray { background: #E8E8E8; color: #333333; }
+  .table-wrap { overflow-x: auto; background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: #1F4E79; color: white; }
+  th { padding: 12px 10px; font-weight: 600; white-space: nowrap; position: sticky; top: 0; }
+  tbody tr { border-bottom: 1px solid #EEF2F7; transition: background 0.15s; }
+  tbody tr:hover { background: #F8FBFF; }
+  td { padding: 10px 10px; vertical-align: middle; }
+  .amount { font-variant-numeric: tabular-nums; text-align: right; }
+  .tag { display: inline-block; background: #E8F0FE; color: #1F4E79; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 1px; }
+  .status { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; line-height: 1.3; white-space: nowrap; }
+  .status-intent { background: #FFEB9C; color: #7D6608; }
+  .status-won { background: #C6EFCE; color: #375623; }
+  .status-silent { background: #E8E8E8; color: #333333; }
+  .status-other { background: #D9E8F7; color: #1F4E79; }
+  td.col-status { text-align: center; white-space: nowrap; }
+  .star { color: #F4B400; margin-right: 2px; }
+  .footer { margin-top: 16px; font-size: 12px; color: #666; text-align: right; }
+</style>
+</head>
+<body>
+<!-- 以下为示例数据；展示 get_list 真实结果时请按 references/get_list_report.md 替换 -->
+<div class="header">
+  <h1>👥 客户清单</h1>
+  <p>共 3 条（第 1 页）&nbsp;|&nbsp; 系统总计 21 条</p>
+  <div class="summary">
+    <span class="badge badge-blue">意向 1</span>
+    <span class="badge badge-green">成交 1</span>
+    <span class="badge badge-gray">其它 1</span>
+  </div>
+</div>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>客户名称</th>
+      <th>别名</th>
+      <th>状态</th>
+      <th>负责人</th>
+      <th>GTM</th>
+      <th>年采购额</th>
+      <th>机会金额</th>
+      <th>商机数</th>
+      <th>区域</th>
+      <th>行业</th>
+      <th>最近互动</th>
+      <th>标签</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:center">1</td>
+      <td><span class="star">★</span><strong>示例客户甲</strong></td>
+      <td>客甲</td>
+      <td class="col-status"><span class="status status-intent">意向</span></td>
+      <td>销售A</td>
+      <td>示例 GTM</td>
+      <td class="amount">1,000,000</td>
+      <td class="amount">500,000</td>
+      <td style="text-align:center">3</td>
+      <td>华东</td>
+      <td>互联网</td>
+      <td>2026-05-10</td>
+      <td><span class="tag">重点</span></td>
+    </tr>
+    <tr>
+      <td style="text-align:center">2</td>
+      <td><strong>示例客户乙</strong></td>
+      <td></td>
+      <td class="col-status"><span class="status status-won">成交</span></td>
+      <td>销售B</td>
+      <td>TOB</td>
+      <td class="amount">800,000</td>
+      <td class="amount">120,000</td>
+      <td style="text-align:center">1</td>
+      <td>华北</td>
+      <td>制造业</td>
+      <td>2026-04-15</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td style="text-align:center">3</td>
+      <td><strong>示例客户丙</strong></td>
+      <td>客丙</td>
+      <td class="col-status"><span class="status status-silent">沉默</span></td>
+      <td>销售B</td>
+      <td>L2C全流程</td>
+      <td class="amount">—</td>
+      <td class="amount">0</td>
+      <td style="text-align:center">0</td>
+      <td>华南</td>
+      <td>零售</td>
+      <td>—</td>
+      <td><span class="tag">新客户</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p class="footer">生成时间：2026-05-19 12:00:00 · 第 1 页</p>
+</body>
+</html>

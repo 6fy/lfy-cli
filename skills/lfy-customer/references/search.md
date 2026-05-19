@@ -2,6 +2,8 @@
 
 按关键字搜索客户列表，支持模糊匹配。
 
+**不适用**：「我的客户列表」「我的客户清单」「LFY 我的客户清单」等列表/清单类需求 → 使用 `get_list`（参见 `get_list.md` 与 SKILL.md 路由表）。
+
 ## 命令格式
 
 ```bash
@@ -37,7 +39,7 @@ lfy-cli customer search '{"keywords": "<keywords>"}'
 | -------------- | ------- | ------------------------- |
 | `customer_id`  | integer | 客户唯一 ID               |
 | `customer_name` | string  | 客户名称                  |
-| `gtm_id`       | integer | GTM 分类 ID（业务线标识） |
+| `gtm_id`       | integer | GTM ID |
 
 ## 筛选策略
 

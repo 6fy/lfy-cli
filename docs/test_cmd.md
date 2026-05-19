@@ -6,6 +6,12 @@ cargo run -- customer update_customer '{"customer_id": 87357490413632, "updates"
 
 ```
 
+## 1.7 客户列表
+
+```bash
+cargo run -- customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":[],"sales_ids":[],"page_size":20,"page":1}'
+```
+
 ## 10.2 测试获取下拉数据命令
 
 ```bash
