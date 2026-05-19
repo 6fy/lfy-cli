@@ -1,7 +1,7 @@
 ---
 name: lfy-customer
 description: 客户查询、创建与修改技能。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 列表，(3) 客户详情，(4) 创建客户，(5) 修改客户字段时使用此技能。
-version: 1.3.0
+version: 1.3.1
 metadata:
   requires:
     bins: ["lfy-cli"]

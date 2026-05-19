@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
 description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建/修改一条商机时使用此技能。
-version: 1.7.0
+version: 1.7.1
 metadata:
   requires:
     bins: ["lfy-cli"]

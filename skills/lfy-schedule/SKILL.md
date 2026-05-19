@@ -1,7 +1,7 @@
 ---
 name: lfy-schedule
 description: 日程任务查询技能。适用于获取最近两周或本自然周的日程和任务信息（不含周期/重复任务）。当用户需要查看近期或本周任务安排时使用此技能。
-version: 1.4.0
+version: 1.4.1
 metadata:
   requires:
     bins: ["lfy-cli"]
