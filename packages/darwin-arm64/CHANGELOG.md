@@ -1,5 +1,17 @@
 # @6fy/cli-darwin-arm64
 
+## 0.16.0
+
+### Minor Changes
+
+- 纠正版本号
+
+## 0.15.0
+
+### Minor Changes
+
+- 增加创建,编辑客户和商机等
+
 ## 0.14.0
 
 ### Minor Changes
