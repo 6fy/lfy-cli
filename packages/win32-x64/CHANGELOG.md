@@ -1,5 +1,11 @@
 # @6fy/cli-win32-x64
 
+## 0.16.0
+
+### Minor Changes
+
+- 纠正版本号
+
 ## 0.15.0
 
 ### Minor Changes
