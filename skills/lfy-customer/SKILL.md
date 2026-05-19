@@ -1,7 +1,7 @@
 ---
 name: lfy-customer
 description: 客户查询、创建与修改技能。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 列表，(3) 客户详情，(4) 创建客户，(5) 修改客户字段，(6) 客户列表分页查询时使用此技能。
-version: 1.4.0
+version: 1.5.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -81,6 +81,8 @@ lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":
 分页查询当前用户 list 权限范围内的客户，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应为 `{name, total, customers}`（lfy-cli-server 已剥离 `code`）。
 
 与 `search` 互补：`search` 用于轻量关键字搜 ID；`get_list` 用于带筛选、分页与业务指标的列表。
+
+**展示结果**：必须使用 [HTML 模板](templates/get_list.html) 生成客户清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](references/get_list_report.md)），不要在对话中贴大段 Markdown 表格。
 
 参见 [API 详情](references/get_list.md)。
 
@@ -179,13 +181,10 @@ Error: 客户不存在
 3. `page_size` 默认 20，`page` 从 1 开始
 4. 调用 `get_list`
 5. 错误含「无权限」→ 告知用户无 list 权限
-6. `total == 0` 或 `customers` 为空 → 告知「未匹配到客户」
-7. 展示每条的 `customer_name`、`customer_status`、`sales_owner`、`gtm_name`、`annual_procurement_amount`、`pipeline_amount`、`last_interaction_time`、`tags`
-
-**展示建议：**
-
-👥 客户列表（共 total 条，当前第 page 页）：
-
-| 客户 | 状态 | 负责人 | GTM | 年采购额 | 机会金额 | 最近互动 |
-|------|------|--------|-----|----------|----------|----------|
-| customer_name | customer_status | sales_owner | gtm_name | annual_procurement_amount | pipeline_amount | last_interaction_time |
+6. `total == 0` 或 `customers` 为空 → 页眉注明「未匹配到客户」，`tbody` 可为空
+7. **按 HTML 模板输出**（必须执行）：
+   - 读取 `templates/get_list.html` 的版式与样式
+   - 用 `total`、`page`、`customers` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](references/get_list_report.md)）
+   - 写入临时 HTML 文件（如 `/tmp/lfy-customer-get_list-<时间戳>.html`）
+   - **用浏览器打开**：macOS 执行 `open "<绝对路径>"`；Linux 执行 `xdg-open "<绝对路径>"`
+8. 对话中仅简要说明：报告已在浏览器打开、共 total 条、当前第 page 页、文件路径；勿再贴 Markdown 大表

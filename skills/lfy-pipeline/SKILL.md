@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
 description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建/修改一条商机时使用此技能。
-version: 1.7.1
+version: 1.8.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -78,6 +78,8 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 ```
 
 分页查询当前用户 list 权限范围内的商机，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应外层为 `{code, message, data:{name, total, pipelines}}`。
+
+**展示结果**：必须使用 [HTML 模板](templates/get_list.html) 生成商机清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](references/get_list_report.md)），不要在对话中贴大段 Markdown 表格。
 
 参见 [API 详情](references/get_list.md)。
 
@@ -209,16 +211,13 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 3. `page_size` 默认 20（与命令示例一致），`page` 从 1 开始
 4. 调用 `get_list`
 5. `error_message == "您暂无权限"` → 告知用户无 list 权限
-6. `data.total == 0` 或 `data.pipelines` 为空 → 告知「未匹配到商机」
-7. 展示每条的 `pipeline_name`、`customer_name`、`phase_name`（`phase_value%`）、`status_name`、`forecast`、`owner_name`、`last_interaction_time`、`tags`
-
-**展示建议：**
-
-📋 商机列表（共 total 条，当前第 page 页）：
-
-| 商机 | 客户 | 阶段 | 状态 | 预测金额 | 负责人 | 最近互动 |
-|------|------|------|------|----------|--------|---------|
-| pipeline_name | customer_name | phase_name (phase_value%) | status_name | forecast | owner_name | last_interaction_time |
+6. `data.total == 0` 或 `data.pipelines` 为空 → 页眉注明「未匹配到商机」，`tbody` 可为空
+7. **按 HTML 模板输出**（必须执行）：
+   - 读取 `templates/get_list.html` 的版式与样式
+   - 用 `data.total`、`page`、`pipelines` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](references/get_list_report.md)）
+   - 写入临时 HTML 文件（如 `/tmp/lfy-pipeline-get_list-<时间戳>.html`）
+   - **用浏览器打开**：macOS 执行 `open "<绝对路径>"`；Linux 执行 `xdg-open "<绝对路径>"`
+8. 对话中仅简要说明：报告已在浏览器打开、共 total 条、当前第 page 页、文件路径；勿再贴 Markdown 大表
 
 ### 创建商机
 
