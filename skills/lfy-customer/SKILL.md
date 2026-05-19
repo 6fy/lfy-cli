@@ -1,7 +1,7 @@
 ---
 name: lfy-customer
-description: 客户查询、创建与修改技能。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 列表，(3) 客户详情，(4) 创建客户，(5) 修改客户字段时使用此技能。
-version: 1.3.0
+description: 客户查询、创建与修改技能。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 列表，(3) 客户详情，(4) 创建客户，(5) 修改客户字段，(6) 客户列表分页查询时使用此技能。
+version: 1.4.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -71,6 +71,18 @@ lfy-cli customer update_customer '{"customer_id": 123, "updates": {"customer_ali
 ```
 
 参见 [API 详情](references/update_customer.md)。
+
+### 客户列表 (get_list)
+
+```bash
+lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":[],"sales_ids":[],"page_size":20,"page":1}'
+```
+
+分页查询当前用户 list 权限范围内的客户，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应为 `{name, total, customers}`（lfy-cli-server 已剥离 `code`）。
+
+与 `search` 互补：`search` 用于轻量关键字搜 ID；`get_list` 用于带筛选、分页与业务指标的列表。
+
+参见 [API 详情](references/get_list.md)。
 
 ---
 
@@ -150,3 +162,30 @@ Error: 客户不存在
 **流程：**
 1. 调用 `get_gtms` 命令获取 GTM 列表
 2. 展示 GTM 列表供用户查看
+
+### 查询客户列表
+
+**经典 query 示例：**
+
+- "看一下我的客户列表"
+- "搜一下名字带'科技'的客户，第 2 页"
+- "X 销售负责的客户有哪些？"
+- "状态为'意向'的客户第一页"
+
+**流程：**
+
+1. 若用户限定 GTM / 销售 / 状态，先通过对应技能拿 ID；否则相关字段保持 `0` 或 `[]`
+2. `customer_name` trim 后空串则不传或传 `""`
+3. `page_size` 默认 20，`page` 从 1 开始
+4. 调用 `get_list`
+5. 错误含「无权限」→ 告知用户无 list 权限
+6. `total == 0` 或 `customers` 为空 → 告知「未匹配到客户」
+7. 展示每条的 `customer_name`、`customer_status`、`sales_owner`、`gtm_name`、`annual_procurement_amount`、`pipeline_amount`、`last_interaction_time`、`tags`
+
+**展示建议：**
+
+👥 客户列表（共 total 条，当前第 page 页）：
+
+| 客户 | 状态 | 负责人 | GTM | 年采购额 | 机会金额 | 最近互动 |
+|------|------|--------|-----|----------|----------|----------|
+| customer_name | customer_status | sales_owner | gtm_name | annual_procurement_amount | pipeline_amount | last_interaction_time |
