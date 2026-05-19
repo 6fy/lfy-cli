@@ -10,9 +10,9 @@ metadata:
 
 # 客户技能
 
-> `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
+> `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
-通过 `lfy-cli customer <接口名> '<json入参>'` 与陆份仪平台的客户系统交互。
+通过 `lfy-cli customer <接口名> '<json入参>'` 与LFY平台的客户系统交互。
 
 ## 注意事项
 
@@ -52,7 +52,7 @@ lfy-cli customer get_details '{"customer_id": 123}'
 lfy-cli customer get_gtms '{}'
 ```
 
-获取所有 GTM 业务线列表。
+获取所有 GTM 列表。
 
 参见 [API 详情](references/get-gtms.md)。
 
@@ -157,8 +157,8 @@ Error: 客户不存在
 ### 获取 GTM 列表
 
 **经典 query 示例：**
-- "GTM 业务线有哪些？"
-- "帮我查一下 GTM 分类列表"
+- "GTM 有哪些？"
+- "帮我查一下 GTM 列表"
 - "都有哪些 GTM？""
 
 **流程：**

@@ -10,7 +10,7 @@ metadata:
 
 # 商机技能
 
-> `lfy-cli` 是陆份仪提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
+> `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
 通过 `lfy-cli pipeline <方法名> '<json>'` 与商机系统交互。
 
@@ -63,7 +63,7 @@ lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids
 
 查询当前用户 **list 权限范围内** 所有进行中的商机，按「距离签单近」的顺序排序。支持：
 
-- `gtm_id`：按 GTM 业务线过滤（0=全部）
+- `gtm_id`：按 GTM 过滤（0=全部）
 - `sales_ids`：按销售人员过滤；`[]` 表示 list 权限全集，非空时会与白名单求交集，自动过滤超范围的 id，最多 50 个
 - `customer_ids`：按客户过滤；`[]` 表示不过滤
 - `stage`：阶段过滤（0=全部）
@@ -147,8 +147,8 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 
 📋 商机阶段信息：
 
-| 阶段名称 | 阶段类型值 | 类型名称 | 里程碑目标 | 价值主张 | 建议天数 |
-|----------|------------|----------|-----------|---------|---------|
+| 阶段名称     | 阶段类型值                                                      | 类型名称    | 里程碑目标       | 价值主张            | 建议天数                 |
+| ------------ | --------------------------------------------------------------- | ----------- | ---------------- | ------------------- | ------------------------ |
 | <stage_name> | <type_value>（10 线索 / 20 机会 / 30 交付 / 40 回款；无则为 0） | <type_name> | <milestone_goal> | <value_proposition> | <suggested_stage_days>天 |
 
 ### 获取商机详情
@@ -180,7 +180,7 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 1. 若未指定阶段，`stage` 取 0；若提及「XX 阶段/XX%」映射为对应 `logic_phase`（如 80、90）
 2. 若用户点名某销售（且在自己权限内），先通过 `lfy-user` 技能拿到销售 `user_id`，填入 `sales_ids`；未点名则保持 `[]`
 3. 若用户点名某客户，先通过 `lfy-customer` 技能拿到 `customer_id`，填入 `customer_ids`；未点名则 `[]`
-4. 若按业务线，填入 `gtm_id`（可通过 `lfy-customer` 技能获取 GTM 列表）
+4. 若按 GTM，填入 `gtm_id`（可通过 `lfy-customer` 技能获取 GTM 列表）
 5. `page_size` 默认 10；`page` 默认 1
 6. 调用 `get_pending_signature`
 7. `error_message == "您暂无权限"` → 告知用户无商机 list 权限
@@ -191,8 +191,8 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 
 📌 最近待签单商机（共 total 条，当前第 page 页）：
 
-| 商机 | 客户 | 阶段 | 预测金额 | 行动清单 |
-|------|------|------|----------|----------|
+| 商机          | 客户          | 阶段                      | 预测金额        | 行动清单                                       |
+| ------------- | ------------- | ------------------------- | --------------- | ---------------------------------------------- |
 | pipeline_name | customer_name | stage_name (stage_value%) | forecast_amount | completed_count/total_count（completion_rate） |
 
 ### 查询商机列表

@@ -37,7 +37,7 @@ lfy-cli customer search '{"keywords": "<keywords>"}'
 | -------------- | ------- | ------------------------- |
 | `customer_id`  | integer | 客户唯一 ID               |
 | `customer_name` | string  | 客户名称                  |
-| `gtm_id`       | integer | GTM 分类 ID（业务线标识） |
+| `gtm_id`       | integer | GTM ID |
 
 ## 筛选策略
 

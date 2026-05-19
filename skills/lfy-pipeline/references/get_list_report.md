@@ -49,7 +49,7 @@ xdg-open "/tmp/lfy-pipeline-get_list-20260519120000.html"
 | 商机名称 | `pipeline_name` | 包在 `<strong>` 内 |
 | 客户名称 | `customer_name` | 空则留空 |
 | 客户简称 | `customer_alias` | |
-| 业务线 | `gtm_name` | |
+| GTM | `gtm_name` | |
 | 阶段 | `phase_name` | |
 | 阶段% | `phase_value` | 格式 `{value}%` |
 | 状态 | `status_name` | 见下方样式 |

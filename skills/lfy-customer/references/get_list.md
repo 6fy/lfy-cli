@@ -10,7 +10,7 @@ lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":
 
 | 参数名 | 类型 | 必填 | 默认 | 说明 |
 | ------ | ---- | ---- | ---- | ---- |
-| `gtm_id` | integer | 否 | 0 | GTM 业务线 ID；`0`=全部；>0 过滤 `c.gtm_id` |
+| `gtm_id` | integer | 否 | 0 | GTM ID；`0`=全部；>0 过滤 `c.gtm_id` |
 | `customer_name` | string | 否 | "" | 客户名称模糊搜索（ILIKE 不区分大小写）；空串不加条件 |
 | `customer_status_ids` | integer[] | 否 | `[]` | 客户状态 ID 列表；`[]`=不过滤；非空 `c.status_id = ANY` |
 | `sales_ids` | integer[] | 否 | `[]` | 销售 ID 列表；`[]`=使用当前用户 list 权限白名单；非空=与白名单求交集 |
