@@ -102,8 +102,11 @@ lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":
 
 | 场景 | 命令 |
 |------|------|
-| 按关键字快速找客户 ID | `customer search` |
-| 带筛选/分页/业务指标的客户列表 | `customer get_list` |
+| 我的客户列表 / 我的客户清单 / LFY 我的客户清单 | **`customer get_list`**（禁止用 search） |
+| 列出我负责的客户、查看客户一览 | **`customer get_list`** |
+| 名字带关键字且要分页/指标 | **`customer get_list`**（`customer_name` 筛选） |
+| 按关键字快速找客户 ID（为详情/修改） | `customer search` |
+| 用户明确说「搜索」「找包含 XX」且无清单语义 | `customer search` |
 
 ## 权限
 
