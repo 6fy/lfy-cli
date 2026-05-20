@@ -23,14 +23,15 @@ lfy-cli pipeline update_pipeline '{"pipeline_id": 111, "updates": {}}'
 |----|------|------|
 | `projectname` | string | trim 后非空，≤50 字符（Unicode） |
 | `forecast` | number | ≥0，最多两位小数 |
+| `actual` | number |实际签单金额， 合法数字即可，最多两位小数（可为 0 或负数） |
 | `forecast_date` | string | `YYYY-MM-DD`；**空字符串 `""` 表示清空** |
 | `forecast_start_date` | string | `YYYY-MM-DD`；空字符串清空 |
-| `phase` | int | >0；选项见 `lfy-cli pipeline get_sales_stage`。**≤0 或非整数自动跳过该项** |
-| `win_possibility` | int | >0；选项见 `lfy-cli base get_options`（`property=pipeline_win_possibility`）。**非法跳过** |
-| `sales_id` | int | >0。**非法跳过** |
-| `delivery_status` | int | >0；选项见 `property=pipeline_delivery_status`。**非法跳过** |
-| `revenue_status` | int | >0；选项见 `property=pipeline_revenue_status`。**非法跳过** |
-| `tags` | string | 逗号分隔标签 **taxonomy id**；**空字符串清空**；选项见 `property=pipeline_tags` |
+| `phase` | int | >0；选项见 `lfy-cli pipeline get_sales_stage`（`{"gtm_id":<gtm_id>}`）。**≤0 或非整数自动跳过该项** |
+| `sales_id` | int | >0；选项见 `lfy-cli user get_sales `（`{}`）。**非法跳过** |
+| `delivery_status` | int | >0；选项见`lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_delivery_status"}`）**非法跳过** |
+| `revenue_status` | int | >0；选项见`lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_revenue_status"}`）**非法跳过** |
+| `status_id` | int | >0；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_status"}`）。**非法跳过** |
+| `tags` | string | 逗号分隔标签id；**空字符串清空**；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_tags"}`）|
 
 ## base_api HTTP 响应体
 
@@ -67,5 +68,5 @@ lfy-cli pipeline update_pipeline '{"pipeline_id": 111, "updates": {}}'
 |------|------|
 | 模块无权限或销售范围无权限 | `您暂无权限` |
 | 商机不存在或未激活 | `商机不存在` |
-| JSON/字段非法（projectname/forecast/date/tags/未知键） | `参数错误` |
+| JSON/字段非法（projectname/forecast/actual/date/tags/未知键） | `参数错误` |
 | 其它服务端错误 | `更新失败，请稍后重试` |
