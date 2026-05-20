@@ -1,7 +1,7 @@
 ---
 name: lfy-pipeline
 description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建/修改一条商机时使用此技能。
-version: 1.8.0
+version: 1.8.1
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -96,12 +96,27 @@ lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"商机名称","customer_i
 ### 修改商机 (update_pipeline)
 
 ```bash
-lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"新名称","forecast":98.5,"actual":100000,"status_id":21,"tags":"1,2"}}'
+lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"修改商机","forecast":100,"forecast_date":"2026-12-12","forecast_start_date":"2026-12-12","sales_id":1,"delivery_status":1122,"revenue_status":1222,"status_id":23123,"tags":"123,456","win_possibility":287705087406202,"actual":100,"phase":123}}'
 ```
 
-按需更新商机主档字段与标签（部分字段）。`updates` 仅出现的键会生效；`actual` 须为合法数字（可为 0 或负数）；ID 类字段（`phase`、`sales_id`、`delivery_status`、`revenue_status`、`status_id`）非法值自动跳过该项；`tags` 空串清空；日期字段空串清空。
+- `pipeline_id`：必填，>0
+- `updates`：必填；**仅出现的键会更新**；未放入 `updates` 的字段视为不修改；可为 `{}`（不写库，返回当前 `updated_time`）
+- `actual` 须为合法数字（可为 0 或负数）；ID 类字段（`phase`、`sales_id`、`delivery_status`、`revenue_status`、`status_id`、`win_possibility`）须 >0，非法值自动跳过该项；`tags` 空串清空；日期字段空串清空
 
-ID 类字段，先用 `lfy-cli base get_options '{"object_id": <pipeline_id>, "property": <property>}'` 获取可选状态 ID（`object_id` 填当前商机 ID）。
+| 键 | 规则 | ID / 选项来源 |
+|----|------|---------------|
+| `projectname` | trim 后非空，≤50 字符 | — |
+| `forecast` | ≥0，最多两位小数 | — |
+| `forecast_date` | `YYYY-MM-DD`；`""` 清空 | — |
+| `forecast_start_date` | `YYYY-MM-DD`；`""` 清空 | — |
+| `sales_id` | >0；非法跳过 | `lfy-cli user get_sales '{}'` |
+| `delivery_status` | >0；非法跳过 | `lfy-cli base get_options '{"object_id":<pipeline_id>,"property":"pipeline_delivery_status"}'` |
+| `revenue_status` | >0；非法跳过 | `lfy-cli base get_options '{"object_id":<pipeline_id>,"property":"pipeline_revenue_status"}'` |
+| `status_id` | >0；非法跳过 | `lfy-cli base get_options '{"object_id":<pipeline_id>,"property":"pipeline_status"}'` |
+| `tags` | 逗号分隔标签 id；`""` 清空 | `lfy-cli base get_options '{"object_id":<pipeline_id>,"property":"pipeline_tags"}'` |
+| `win_possibility` | >0；非法跳过 | `lfy-cli base get_options '{"object_id":<pipeline_id>,"property":"pipeline_win_possibility"}'` |
+| `actual` | 合法数字，最多两位小数（可为 0 或负数） | — |
+| `phase` | >0，传 `stage_id`；非法跳过 | `lfy-cli pipeline get_sales_stage '{"gtm_id":<gtm_id>}'` |
 
 参见 [API 详情](references/update_pipeline.md)。
 
@@ -247,8 +262,7 @@ ID 类字段，先用 `lfy-cli base get_options '{"object_id": <pipeline_id>, "p
 **流程：**
 
 1. 若用户只给了名称，先用 `search` 拿到 `pipeline_id`
-2. 若涉及阶段/状态等枚举 ID，先用 `lfy-cli pipeline get_sales_stage` 或 `lfy-cli base get_options` 拿到 ID（商机状态：`{"object_id": <pipeline_id>, "property": "pipeline_status"}`；其它 property 见 update_pipeline.md）
-3. 若涉及负责人改派，用 `lfy-user get_sales` 拿 `user_id` 作为 `sales_id`
-4. 拼装 `updates` JSON，调用 `update_pipeline`
-5. `error_message`/CLI `Error` 含「您暂无权限」→ 说明无 detail 或 sales 不在白名单；含「商机不存在」→ 重新检查 `pipeline_id`
-6. 成功后展示 `pipeline_id` 与 `updated_time`，并对已修改字段做回显确认
+2. 按待改字段查 ID：`phase` → `get_sales_stage` 取 `stage_id`；`sales_id` → `lfy-cli user get_sales`；`status_id` / `delivery_status` / `revenue_status` / `tags` / `win_possibility` → `lfy-cli base get_options`（`object_id` 填当前 `pipeline_id`，`property` 见上表或 [update_pipeline.md](references/update_pipeline.md)）
+3. 仅把用户要改的字段放入 `updates`，调用 `update_pipeline`
+4. `error_message`/CLI `Error` 含「您暂无权限」→ 说明无 detail 或 sales 不在白名单；含「商机不存在」→ 重新检查 `pipeline_id`
+5. 成功后展示 `pipeline_id` 与 `updated_time`，并对已修改字段做回显确认

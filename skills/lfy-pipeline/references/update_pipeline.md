@@ -15,23 +15,45 @@ lfy-cli pipeline update_pipeline '{"pipeline_id": 111, "updates": {}}'
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | `pipeline_id` | int | 必填，>0 |
-| `updates` | object | 必填；**仅出现的键会更新**；未知键报错；**空对象 `{}`**：不写库、不刷新 ES，成功返回当前 `updated_time` |
+| `updates` | object | 必填；**仅出现的键会更新**；未出现的键视为不修改；未知键报错；**空对象 `{}`**：不写库、不刷新 ES，成功返回当前 `updated_time` |
+
+### `updates` 完整示例
+
+```json
+{
+  "projectname": "修改商机",
+  "forecast": 100,
+  "forecast_date": "2026-12-12",
+  "forecast_start_date": "2026-12-12",
+  "sales_id": 1,
+  "delivery_status": 1122,
+  "revenue_status": 1222,
+  "status_id": 23123,
+  "tags": "123,456",
+  "win_possibility": 287705087406202,
+  "actual": 100,
+  "phase": 123
+}
+```
 
 ### `updates` 支持的键（均可选组合）
 
 | 键 | 类型 | 规则 |
 |----|------|------|
-| `projectname` | string | trim 后非空，≤50 字符（Unicode） |
-| `forecast` | number | ≥0，最多两位小数 |
-| `actual` | number |实际签单金额， 合法数字即可，最多两位小数（可为 0 或负数） |
-| `forecast_date` | string | `YYYY-MM-DD`；**空字符串 `""` 表示清空** |
-| `forecast_start_date` | string | `YYYY-MM-DD`；空字符串清空 |
-| `phase` | int | >0；选项见 `lfy-cli pipeline get_sales_stage`（`{"gtm_id":<gtm_id>}`）。**≤0 或非整数自动跳过该项** |
-| `sales_id` | int | >0；选项见 `lfy-cli user get_sales `（`{}`）。**非法跳过** |
-| `delivery_status` | int | >0；选项见`lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_delivery_status"}`）**非法跳过** |
-| `revenue_status` | int | >0；选项见`lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_revenue_status"}`）**非法跳过** |
-| `status_id` | int | >0；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_status"}`）。**非法跳过** |
-| `tags` | string | 逗号分隔标签id；**空字符串清空**；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_tags"}`）|
+| `projectname` | string | 商机名称；trim 后非空，≤50 字符（Unicode） |
+| `forecast` | number | 预测金额；≥0，最多两位小数 |
+| `forecast_date` | string | 预测签单时间；`YYYY-MM-DD`；**空字符串 `""` 表示清空** |
+| `forecast_start_date` | string | 启动时间；`YYYY-MM-DD`；**空字符串 `""` 表示清空** |
+| `sales_id` | int | 负责人 id；>0；选项见 `lfy-cli user get_sales`（`'{}'`）；**≤0 或非法自动跳过该项** |
+| `delivery_status` | int | 交付状态；>0；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_delivery_status"}`）；**≤0 或非法自动跳过该项** |
+| `revenue_status` | int | 回款状态；>0；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_revenue_status"}`）；**≤0 或非法自动跳过该项** |
+| `status_id` | int | 商机状态；>0；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_status"}`）；**≤0 或非法自动跳过该项** |
+| `tags` | string | 逗号分隔标签 id；**空字符串 `""` 表示清空**；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_tags"}`） |
+| `win_possibility` | int | 签单可能性；>0；选项见 `lfy-cli base get_options`（`{"object_id": <pipeline_id>, "property": "pipeline_win_possibility"}`）；**≤0 或非法自动跳过该项** |
+| `actual` | number | 实际签单金额；合法数字即可，最多两位小数（可为 0 或负数） |
+| `phase` | int | 阶段 id；>0，传 `get_sales_stage` 返回的 `stage_id`；选项见 `lfy-cli pipeline get_sales_stage`（`{"gtm_id": <gtm_id>}`）；**≤0 或非法自动跳过该项** |
+
+> **说明**：`object_id` 均填当前商机的 `pipeline_id`。ID 类字段（`phase`、`sales_id`、`delivery_status`、`revenue_status`、`status_id`、`win_possibility`）JSON 反序列化失败或 ≤0 时，该项视为未传、自动跳过，不报错。
 
 ## base_api HTTP 响应体
 
