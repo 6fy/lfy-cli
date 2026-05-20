@@ -10,7 +10,7 @@ lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids
 
 | 参数名 | 类型 | 必填 | 默认 | 说明 |
 | ------ | ---- | ---- | ---- | ---- |
-| `gtm_id` | integer | 否 | 0 | GTM 业务线；`0`=全部；>0 按 `p.gtm_id` 过滤；<0 当 0 处理 |
+| `gtm_id` | integer | 否 | 0 | GTM；`0`=全部；>0 按 `p.gtm_id` 过滤；<0 当 0 处理 |
 | `sales_ids` | integer[] | 否 | `[]` | 销售 ID 列表；`[]`=使用当前用户 list 权限白名单全集；非空=与白名单求交集（自动过滤不在范围内的 id）。服务端 clamp：过滤 <=0、保序去重、长度上限 50 |
 | `customer_ids` | integer[] | 否 | `[]` | 客户 ID 列表；`[]`=不过滤；非空=精确匹配 `p.customer_id`。服务端 clamp：过滤 <=0、保序去重 |
 | `stage` | integer | 否 | 0 | `0`=全部阶段；>0 对应 `b_config_pl_phase.logic_phase`（10/20/…/100） |

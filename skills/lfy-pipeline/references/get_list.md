@@ -10,7 +10,7 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 
 | 参数名 | 类型 | 必填 | 默认 | 说明 |
 | ------ | ---- | ---- | ---- | ---- |
-| `gtm_id` | integer | 否 | 0 | GTM 业务线 ID；`0`=全部；>0 过滤 `p.gtm_id` |
+| `gtm_id` | integer | 否 | 0 | GTM ID；`0`=全部；>0 过滤 `p.gtm_id` |
 | `pipeline_name` | string | 否 | "" | 商机名称模糊搜索（ILIKE 不区分大小写）；空串不加条件 |
 | `pipeline_status_ids` | integer[] | 否 | `[]` | 商机状态 ID 列表；`[]`=不过滤；非空 `p.status_id = ANY` |
 | `sales_ids` | integer[] | 否 | `[]` | 销售 ID 列表；`[]`=使用当前用户 list 权限白名单；非空=与白名单求交集（自动过滤不在范围内的 id） |

@@ -10,7 +10,7 @@ lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":
 
 | 参数名 | 类型 | 必填 | 默认 | 说明 |
 | ------ | ---- | ---- | ---- | ---- |
-| `gtm_id` | integer | 否 | 0 | GTM 业务线 ID；`0`=全部；>0 过滤 `c.gtm_id` |
+| `gtm_id` | integer | 否 | 0 | GTM ID；`0`=全部；>0 过滤 `c.gtm_id` |
 | `customer_name` | string | 否 | "" | 客户名称模糊搜索（ILIKE 不区分大小写）；空串不加条件 |
 | `customer_status_ids` | integer[] | 否 | `[]` | 客户状态 ID 列表；`[]`=不过滤；非空 `c.status_id = ANY` |
 | `sales_ids` | integer[] | 否 | `[]` | 销售 ID 列表；`[]`=使用当前用户 list 权限白名单；非空=与白名单求交集 |
@@ -102,8 +102,11 @@ lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":
 
 | 场景 | 命令 |
 |------|------|
-| 按关键字快速找客户 ID | `customer search` |
-| 带筛选/分页/业务指标的客户列表 | `customer get_list` |
+| 我的客户列表 / 我的客户清单 / LFY 我的客户清单 | **`customer get_list`**（禁止用 search） |
+| 列出我负责的客户、查看客户一览 | **`customer get_list`** |
+| 名字带关键字且要分页/指标 | **`customer get_list`**（`customer_name` 筛选） |
+| 按关键字快速找客户 ID（为详情/修改） | `customer search` |
+| 用户明确说「搜索」「找包含 XX」且无清单语义 | `customer search` |
 
 ## 权限
 

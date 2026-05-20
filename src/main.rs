@@ -34,12 +34,12 @@ async fn run() -> Result<()> {
 
     let mut cmd = Command::new(env!("CARGO_BIN_NAME"))
         .version(VERSION)
-        .about("陆份仪 LFY CLI")
+        .about("LFY LFY CLI")
         .subcommand_required(true)
         .arg_required_else_help(true)
         .disable_help_subcommand(true)
         .subcommand(
-            cmd::login::LoginArgs::augment_args(Command::new("login")).about("登录陆份仪官方系统，完成账号绑定"),
+            cmd::login::LoginArgs::augment_args(Command::new("login")).about("登录LFY官方系统，完成账号绑定"),
         );
 
     // Standalone command: show current machine device_id.

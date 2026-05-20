@@ -1,5 +1,11 @@
 # @6fy/cli-darwin-x64
 
+## 0.17.0
+
+### Minor Changes
+
+- 修复已知问题
+
 ## 0.16.0
 
 ### Minor Changes
