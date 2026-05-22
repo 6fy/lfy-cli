@@ -50,8 +50,8 @@ xdg-open "/tmp/lfy-pipeline-get_list-20260519120000.html"
 | 客户名称 | `customer_name` | 空则留空 |
 | 客户简称 | `customer_alias` | |
 | GTM | `gtm_name` | |
-| 阶段 | `phase_name` | |
-| 阶段% | `phase_value` | 格式 `{value}%` |
+| 阶段 | `stage_name` | |
+| 阶段% | `stage_value` | 格式 `{value}%` |
 | 状态 | `status_name` | 见下方样式 |
 | 预测金额 | `forecast` | 千分位，右对齐；0 可显示 `0` 或 `—` |
 | 预计签单 | `forecast_date` | 空串显示 `—` |

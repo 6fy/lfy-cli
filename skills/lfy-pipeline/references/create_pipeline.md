@@ -1,11 +1,11 @@
-# create（创建商机）
+# create_pipeline（创建商机）
 
-对应 MCP / JSON-RPC：`pipeline/create`。
+对应 MCP / JSON-RPC：`pipeline/create_pipeline`。
 
 ## 命令
 
 ```bash
-lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"示例商机","customer_id":67,"phase_id":78,"sales_id":81,"forecast":9800,"forecast_date":"2026-07-12","tag_ids":[53]}'
+lfy-cli pipeline create_pipeline '{"gtm_id":17,"pipeline_name":"示例商机","customer_id":67,"stage_id":78,"sales_id":81,"forecast":9800,"forecast_date":"2026-07-12","tag_ids":[53]}'
 ```
 
 ## 参数
@@ -15,7 +15,7 @@ lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"示例商机","customer_i
 | `gtm_id` | int | 必填，>0 |
 | `pipeline_name` | string | 必填；trim 后非空 |
 | `customer_id` | int | 必填，>0 |
-| `phase_id` | int | 必填，阶段 ID |
+| `stage_id` | int | 必填，阶段 ID |
 | `sales_id` | int | 可选；≤0 或不传默认当前登录用户对应 ID |
 | `forecast` | int | 可选；≤0 时不写入库 |
 | `forecast_date` | string | 可选；`YYYY-MM-DD`，空不写库 |

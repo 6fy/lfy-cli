@@ -38,9 +38,9 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
         "gtm_id": 88,
         "gtm_name": "示例 GTM",
         "self_code_v2": "48",
-        "phase_id": 80,
-        "phase_name": "方案报价",
-        "phase_value": 80,
+        "stage_id": 80,
+        "stage_name": "方案报价",
+        "stage_value": 80,
         "status_id": 21,
         "status_name": "进行中",
         "relationship_level_id": 25,
@@ -83,9 +83,9 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 | `data.pipelines[].gtm_id` | integer | GTM ID |
 | `data.pipelines[].gtm_name` | string | GTM 名称 |
 | `data.pipelines[].self_code_v2` | string | 商机自编码 |
-| `data.pipelines[].phase_id` | integer | 阶段 ID |
-| `data.pipelines[].phase_name` | string | 阶段名称 |
-| `data.pipelines[].phase_value` | integer | 阶段百分比（10/20/…/100） |
+| `data.pipelines[].stage_id` | integer | 阶段 ID |
+| `data.pipelines[].stage_name` | string | 阶段名称 |
+| `data.pipelines[].stage_value` | integer | 阶段百分比（10/20/…/100） |
 | `data.pipelines[].status_id` | integer | 状态 ID |
 | `data.pipelines[].status_name` | string | 状态名称 |
 | `data.pipelines[].relationship_level_id` | integer | 客户成熟度 ID |

@@ -20,7 +20,7 @@ metadata:
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - 若搜索结果为空，告知用户未找到对应商机
 - `pipeline_id`、`stage_id` 等技术字段默认不展示
-- **创建 / 修改**：`create` 需商机 create 权限；`update_pipeline` 需商机 detail 权限与 `sales_ids` 门禁；删除等其它操作仍不支持
+- **创建 / 修改**：`create_pipeline` 需商机 create 权限；`update_pipeline` 需商机 detail 权限与 `sales_ids` 门禁；删除等其它操作仍不支持
 - 访问商机详情页面：https://app.6fenyi.com/pipelines/{{pipeline_id}}
 
 ## 接口列表
@@ -83,15 +83,15 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 
 参见 [API 详情](references/get_list.md)。
 
-### 创建商机 (create)
+### 创建商机 (create_pipeline)
 
 ```bash
-lfy-cli pipeline create '{"gtm_id":17,"pipeline_name":"商机名称","customer_id":67,"phase_id":78,"sales_id":81,"forecast":9800,"forecast_date":"2026-07-12","tag_ids":[53]}'
+lfy-cli pipeline create_pipeline '{"gtm_id":17,"pipeline_name":"商机名称","customer_id":67,"stage_id":78,"sales_id":81,"forecast":9800,"forecast_date":"2026-07-12","tag_ids":[53]}'
 ```
 
-在未掌握 `gtm_id`、`customer_id`、`phase_id` 等 ID 前，应先通过其它查询能力取得后再调用。
+在未掌握 `gtm_id`、`customer_id`、`stage_id` 等 ID 前，应先通过其它查询能力取得后再调用。
 
-参见 [API 详情](references/create.md)。
+参见 [API 详情](references/create_pipeline.md)。
 
 ### 修改商机 (update_pipeline)
 
@@ -243,8 +243,8 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 
 **流程：**
 
-1. 若缺失 `gtm_id`、`customer_id`、`phase_id` 等，先用客户/商机查询类能力取得 ID  
-2. 拼装 JSON，调用 `create`  
+1. 若缺失 `gtm_id`、`customer_id`、`stage_id` 等，先用客户/商机查询类能力取得 ID  
+2. 拼装 JSON，调用 `create_pipeline`  
 3. `error_message`/CLI `Error` 中含「暂无权限」→ 说明无 create 或客户不在白名单  
 4. 成功后展示返回的 `pipeline_id`、`pipeline_name`、`created_time`
 
