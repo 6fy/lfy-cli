@@ -61,7 +61,7 @@ if ! command -v brew >/dev/null 2>&1; then
     echo
     echo "📦 Homebrew 未安装，开始安装..."
 
-    retry bash -c '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    retry bash -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" </dev/null'
 
     # 初始化 brew 环境
     if [[ -f "/opt/homebrew/bin/brew" ]]; then
