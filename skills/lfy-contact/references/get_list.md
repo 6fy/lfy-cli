@@ -3,13 +3,14 @@
 ## 命令
 
 ```bash
-lfy-cli contact get_list '{"contacts_name":"","sales_ids":[],"page_size":20,"page":1}'
+lfy-cli contact get_list '{"gtm_id":0,"contacts_name":"","sales_ids":[],"page_size":20,"page":1}'
 ```
 
 ## 参数
 
 | 参数名 | 类型 | 必填 | 默认 | 说明 |
 | ------ | ---- | ---- | ---- | ---- |
+| `gtm_id` | integer | 否 | 0 | GTM 业务线；`0`=全部；`>0` 按 `b_c_customer.gtm_id` 过滤联系人主表 `customer_id` |
 | `contacts_name` | string | 否 | "" | 联系人姓名模糊搜索（ILIKE 不区分大小写，匹配姓+名拼接）；空串不加条件 |
 | `sales_ids` | integer[] | 否 | `[]` | 负责人 ID 列表；`[]`=使用当前用户 list 权限白名单；非空=与白名单求交集 |
 | `page_size` | integer | 否 | 20 | 每页数量，**1~100** |
@@ -64,6 +65,7 @@ lfy-cli contact get_list '{"contacts_name":"","sales_ids":[],"page_size":20,"pag
 
 - `per_user`：`category_id = 1544862211`，`category_scene = 'list'`
 - 主查询：`b_c_contacts.sales_id` 须在 effective `sales_ids` 白名单内
+- GTM 筛选（`gtm_id > 0`）：`c.customer_id` 须落在 `b_c_customer` 中同 GTM 且 `cust.sales_id` 在白名单内的客户 ID 集合；`customer_id = 0` 排除
 
 ## 错误处理
 

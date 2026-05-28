@@ -15,11 +15,14 @@ cargo run -- customer get_list '{"gtm_id":0,"customer_name":"","customer_status_
 ## 1.8 联系人列表
 
 ```bash
-# 默认分页（姓名不过滤、负责人用 list 权限白名单）
-cargo run -- contact get_list '{"contacts_name":"","sales_ids":[],"page_size":20,"page":1}'
+# 默认分页（GTM 不过滤、姓名不过滤、负责人用 list 权限白名单）
+cargo run -- contact get_list '{"gtm_id":0,"contacts_name":"","sales_ids":[],"page_size":20,"page":1}'
+
+# 按 GTM 筛选
+cargo run -- contact get_list '{"gtm_id":24685820686,"contacts_name":"","sales_ids":[],"page_size":20,"page":1}'
 
 # 按姓名模糊搜索
-cargo run -- contact get_list '{"contacts_name":"张","sales_ids":[],"page_size":10,"page":1}'
+cargo run -- contact get_list '{"gtm_id":0,"contacts_name":"张","sales_ids":[],"page_size":10,"page":1}'
 ```
 
 ## 10.2 测试获取下拉数据命令
