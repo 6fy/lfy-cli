@@ -1,7 +1,7 @@
 ---
 name: lfy-report
-description: 报表查询技能。适用于通过 lfy-cli 的 report 品类读取LFY侧只读报表数据。当用户需要：(1) 查询指定销售人员当前财年的合同目标（年/季/月及是否已配置），(2) 查看当前财年销售大局观（实际/预测签单与商机池按日趋势），(3) 后续在 report 下扩展的其他只读报表接口时使用此技能；具体命令与参数以本技能 references 为准。
-version: 1.1.3
+description: 报表查询技能。适用于通过 lfy-cli 的 report 品类读取LFY侧只读报表数据。当用户需要：(1) 查询指定销售人员当前财年的合同目标（年/季/月及是否已配置），(2) 查看当前财年销售大局观（实际/预测签单与商机池按日趋势），(3) 查看指定 GTM 当前财年 12 个月建议财务报表，(4) 后续在 report 下扩展的其他只读报表接口时使用此技能；具体命令与参数以本技能 references 为准。
+version: 1.2.0
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -47,6 +47,16 @@ lfy-cli report get_sales_overall '{"gtm_id": 0, "sales_id": 0, "customer_ids": [
 查询当前财年下的**实际签单**、**预测签单**、**商机池**三条按日时间序列；可按 GTM、销售、客户维度过滤（`0` / 空数组表示不过滤）。
 
 参见 [API 详情](references/get_sales_overall.md)。
+
+### GTM 建议财务报表 (get_financial_statements)
+
+```bash
+lfy-cli report get_financial_statements '{"gtm_id": 24685820686}'
+```
+
+查询指定 GTM 在当前财年的 **12 个月** 建议财务报表（固定 12 条 `monthly`）。`gtm_id` 须 > 0，可先通过 `lfy-cli customer get_gtms` 获取。
+
+参见 [API 详情](references/get_financial_statements.md)。
 
 ---
 
