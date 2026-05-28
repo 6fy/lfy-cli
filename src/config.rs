@@ -9,6 +9,11 @@ pub fn get_categories() -> Vec<CategoryInfo> {
     let mut categories = vec![];
 
     categories.push(CategoryInfo {
+        name: "contact",
+        description: "联系人 - 提供联系人列表等查询",
+    });
+
+    categories.push(CategoryInfo {
         name: "customer",
         description: "客户 - 提供销售核心场景部分可用性查询",
     });
