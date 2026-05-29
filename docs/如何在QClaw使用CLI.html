@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QClaw 问法指南 — 陆份仪</title>
+  <style>
+    :root {
+      --blue-dark: #1F4E79;
+      --blue: #2E75B6;
+      --blue-light: #E8F2FC;
+      --bg: #F0F4F9;
+      --card: #fff;
+      --text: #1a1a2e;
+      --muted: #64748b;
+      --border: #E2E8F0;
+      --green: #0d7a3a;
+      --green-bg: #ecfdf3;
+      --amber: #b45309;
+      --amber-bg: #fffbeb;
+      --ceo-accent: #1F4E79;
+      --sales-accent: #0f766e;
+      --sales-light: #ecfdf5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── 顶栏：标题 + 模型提示一行搞定 ── */
+    .header {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+      color: #fff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .header-left h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .header-left .sub {
+      font-size: 0.72rem;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+    .model-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 0.68rem;
+      background: rgba(255,255,255,0.14);
+      padding: 5px 10px;
+      border-radius: 8px;
+      max-width: 420px;
+    }
+    .model-bar .warn { color: #fecaca; font-weight: 600; }
+    .model-bar .sep { opacity: 0.4; }
+    .model-bar .rec { opacity: 0.95; }
+
+    /* ── 角色区（已移除大按钮，仅保留 focus 条） ── */
+    .role-bar { display: none; }
+    .role-focus {
+      margin-top: 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.4;
+    }
+    .role-focus .label {
+      flex-shrink: 0;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+    }
+    .role-focus.ceo .label { background: var(--blue-light); color: var(--ceo-accent); }
+    .role-focus.sales .label { background: var(--sales-light); color: var(--sales-accent); }
+    .role-focus .items { color: var(--text); }
+    .role-focus .items strong { font-weight: 600; }
+
+    /* ── 主区域：左场景 + 右问法 ── */
+    .workspace {
+      flex: 1;
+      min-height: 0;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 10px 16px 12px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 12px;
+    }
+
+    /* 左：场景网格 */
+    .scene-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      align-content: start;
+    }
+    .scene-card {
+      position: relative;
+      padding: 10px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--card);
+      cursor: pointer;
+      text-align: center;
+      transition: 0.15s;
+    }
+    .scene-card .icon { font-size: 1.1rem; line-height: 1; }
+    .scene-card .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 4px;
+      color: var(--text);
+    }
+    .scene-card .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .scene-card:hover { border-color: var(--blue); }
+    .scene-card.active {
+      border-color: var(--blue-dark);
+      background: var(--blue-light);
+      box-shadow: 0 0 0 1px var(--blue-dark);
+    }
+    body.role-sales .scene-card.active {
+      border-color: var(--sales-accent);
+      background: var(--sales-light);
+      box-shadow: 0 0 0 1px var(--sales-accent);
+    }
+
+    .scene-hint {
+      grid-column: 1 / -1;
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 4px 0 2px;
+    }
+
+    /* 右：问法详情 */
+    .detail {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .detail-head { flex-shrink: 0; }
+    .detail-head h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--blue-dark);
+    }
+    body.role-sales .detail-head h2 { color: var(--sales-accent); }
+    .detail-head .hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .result-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--green);
+      background: var(--green-bg);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .q-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .q-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+    .q-card:hover {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+    body.role-sales .q-card:hover {
+      border-color: var(--sales-accent);
+      background: var(--sales-light);
+    }
+    .q-text {
+      flex: 1;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .q-copy {
+      flex-shrink: 0;
+      width: 30px; height: 30px;
+      border: none;
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--blue-dark);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+    }
+    .q-copy.done { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+
+    .micro-tip {
+      flex-shrink: 0;
+      margin-top: 8px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      padding: 6px 10px;
+      background: var(--bg);
+      border-radius: 6px;
+      border-left: 2px solid var(--blue);
+    }
+    body.role-sales .micro-tip { border-left-color: var(--sales-accent); }
+
+    .copy-hint {
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 0.65rem;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    .footer {
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 0.62rem;
+      color: #94a3b8;
+      padding: 4px 16px 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--blue-dark);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: 0.25s;
+      z-index: 100;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── 身份选择门屏 ── */
+    .gate {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      background: linear-gradient(160deg, #eef4fb 0%, var(--bg) 50%, #e8f2fc 100%);
+    }
+    body.state-ready .gate { display: none; }
+
+    .gate-inner {
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+    }
+    .gate-inner h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--blue-dark);
+      letter-spacing: -0.02em;
+    }
+    .gate-inner .gate-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .gate-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .gate-card {
+      padding: 24px 16px 20px;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+    }
+    .gate-card .icon { font-size: 2rem; line-height: 1; }
+    .gate-card .t {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 10px;
+      color: var(--text);
+    }
+    .gate-card .d {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+    .gate-card .focus-preview {
+      font-size: 0.65rem;
+      color: var(--blue);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      line-height: 1.5;
+    }
+    .gate-card[data-role="ceo"]:hover,
+    .gate-card[data-role="ceo"]:focus-visible {
+      border-color: var(--ceo-accent);
+      background: var(--blue-light);
+      box-shadow: 0 8px 24px rgba(31, 78, 121, 0.12);
+      transform: translateY(-2px);
+    }
+    .gate-card[data-role="sales"]:hover,
+    .gate-card[data-role="sales"]:focus-visible {
+      border-color: var(--sales-accent);
+      background: var(--sales-light);
+      box-shadow: 0 8px 24px rgba(15, 118, 110, 0.12);
+      transform: translateY(-2px);
+    }
+    .gate-model {
+      margin-top: 24px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--amber-bg);
+      border: 1px solid #fcd34d;
+      border-radius: 10px;
+      padding: 10px 14px;
+      line-height: 1.5;
+      text-align: left;
+    }
+    .gate-model strong { color: var(--amber); }
+    .gate-model .bad { color: #b91c1c; font-weight: 600; }
+
+    /* ── 主应用区（选身份后显示） ── */
+    .app { display: none; flex-direction: column; flex: 1; min-height: 0; }
+    body.state-ready .app { display: flex; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .role-switch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px 5px 8px;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .role-switch:hover { background: rgba(255,255,255,0.28); }
+    .role-switch .sw-icon { font-size: 0.9rem; }
+    .role-switch .sw-action {
+      font-size: 0.62rem;
+      font-weight: 500;
+      opacity: 0.85;
+      padding-left: 6px;
+      border-left: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .role-focus-bar {
+      flex-shrink: 0;
+      padding: 6px 16px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .role-focus-bar .role-inner { max-width: 960px; margin: 0 auto; }
+
+    /* ── 窄屏 ── */
+    @media (max-width: 720px) {
+      body.state-ready { overflow: auto; height: auto; min-height: 100%; }
+      .gate-cards { grid-template-columns: 1fr; max-width: 280px; margin-left: auto; margin-right: auto; }
+      .header { flex-wrap: wrap; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .model-bar { max-width: 100%; flex: 1; }
+      .workspace {
+        grid-template-columns: 1fr;
+        padding-bottom: 16px;
+      }
+      .scene-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .scene-card .label { font-size: 0.68rem; }
+    }
+  </style>
+</head>
+<body class="state-pick">
+
+<!-- 第一步：选择身份 -->
+<section class="gate" id="gate">
+  <div class="gate-inner">
+    <h2>先选一下你的身份</h2>
+    <p class="gate-sub">我们会只展示与你相关的问法，点选即可进入</p>
+    <div class="gate-cards">
+      <button type="button" class="gate-card" data-role="ceo">
+        <div class="icon">👔</div>
+        <div class="t">CEO / 管理者</div>
+        <div class="d">看签单大盘、产品线财务、团队目标</div>
+        <div class="focus-preview">签单走势 · 建议财报 · 待签商机</div>
+      </button>
+      <button type="button" class="gate-card" data-role="sales">
+        <div class="icon">💼</div>
+        <div class="t">销售人员</div>
+        <div class="d">查任务、客户、商机，录入跟进</div>
+        <div class="focus-preview">本周任务 · 我的客户 · 我的商机</div>
+      </button>
+    </div>
+    <div class="gate-model">
+      <strong>使用前请选好 QClaw 对话模型：</strong>
+      勿用 <span class="bad">Auto</span>；推荐积分最贵的模型，或 DeepSeek-V4-Pro、MiniMax-M2.7
+    </div>
+  </div>
+</section>
+
+<!-- 第二步：聚焦内容 -->
+<div class="app" id="app">
+
+<header class="header">
+  <div class="header-left">
+    <h1>QClaw 问法指南</h1>
+    <p class="sub">像跟同事说话一样问 · 点问法即复制</p>
+  </div>
+  <div class="header-right">
+    <div class="model-bar">
+      <span class="warn">勿用 Auto</span>
+      <span class="sep">|</span>
+      <span class="rec">推荐：积分最贵 · DeepSeek-V4-Pro · MiniMax-M2.7</span>
+    </div>
+    <button type="button" class="role-switch" id="role-switch" title="切换身份">
+      <span class="sw-icon" id="role-switch-icon">👔</span>
+      <span id="role-switch-label">CEO / 管理者</span>
+      <span class="sw-action">切换</span>
+    </button>
+  </div>
+</header>
+
+<div class="role-focus-bar">
+  <div class="role-inner">
+    <div class="role-focus ceo" id="role-focus">
+      <span class="label">你最关注</span>
+      <span class="items" id="role-focus-text"></span>
+    </div>
+  </div>
+</div>
+
+<div class="workspace">
+  <div>
+    <div class="scene-grid" id="scene-grid"></div>
+    <p class="scene-hint">← 点选场景，右侧出现示例问法</p>
+  </div>
+  <div class="detail" id="detail"></div>
+</div>
+
+<p class="footer">陆份仪 LFY · 以实际权限与数据为准</p>
+</div><!-- /app -->
+<div class="toast" id="toast">已复制，去 QClaw 粘贴发送吧</div>
+
+<script>
+(function () {
+  var META = {
+    ceo: {
+      label: 'CEO / 管理者',
+      icon: '👔',
+      focus: '<strong>签单大盘</strong> · <strong>产品线财务</strong> · <strong>团队目标</strong> · 待签单 · 财年节奏 · 抽查详情',
+      hot: [0, 1, 2]
+    },
+    sales: {
+      label: '销售人员',
+      icon: '💼',
+      focus: '<strong>本周任务</strong> · <strong>我的客户</strong> · <strong>我的商机</strong> · 我的目标 · 录入修改 · 辅助查询',
+      hot: [0, 1, 2]
+    }
+  };
+
+  var ICONS = {
+    '签单大盘': '📊', '产品线财务': '💰', '团队目标': '🎯', '待签单': '📝', '财年节奏': '📅', '抽查详情': '🔍',
+    '本周任务': '✅', '我的客户': '👥', '我的商机': '💼', '我的目标': '🏆', '录入修改': '✏️', '其他': '📎'
+  };
+
+  var DATA = {
+    ceo: [
+      {
+        id: 'ceo-overall',
+        label: '签单大盘',
+        title: '看整体签单与预测',
+        hint: '本财年签得怎么样、后面预测如何、商机池大不大',
+        result: '→ 已签单金额、预测走势、商机池变化',
+        tip: '可以说「全公司」或「某产品线」或「某销售姓名」缩小范围',
+        questions: [
+          '本财年销售大局观怎么样？已签单和预测各是什么情况？',
+          '核心厂商这条产品线本财年的签单和预测走势如何？',
+          '帮我看一下全公司本财年的实际签单和预测签单对比'
+        ]
+      },
+      {
+        id: 'ceo-finance',
+        label: '产品线财务',
+        title: '看某产品线的建议财务',
+        hint: '某个产品线逐月的收入、毛利、净利建议数',
+        result: '→ 12 个月的收入、成本、毛利、净利',
+        tip: '需要说清楚产品线名称；不确定可先问「我们有哪些 GTM？」',
+        questions: [
+          '核心厂商这条产品线本财年的建议财务报表是什么样的？',
+          '帮我看一下核心厂商今年每个月的建议收入和毛利'
+        ]
+      },
+      {
+        id: 'ceo-target',
+        label: '团队目标',
+        title: '看销售目标与团队',
+        hint: '某人或团队本财年、本季、本月目标多少',
+        result: '→ 年/季/月合同目标、销售名单与团队',
+        tip: '问目标时尽量说清销售姓名',
+        questions: [
+          '张三本财年的销售目标是多少？各季度有没有设目标？',
+          '公司有哪些销售人员？分别在哪些团队？'
+        ]
+      },
+      {
+        id: 'ceo-pending',
+        label: '待签单',
+        title: '看即将签单的商机',
+        hint: '最近哪些单可能要落、谁手上快签了',
+        result: '→ 按签单远近排序的商机清单',
+        questions: [
+          '最近有哪些待签单的商机？',
+          '核心厂商产品线下一批可能要签的单子有哪些？',
+          '欧帅帅最近要签哪些单？'
+        ]
+      },
+      {
+        id: 'ceo-time',
+        label: '财年节奏',
+        title: '看时间与节奏',
+        hint: '现在是财年什么时候、第几周',
+        result: '→ 财年起止、当前第几周',
+        questions: [
+          '现在是我们财年的什么时候？财年从哪天到哪天？',
+          '当前是财年第几周？本周是几号到几号？'
+        ]
+      },
+      {
+        id: 'ceo-detail',
+        label: '抽查详情',
+        title: '抽查某个客户或商机',
+        hint: '快速了解某一客户或项目全貌',
+        result: '→ 负责人、阶段、联系人、跟进记录',
+        tip: '尽量用准确名称；模糊时可先说关键字',
+        questions: [
+          '帮我看一下 XX 科技这家客户的详细情况和最近跟进',
+          'XX 项目这条商机现在什么阶段？预测金额多少？'
+        ]
+      }
+    ],
+    sales: [
+      {
+        id: 'sales-week',
+        label: '本周任务',
+        title: '今天 / 本周要做什么',
+        hint: '开工前梳理近期和本周的工作安排',
+        result: '→ 任务列表、截止时间、关联客户/商机',
+        tip: 'QClaw 会标出快到期和已逾期的任务',
+        questions: [
+          '我最近有什么任务要做？',
+          '本周我的工作安排有哪些？',
+          '有没有快到期还没完成的任务？'
+        ]
+      },
+      {
+        id: 'sales-customer',
+        label: '我的客户',
+        title: '我的客户',
+        hint: '查看自己负责的客户清单，或深入了解某一客户',
+        result: '→ 客户清单或单个客户详情、联系人、跟进',
+        tip: '说「我的客户列表」才会列出完整清单',
+        questions: [
+          '看一下我的客户列表',
+          'XX 公司这家客户的详细情况和联系人是谁？',
+          '搜一下名字带「科技」的客户'
+        ]
+      },
+      {
+        id: 'sales-pipeline',
+        label: '我的商机',
+        title: '我的商机',
+        hint: '跟进项目、看待签单、查某一商机进展',
+        result: '→ 商机列表、待签单、阶段与预测金额',
+        questions: [
+          '看一下我的商机列表',
+          '我最近有哪些待签单的商机？',
+          'XX 项目这条商机现在什么阶段？预测什么时候签？'
+        ]
+      },
+      {
+        id: 'sales-target',
+        label: '我的目标',
+        title: '我的业绩目标',
+        hint: '确认本财年、本季、本月的合同目标',
+        result: '→ 年/季/月目标及是否已设置',
+        questions: [
+          '我这个财年的销售目标是多少？',
+          '本季度和本月的合同目标有没有设？分别是多少？'
+        ]
+      },
+      {
+        id: 'sales-write',
+        label: '录入修改',
+        title: '新建或修改客户 / 商机',
+        hint: '直接在对话里交代要录入或改什么（需有权限）',
+        result: '→ 创建或更新结果确认',
+        tip: '一次说清名称、产品线、金额、日期；缺信息 QClaw 会追问',
+        questions: [
+          '帮我新建一个客户，名称叫 XX 科技，挂在核心厂商产品线下',
+          '新建一条商机：名称 XX 项目，客户是 YY 公司，预测金额 98000，预计 7 月签单',
+          '把 XX 商机的预测金额改成 12 万，预计签单日期改到下月底'
+        ]
+      },
+      {
+        id: 'sales-extra',
+        label: '其他',
+        title: '辅助查询',
+        hint: '查 GTM 列表、联系人、本人信息等',
+        result: '→ 基础信息列表',
+        questions: [
+          '我们有哪些 GTM？',
+          '核心厂商产品线下的联系人有哪些？',
+          '现在是财年第几周？'
+        ]
+      }
+    ]
+  };
+
+  var currentRole = null;
+  var currentScene = { ceo: 0, sales: 0 };
+  var sceneGrid = document.getElementById('scene-grid');
+  var detail = document.getElementById('detail');
+  var roleFocus = document.getElementById('role-focus');
+  var roleFocusText = document.getElementById('role-focus-text');
+  var roleSwitch = document.getElementById('role-switch');
+  var roleSwitchLabel = document.getElementById('role-switch-label');
+  var roleSwitchIcon = document.getElementById('role-switch-icon');
+  var toast = document.getElementById('toast');
+  var toastTimer;
+
+  function showToast() {
+    clearTimeout(toastTimer);
+    toast.classList.add('show');
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2000);
+  }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(function () {
+      if (btn) {
+        btn.classList.add('done');
+        btn.textContent = '✓';
+        setTimeout(function () {
+          btn.classList.remove('done');
+          btn.textContent = '📋';
+        }, 1500);
+      }
+      showToast();
+    });
+  }
+
+  function updateRoleFocus() {
+    if (!currentRole) return;
+    var m = META[currentRole];
+    roleFocus.className = 'role-focus ' + currentRole;
+    roleFocusText.innerHTML = m.focus;
+    document.body.className = 'state-ready role-' + currentRole;
+    roleSwitchLabel.textContent = m.label;
+    roleSwitchIcon.textContent = m.icon;
+  }
+
+  function selectRole(role) {
+    currentRole = role;
+    updateRoleFocus();
+    renderSceneGrid();
+    renderDetail();
+  }
+
+  function enterApp(role) {
+    selectRole(role);
+  }
+
+  function toggleRole() {
+    selectRole(currentRole === 'ceo' ? 'sales' : 'ceo');
+  }
+
+  function renderSceneGrid() {
+    var scenes = DATA[currentRole];
+    var hotSet = {};
+    META[currentRole].hot.forEach(function (i) { hotSet[i] = true; });
+
+    var cards = scenes.map(function (s, i) {
+      var active = i === currentScene[currentRole] ? ' active' : '';
+      var badge = hotSet[i] ? '<span class="badge">常用</span>' : '';
+      var icon = ICONS[s.label] || '•';
+      return '<button type="button" class="scene-card' + active + '" data-idx="' + i + '">' +
+        badge + '<div class="icon">' + icon + '</div><div class="label">' + s.label + '</div></button>';
+    }).join('');
+
+    sceneGrid.innerHTML = cards;
+    sceneGrid.querySelectorAll('.scene-card').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentScene[currentRole] = parseInt(btn.getAttribute('data-idx'), 10);
+        renderSceneGrid();
+        renderDetail();
+      });
+    });
+  }
+
+  function renderDetail() {
+    var s = DATA[currentRole][currentScene[currentRole]];
+    var qHtml = s.questions.map(function (q) {
+      return '<div class="q-card" data-q="' + escapeAttr(q) + '">' +
+        '<div class="q-text">' + escapeHtml(q) + '</div>' +
+        '<button type="button" class="q-copy" title="复制">📋</button></div>';
+    }).join('');
+    var tipHtml = s.tip ? '<p class="micro-tip">' + escapeHtml(s.tip) + '</p>' : '';
+
+    detail.innerHTML =
+      '<div class="detail-head">' +
+        '<h2>' + escapeHtml(s.title) + '</h2>' +
+        '<p class="hint">' + escapeHtml(s.hint) + '</p>' +
+        '<span class="result-tag">' + escapeHtml(s.result) + '</span>' +
+      '</div>' +
+      '<div class="q-list">' + qHtml + '</div>' +
+      tipHtml +
+      '<p class="copy-hint">点击任意问法即可复制</p>';
+
+    detail.querySelectorAll('.q-card').forEach(function (card) {
+      var btn = card.querySelector('.q-copy');
+      var q = card.getAttribute('data-q');
+      card.addEventListener('click', function (e) {
+        if (e.target === btn) return;
+        copyText(q, btn);
+      });
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        copyText(q, btn);
+      });
+    });
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escapeAttr(str) {
+    return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  }
+
+  document.querySelectorAll('.gate-card').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      enterApp(btn.getAttribute('data-role'));
+    });
+  });
+
+  roleSwitch.addEventListener('click', toggleRole);
+
+  /* 不在此预渲染内容，等用户选身份后再渲染 */
+})();
+</script>
+</body>
+</html>
