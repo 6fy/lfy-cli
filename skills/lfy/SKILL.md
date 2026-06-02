@@ -12,6 +12,13 @@ metadata:
 
 > `lfy-cli` 是 LFY 提供的命令行程序，所有操作通过 `lfy-cli <品类> <方法名> '<json入参>'` 完成；鉴权由后端注入，需先完成 [授权与登录](references/auth.md)（`lfy-cli login`）。
 
+## LFY-CLI 帮助手册
+
+完整使用说明、常见问题与操作指引见飞书文档：**[LFY-CLI 帮助手册](https://ccccccccc.feishu.cn/docx/Z1wAdj7Ipo34GvxN2hNcfQ2hnbg)**。
+
+- 用户询问「帮助」「手册」「文档」「怎么用 LFY-CLI」「完整教程」时，除按本技能执行命令外，**应提供上述链接**供用户查阅。
+- 本技能 `references/` 侧重命令参数与 Agent 执行细节；更全面的图文说明以飞书手册为准。
+
 ## 技能命中规则
 
 - **必须命中本技能**：用户问题中出现 **「LFY」或「lfy」**（含 `lfy-cli`），或明显在问 LFY 销售业务（客户、商机、报表、日程、销售目标等）。

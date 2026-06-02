@@ -9,6 +9,7 @@
 | 技能名 | `LFY` |
 | 入口 | `skills/lfy/SKILL.md` |
 | 调用格式 | `lfy-cli <品类> <方法名> '<json入参>'` |
+| 帮助手册 | [LFY-CLI 帮助手册](https://ccccccccc.feishu.cn/docx/Z1wAdj7Ipo34GvxN2hNcfQ2hnbg)（飞书） |
 
 覆盖的 8 个品类（指南均位于 `skills/lfy/references/<品类>.md`）：
 
