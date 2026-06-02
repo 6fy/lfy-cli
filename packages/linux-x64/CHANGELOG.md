@@ -1,5 +1,11 @@
 # @6fy/cli-linux-x64
 
+## 0.18.0
+
+### Minor Changes
+
+- 调整skills
+
 ## 0.17.0
 
 ### Minor Changes
