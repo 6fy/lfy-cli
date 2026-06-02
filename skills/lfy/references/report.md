@@ -1,18 +1,8 @@
----
-name: lfy-report
-description: 报表查询技能。适用于通过 lfy-cli 的 report 品类读取LFY侧只读报表数据。当用户需要：(1) 查询指定销售人员当前财年的合同目标（年/季/月及是否已配置），(2) 查看当前财年销售大局观（实际/预测签单与商机池按日趋势），(3) 查看指定 GTM 当前财年 12 个月建议财务报表，(4) 后续在 report 下扩展的其他只读报表接口时使用此技能；具体命令与参数以本技能 references 为准。
-version: 1.2.0
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli report --help"
----
-
 # 报表查询技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
-通过 `lfy-cli report <接口名> '<json参数>'` 与报表服务交互（需已完成 `lfy-cli init` 登录配置）。
+通过 `lfy-cli report <接口名> '<json参数>'` 与报表服务交互（需已完成 `lfy-cli login` 登录配置）。
 
 ## 注意事项
 
@@ -22,7 +12,7 @@ metadata:
 - 每新增一个 `report/<子命令>`，应在 `references/` 下增加对应文档，并在下方「接口列表」补充一节。
 - **`get_sales_overall` 稀疏含义**（向用户解释时不要猜数）：
   - `sum_actual` / `sum_forecast` 为 **`[]`**：当前过滤下财年区间内该项**每天可视为 0**；若数组有数据但**缺某日**：该日**实际或预测签单金额为 0**（接口只返回 `amount > 0` 的日期）。
-  - `total_opportunity` **缺某日**：多为**相对上一日池子总量与条数未变**（变点压缩）；两日之间的未列出日期与**上一输出点**的 `count`、`total_amount` 含义一致，直至下一条变点。详见 [get_sales_overall 文档](references/get_sales_overall.md#稀疏返回怎么解读重要)。
+  - `total_opportunity` **缺某日**：多为**相对上一日池子总量与条数未变**（变点压缩）；两日之间的未列出日期与**上一输出点**的 `count`、`total_amount` 含义一致，直至下一条变点。详见 [get_sales_overall 文档](report_get_sales_overall.md#稀疏返回怎么解读重要)。
 
 ---
 
@@ -36,7 +26,7 @@ lfy-cli report sales_target '{"sales_id": 123}'
 
 查询指定销售在当前财年的**合同目标**（年目标 + 季/月槽位，含是否已配置）。
 
-参见 [API 详情](references/sales_target.md)。
+参见 [API 详情](report_sales_target.md)。
 
 ### 销售大局观 (get_sales_overall)
 
@@ -46,7 +36,7 @@ lfy-cli report get_sales_overall '{"gtm_id": 0, "sales_id": 0, "customer_ids": [
 
 查询当前财年下的**实际签单**、**预测签单**、**商机池**三条按日时间序列；可按 GTM、销售、客户维度过滤（`0` / 空数组表示不过滤）。
 
-参见 [API 详情](references/get_sales_overall.md)。
+参见 [API 详情](report_get_sales_overall.md)。
 
 ### GTM 建议财务报表 (get_financial_statements)
 
@@ -56,7 +46,7 @@ lfy-cli report get_financial_statements '{"gtm_id": 24685820686}'
 
 查询指定 GTM 在当前财年的 **12 个月** 建议财务报表（固定 12 条 `monthly`）。`gtm_id` 须 > 0，可先通过 `lfy-cli customer get_gtms` 获取。
 
-参见 [API 详情](references/get_financial_statements.md)。
+参见 [API 详情](report_get_financial_statements.md)。
 
 ---
 

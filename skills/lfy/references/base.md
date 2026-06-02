@@ -1,18 +1,8 @@
----
-name: lfy-base
-description: 客户编辑场景基础数据（下拉选项）。当用户需要获取客户状态、标签、区域、行业的可选 id 列表用于修改客户信息时使用；通过 lfy-cli base get_options，property 仅四类；API 上 cli 可省略（默认 false）；Agent 示例仍推荐 cli=true。
-version: 1.0.4
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli base --help"
----
-
 # 基础下拉选项技能（客户字段）
 
 > 示例里 **`cli` 一般为 `true`**（仅 `id`、`name`，无 `color`，适合 Agent）。**不传 `cli` 或 `cli:false`**（默认）时每项 **必有 `color` 键**（值可为 `""`）。
 
-通过 `lfy-cli base get_options '<json>'` 获取下拉数据；需已完成 `lfy-cli init`（与其它品类相同自动注入凭证）。
+通过 `lfy-cli base get_options '<json>'` 获取下拉数据；需已完成 `lfy-cli login`（与其它品类相同自动注入凭证）。
 
 ## property 取值（仅此四种）
 
@@ -69,4 +59,4 @@ lfy-cli customer search '{"keywords": "<名称或关键字片段>"}'
 - **已知 id**：会话、工单、CRM 链接、或其它工具已给出数字 id，可直接用作 `object_id`。
 - **列表/详情里已有**：若在走 `customer get_list`、`get_details` 等流程，响应里的客户主键同为 **`customer_id`**，与这里 `object_id` 含义一致。
 
-下拉选项里各字段的 **`id`** 如何用（写回客户），见 **`lfy-customer`** 技能正文与 references。
+下拉选项里各字段的 **`id`** 如何用（写回客户），见 [customer.md](customer.md) 客户指南正文与 references。

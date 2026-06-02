@@ -1,15 +1,24 @@
 ## Skills 导航
 
-仓库当前内置 Agent Skills，位于 skills/ 目录下。这里负责给出分类和入口；每个 Skill 的具体工作流、参数示例和补充参考仍以各自的 SKILL.md 为准。
+仓库内置一个统一的 Agent Skill —— **LFY**，位于 `skills/lfy/` 目录下。`SKILL.md` 为轻路由主入口（品类路由表 + 工作流清单 + 通用约定 + 跨品类协作）；每个品类的接口清单与详细工作流位于 `references/<品类>.md`，按需加载（渐进式披露）。
 
-## Agent Skills
+## Agent Skill：LFY
 
-内置 Agent Skills 列表，可被 AI 工具直接调用：
+| 项 | 说明 |
+|----|------|
+| 技能名 | `LFY` |
+| 入口 | `skills/lfy/SKILL.md` |
+| 调用格式 | `lfy-cli <品类> <方法名> '<json入参>'` |
 
-| Skill | 品类 | 说明 |
-|-------|------|------|
-| `lfy-customer` | customer | 客户查询技能，适用于通过关键字搜索客户列表、获取客户 GTMs 分类等需求。当用户需要：(1) 按关键字搜索客户，(2) 获取 GTM 业务线列表时使用此技能。 |
-| `lfy-pipeline` | pipeline | 商机查询技能，适用于通过关键字搜索商机列表、获取商机详情等需求。当用户需要：(1) 按关键字搜索商机，(2) 获取商机详情时使用此技能。 |
-| `lfy-user` | user | 用户查询技能，适用于通过关键字搜索用户列表、获取用户详情等需求。当用户需要：(1) 按关键字搜索用户，(2) 获取用户详情时使用此技能。 |
-| `lfy-ops` | ops | 企基查询技能，适用于通过关键字搜索企基列表、获取企基详情等需求。当用户需要：(1) 按关键字搜索企基，(2) 获取企基详情时使用此技能。 |
-| `lfy-schedule` | schedule | 日程查询技能，适用于通过关键字搜索日程列表、获取日程详情等需求。当用户需要：(1) 按关键字搜索日程，(2) 获取日程详情时使用此技能。 |
+覆盖的 8 个品类（指南均位于 `skills/lfy/references/<品类>.md`）：
+
+| 品类 | 指南 | 说明 |
+|------|------|------|
+| `customer` | `references/customer.md` | 客户搜索、我的客户清单、详情、GTM、创建/修改 |
+| `pipeline` | `references/pipeline.md` | 商机搜索、阶段、详情、待签单、列表、创建/修改 |
+| `report` | `references/report.md` | 销售目标、销售大局观、GTM 财务报表（只读） |
+| `user` | `references/user.md` | 本人信息、销售人员名单（只读） |
+| `ops` | `references/ops.md` | 财年、当前周（只读） |
+| `schedule` | `references/schedule.md` | 最近任务、本周任务（只读） |
+| `contact` | `references/contact.md` | 联系人列表（只读） |
+| `base` | `references/base.md` | 客户/商机编辑场景下拉选项（只读） |

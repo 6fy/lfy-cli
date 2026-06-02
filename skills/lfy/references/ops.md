@@ -1,13 +1,3 @@
----
-name: lfy-ops
-description: 运营数据查询技能。适用于获取企业财年时间范围、当前周数等运营数据。当用户需要：(1) 查询当前财年信息，(2) 获取当前属于第几周时使用此技能。
-version: 1.0.2
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli ops --help"
----
-
 # 运营数据查询技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -33,7 +23,7 @@ lfy-cli ops get_fiscal_year '{}'
 
 获取企业当前财年的时间范围，根据企业设定的财年开始日期计算。
 
-参见 [API 详情](references/get_fiscal_year.md)。
+参见 [API 详情](ops_get_fiscal_year.md)。
 
 ### 获取当前周数 (get_current_week)
 
@@ -43,7 +33,7 @@ lfy-cli ops get_current_week '{}'
 
 获取当前属于第几周，按财年起始日期开始计算。
 
-参见 [API 详情](references/get_current_week.md)。
+参见 [API 详情](ops_get_current_week.md)。
 
 ---
 

@@ -5,15 +5,15 @@
 ## 模板路径
 
 ```
-lfy-cli/skills/lfy-pipeline/templates/get_list.html
+lfy-cli/skills/lfy/templates/pipeline_get_list.html
 ```
 
-技能安装后路径可能为 `~/.claude/skills/lfy-pipeline/templates/get_list.html`（以实际安装目录为准）。
+技能安装后路径可能为 `~/.claude/skills/lfy/templates/pipeline_get_list.html`（以实际安装目录为准）。
 
 ## 生成步骤
 
 1. 调用 `lfy-cli pipeline get_list '...'` 取得 JSON。
-2. 读取 `templates/get_list.html` 作为版式参考（保留 `<style>` 与表头结构）。
+2. 读取 `templates/pipeline_get_list.html` 作为版式参考（保留 `<style>` 与表头结构）。
 3. 按下方字段映射填充页眉、状态徽章与 `<tbody>` 行。
 4. 将完整 HTML 写入临时文件，文件名建议：`lfy-pipeline-get_list-<YYYYMMDD-HHMMSS>.html`。
 5. **立即**用浏览器打开生成的文件（必须执行，不可仅告知路径）：

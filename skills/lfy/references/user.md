@@ -1,13 +1,3 @@
----
-name: lfy-user
-description: 用户查询技能。适用于获取当前登录用户信息、销售人员列表及销售团队信息等需求。当用户需要：(1) 获取本人用户信息，(2) 获取销售人员名单及所在团队时使用此技能。
-version: 1.0.2
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli user --help"
----
-
 # 用户查询技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -33,7 +23,7 @@ lfy-cli user get_self '{}'
 
 获取当前登录用户的基本信息，包括用户 ID、姓名及所属组织。
 
-参见 [API 详情](references/get_self.md)。
+参见 [API 详情](user_get_self.md)。
 
 ### 获取销售人员名单 (get_sales)
 
@@ -43,7 +33,7 @@ lfy-cli user get_sales '{}'
 
 获取所有销售人员及其所在的销售团队信息。
 
-参见 [API 详情](references/get_sales.md)。
+参见 [API 详情](user_get_sales.md)。
 
 ---
 

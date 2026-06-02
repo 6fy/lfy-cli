@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LFY 官方客服</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(160deg, #e8f1fa 0%, #f5f8fc 45%, #eef4fb 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(31, 78, 121, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      animation: fadeUp 0.5s ease-out;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero {
+      background: linear-gradient(135deg, #1f4e79 0%, #2e75b6 100%);
+      color: #fff;
+      padding: 28px 32px 24px;
+      text-align: center;
+    }
+    .hero .logo {
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+    .hero h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .hero p {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+    .qr-wrap {
+      padding: 32px 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-frame {
+      padding: 16px;
+      background: #fff;
+      border: 2px solid #e8f0f8;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(31, 78, 121, 0.08);
+    }
+    .qr-frame img {
+      display: block;
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+    }
+    .hint {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 15px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .hint strong {
+      color: #1f4e79;
+    }
+    .steps {
+      margin-top: 20px;
+      padding: 0 28px 28px;
+    }
+    .steps ul {
+      list-style: none;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+    }
+    .steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .steps .num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #d9e8f7;
+      color: #1f4e79;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .footer {
+      text-align: center;
+      padding: 0 24px 24px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="hero">
+      <div class="logo">LFY</div>
+      <h1>官方客服</h1>
+      <p>遇到问题？扫码添加微信，我们将尽快为您处理</p>
+    </div>
+    <div class="qr-wrap">
+      <div class="qr-frame">
+        <img
+          src="https://ossp.6fenyi.com/imgs/lfy-wechat-support.png"
+          alt="LFY 官方客服微信二维码"
+          width="220"
+          height="220"
+        />
+      </div>
+      <p class="hint">请使用 <strong>微信</strong> 扫一扫上方二维码</p>
+    </div>
+    <div class="steps">
+      <ul>
+        <li><span class="num">1</span><span>打开微信，点击右上角「+」或进入「扫一扫」</span></li>
+        <li><span class="num">2</span><span>扫描上方二维码，添加 LFY 官方客服</span></li>
+        <li><span class="num">3</span><span>描述您的问题或反馈，客服会协助处理</span></li>
+      </ul>
+    </div>
+    <div class="footer">LFY CLI 用户支持</div>
+  </div>
+</body>
+</html>

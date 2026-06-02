@@ -1,13 +1,3 @@
----
-name: lfy-pipeline
-description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表，或新建/修改一条商机时使用此技能。
-version: 1.8.1
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli pipeline --help"
----
-
 # 商机技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -33,7 +23,7 @@ lfy-cli pipeline search '{"keywords": "<keywords>"}'
 
 按关键字搜索商机，支持模糊匹配。
 
-参见 [API 详情](references/search.md)。
+参见 [API 详情](pipeline_search.md)。
 
 ### 获取商机阶段 (get_sales_stage)
 
@@ -43,7 +33,7 @@ lfy-cli pipeline get_sales_stage '{"gtm_id": <gtm_id>}'
 
 根据 GTM ID 获取商机阶段列表，包括阶段名称、里程碑目标、价值主张等信息。
 
-参见 [API 详情](references/get_sales_stage.md)。
+参见 [API 详情](pipeline_get_sales_stage.md)。
 
 ### 获取商机详情 (get_pipeline_info)
 
@@ -53,7 +43,7 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 
 根据商机 ID 获取详情（主档、推荐周期、当前阶段、商机侧与客户侧联系人、销售阶段全景与每阶段的推荐任务、商机相关近期任务等）。需具备商机模块 **detail** 权限且负责人在可见 `sales_ids` 范围内。
 
-参见 [API 详情](references/get_pipeline_info.md)。
+参见 [API 详情](pipeline_get_pipeline_info.md)。
 
 ### 获取最近待签单商机 (get_pending_signature)
 
@@ -69,7 +59,7 @@ lfy-cli pipeline get_pending_signature '{"gtm_id":0,"sales_ids":[],"customer_ids
 - `stage`：阶段过滤（0=全部）
 - 分页：`page`/`page_size`
 
-参见 [API 详情](references/get_pending_signature.md)。
+参见 [API 详情](pipeline_get_pending_signature.md)。
 
 ### 商机列表 (get_list)
 
@@ -79,9 +69,9 @@ lfy-cli pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":
 
 分页查询当前用户 list 权限范围内的商机，支持按 GTM、名称（ILIKE 不区分大小写）、状态、销售人员过滤。响应外层为 `{code, message, data:{name, total, pipelines}}`。
 
-**展示结果**：必须使用 [HTML 模板](templates/get_list.html) 生成商机清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](references/get_list_report.md)），不要在对话中贴大段 Markdown 表格。
+**展示结果**：必须使用 [HTML 模板](../templates/pipeline_get_list.html) 生成商机清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](pipeline_get_list_report.md)），不要在对话中贴大段 Markdown 表格。
 
-参见 [API 详情](references/get_list.md)。
+参见 [API 详情](pipeline_get_list.md)。
 
 ### 创建商机 (create_pipeline)
 
@@ -91,7 +81,7 @@ lfy-cli pipeline create_pipeline '{"gtm_id":17,"pipeline_name":"商机名称","c
 
 在未掌握 `gtm_id`、`customer_id`、`stage_id` 等 ID 前，应先通过其它查询能力取得后再调用。
 
-参见 [API 详情](references/create_pipeline.md)。
+参见 [API 详情](pipeline_create.md)。
 
 ### 修改商机 (update_pipeline)
 
@@ -116,7 +106,7 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 | `actual` | 合法数字，最多两位小数（可为 0 或负数） | — |
 | `stage_id` | >0，传 `get_sales_stage` 的 `stage_id`；≤0 或非法报参数错误 | `lfy-cli pipeline get_sales_stage '{"gtm_id":<gtm_id>}'` |
 
-参见 [API 详情](references/update_pipeline.md)。
+参见 [API 详情](pipeline_update.md)。
 
 ---
 
@@ -193,9 +183,9 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 **流程：**
 
 1. 若未指定阶段，`stage` 取 0；若提及「XX 阶段/XX%」映射为对应 `logic_phase`（如 80、90）
-2. 若用户点名某销售（且在自己权限内），先通过 `lfy-user` 技能拿到销售 `user_id`，填入 `sales_ids`；未点名则保持 `[]`
-3. 若用户点名某客户，先通过 `lfy-customer` 技能拿到 `customer_id`，填入 `customer_ids`；未点名则 `[]`
-4. 若按 GTM，填入 `gtm_id`（可通过 `lfy-customer` 技能获取 GTM 列表）
+2. 若用户点名某销售（且在自己权限内），先用 `user get_sales`（见 [user.md](user.md)）拿到销售 `user_id`，填入 `sales_ids`；未点名则保持 `[]`
+3. 若用户点名某客户，先用 `customer search`（见 [customer.md](customer.md)）拿到 `customer_id`，填入 `customer_ids`；未点名则 `[]`
+4. 若按 GTM，填入 `gtm_id`（可用 `customer get_gtms` 获取 GTM 列表）
 5. `page_size` 默认 10；`page` 默认 1
 6. 调用 `get_pending_signature`
 7. `error_message == "您暂无权限"` → 告知用户无商机 list 权限
@@ -228,8 +218,8 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 5. `error_message == "您暂无权限"` → 告知用户无 list 权限
 6. `data.total == 0` 或 `data.pipelines` 为空 → 页眉注明「未匹配到商机」，`tbody` 可为空
 7. **按 HTML 模板输出**（必须执行）：
-   - 读取 `templates/get_list.html` 的版式与样式
-   - 用 `data.total`、`page`、`pipelines` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](references/get_list_report.md)）
+   - 读取 `../templates/pipeline_get_list.html` 的版式与样式
+   - 用 `data.total`、`page`、`pipelines` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](pipeline_get_list_report.md)）
    - 写入临时 HTML 文件（如 `/tmp/lfy-pipeline-get_list-<时间戳>.html`）
    - **用浏览器打开**：macOS 执行 `open "<绝对路径>"`；Linux 执行 `xdg-open "<绝对路径>"`
 8. 对话中仅简要说明：报告已在浏览器打开、共 total 条、当前第 page 页、文件路径；勿再贴 Markdown 大表
@@ -260,7 +250,7 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 **流程：**
 
 1. 若用户只给了名称，先用 `search` 拿到 `pipeline_id`
-2. 按待改字段查 ID：`stage_id` → `get_sales_stage` 取 `stage_id`；`sales_id` → `lfy-cli user get_sales`；`status_id` / `tags` / `win_possibility` → `lfy-cli base get_options`（`object_id` 填当前 `pipeline_id`，`property` 见上表或 [update_pipeline.md](references/update_pipeline.md)）
+2. 按待改字段查 ID：`stage_id` → `get_sales_stage` 取 `stage_id`；`sales_id` → `lfy-cli user get_sales`；`status_id` / `tags` / `win_possibility` → `lfy-cli base get_options`（`object_id` 填当前 `pipeline_id`，`property` 见上表或 [update_pipeline.md](pipeline_update.md)）
 3. 仅把用户要改的字段放入 `updates`，调用 `update_pipeline`
 4. `error_message`/CLI `Error` 含「您暂无权限」→ 说明无 detail 或 sales 不在白名单；含「商机不存在」→ 重新检查 `pipeline_id`
 5. 成功后展示 `pipeline_id` 与 `updated_time`，并对已修改字段做回显确认

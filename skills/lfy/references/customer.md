@@ -1,13 +1,3 @@
----
-name: lfy-customer
-description: 客户查询、创建与修改技能。当用户需要：(1) 我的客户列表/清单（须用 get_list，勿用 search），(2) 按关键字搜索客户，(3) 获取 GTM 列表，(4) 客户详情，(5) 创建客户，(6) 修改客户字段时使用此技能。
-version: 1.6.0
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli customer --help"
----
-
 # 客户技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -47,7 +37,7 @@ lfy-cli customer search '{"keywords": "<keywords>"}'
 
 按关键字搜索客户，支持模糊匹配。**不用于**「我的客户列表/清单」类需求（见上文路由表，应使用 `get_list`）。
 
-参见 [API 详情](references/search.md)。
+参见 [API 详情](customer_search.md)。
 
 ### 获取客户详情 (get_details)
 
@@ -57,7 +47,7 @@ lfy-cli customer get_details '{"customer_id": 123}'
 
 获取指定客户的详细信息，包含客户主档、商机列表、联系人、跟进记录、近期相关任务（schedule）。需要客户详情权限。
 
-参见 [API 详情](references/get_details.md)。
+参见 [API 详情](customer_get_details.md)。
 
 ### 获取 GTM 列表 (get_gtms)
 
@@ -67,7 +57,7 @@ lfy-cli customer get_gtms '{}'
 
 获取所有 GTM 列表。
 
-参见 [API 详情](references/get-gtms.md)。
+参见 [API 详情](customer_get_gtms.md)。
 
 ### 创建客户 (create_customer)
 
@@ -75,7 +65,7 @@ lfy-cli customer get_gtms '{}'
 lfy-cli customer create_customer '{"gtm_id": 1, "customer_name": "名称", "sales_id": 0}'
 ```
 
-参见 [API 详情](references/create_customer.md)。
+参见 [API 详情](customer_create.md)。
 
 ### 修改客户 (update_customer)
 
@@ -83,7 +73,7 @@ lfy-cli customer create_customer '{"gtm_id": 1, "customer_name": "名称", "sale
 lfy-cli customer update_customer '{"customer_id": 123, "updates": {"customer_alias": "简称"}}'
 ```
 
-参见 [API 详情](references/update_customer.md)。
+参见 [API 详情](customer_update.md)。
 
 ### 客户列表 (get_list)
 
@@ -95,9 +85,9 @@ lfy-cli customer get_list '{"gtm_id":0,"customer_name":"","customer_status_ids":
 
 与 `search` 互补：`search` 用于轻量关键字搜 ID；`get_list` 用于带筛选、分页与业务指标的列表。
 
-**展示结果**：必须使用 [HTML 模板](templates/get_list.html) 生成客户清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](references/get_list_report.md)），不要在对话中贴大段 Markdown 表格。
+**展示结果**：必须使用 [HTML 模板](../templates/customer_get_list.html) 生成客户清单页面，写入临时文件后用系统浏览器打开（步骤见 [get_list HTML 报告](customer_get_list_report.md)），不要在对话中贴大段 Markdown 表格。
 
-参见 [API 详情](references/get_list.md)。
+参见 [API 详情](customer_get_list.md)。
 
 ---
 
@@ -209,8 +199,8 @@ Error: 客户不存在
 5. 错误含「无权限」→ 告知用户无 list 权限
 6. `total == 0` 或 `customers` 为空 → 页眉注明「未匹配到客户」，`tbody` 可为空
 7. **按 HTML 模板输出**（必须执行）：
-   - 读取 `templates/get_list.html` 的版式与样式
-   - 用 `total`、`page`、`customers` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](references/get_list_report.md)）
+   - 读取 `../templates/customer_get_list.html` 的版式与样式
+   - 用 `total`、`page`、`customers` 填充页眉、状态徽章与表格行（字段映射见 [get_list_report.md](customer_get_list_report.md)）
    - 写入临时 HTML 文件（如 `/tmp/lfy-customer-get_list-<时间戳>.html`）
    - **用浏览器打开**：macOS 执行 `open "<绝对路径>"`；Linux 执行 `xdg-open "<绝对路径>"`
 8. 对话中仅简要说明：报告已在浏览器打开、共 total 条、当前第 page 页、文件路径；勿再贴 Markdown 大表
