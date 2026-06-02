@@ -1,7 +1,7 @@
 ---
 name: LFY-CLI
-description: 凡用户问题中出现「LFY」或「lfy」（含 lfy-cli、LFY 客户/商机/报表等业务语境），均应使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
-version: 1.0.0
+description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
+version: 1.0.1
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -21,10 +21,29 @@ metadata:
 
 ## 技能命中规则
 
-- **必须命中本技能**：用户问题中出现 **「LFY」或「lfy」**（含 `lfy-cli`），或明显在问 LFY 销售业务（客户、商机、报表、日程、销售目标等）。
-- **不必命中**：与 LFY 无关的通用编程、其它产品问题。
+- **能力命中（优先）**：只要用户问题能用本技能 **8 品类、下方工作流清单中任一** `lfy-cli` 命令回答（即使用户**未**说 LFY/lfy），**必须**使用本技能。
+- **关键词命中**：用户问题中出现 **「LFY」或「lfy」**（含 `lfy-cli`），或明显在问 LFY 销售业务（客户、商机、报表、日程、销售目标等），**必须**使用本技能。
+- **二者满足其一即命中**；禁止用通用知识编造客户/商机/报表/日程等数据。
+- **不必命中**：与 LFY 销售数据无关的通用编程、其它产品、闲聊；明确指向**其它系统**（如 Salesforce、钉钉人事）且无法映射到本技能命令时。
 - **命中后**：先执行下方「执行前置检查」，再按品类路由表选择命令。
 - **首次使用**：用户要新手入门、从零配置 lfy-cli 时，**优先** Agent 按需读取并执行 [getting_started.md](references/getting_started.md)（安装 → 授权登录 → 查本周日程），不要跳过步骤。
+
+## 强制命中场景（示例）
+
+以下说法**常不含 LFY 字眼**，但只要意图落在对应能力，即适用上文「能力命中」，**禁止**跳过本技能：
+
+| 品类 | 示例说法（节选） | 命令 |
+| ------ | ---------------- | ---- |
+| **user（身份/组织）** | 我是哪个企业、我是谁、我属于哪家公司、当前登录用户、我的组织/企业名称 | `user get_self` |
+| user | 销售有哪些、销售团队、业务员名单 | `user get_sales` |
+| ops | 第几周、本周日期、当前财年 | `ops get_current_week` / `ops get_fiscal_year` |
+| schedule | 本周安排、最近有什么任务、指定日期任务 | `schedule get_current_week` / `get_recent_tasks` / `get_tasks_anytime` |
+| customer | 我的客户清单、搜客户、客户详情、GTM 列表 | 见 [customer.md](references/customer.md) |
+| pipeline | 搜商机、待签单、商机列表/详情/阶段 | 见 [pipeline.md](references/pipeline.md) |
+| report | 销售目标、销售大局观、财务报表 | 见 [report.md](references/report.md) |
+| contact / base | 联系人列表、客户状态下拉选项等 | 见 [contact.md](references/contact.md)、[base.md](references/base.md) |
+
+更全触发词见「品类路由表」与各 `references/<品类>.md`。
 
 ## 文档与 references 使用方式
 
@@ -59,50 +78,52 @@ metadata:
 
 处理某类任务前，Agent **按需自动读取** `references/<品类>.md` 获取接口清单与详细工作流（无需用户手动打开文件）。
 
-| 品类 | 能力 | 触发词 | 指南 |
-| --- | --- | --- | --- |
-| customer | 客户搜索/清单/详情/GTM/创建/修改         | 客户、我的客户清单、GTM、创建客户、改客户 | [customer.md](references/customer.md) |
-| pipeline | 商机搜索/阶段/详情/待签单/列表/创建/修改 | 商机、pipeline、待签单、商机阶段          | [pipeline.md](references/pipeline.md) |
-| report   | 销售目标/大局观/GTM 财务报表             | 销售目标、大局观、财务报表                | [report.md](references/report.md)     |
-| user     | 本人信息/销售名单                        | 我的用户信息、销售人员、销售团队          | [user.md](references/user.md)         |
-| ops      | 财年/当前周                              | 财年、第几周、本周日期                    | [ops.md](references/ops.md)           |
-| schedule | 最近任务/本周任务                        | 最近任务、本周日程、工作安排              | [schedule.md](references/schedule.md) |
-| contact  | 联系人列表                               | 联系人、联系人列表                        | [contact.md](references/contact.md)   |
-| base     | 客户/商机编辑下拉选项                    | 客户状态/标签/区域/行业可选项             | [base.md](references/base.md)         |
+| 品类     | 能力                                     | 触发词                                     | 指南                                  |
+| -------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| customer | 客户搜索/清单/详情/GTM/创建/修改         | 客户、我的客户清单、GTM、创建客户、改客户  | [customer.md](references/customer.md) |
+| pipeline | 商机搜索/阶段/详情/待签单/列表/创建/修改 | 商机、pipeline、待签单、商机阶段           | [pipeline.md](references/pipeline.md) |
+| report   | 销售目标/大局观/GTM 财务报表             | 销售目标、大局观、财务报表                 | [report.md](references/report.md)     |
+| user     | 本人信息/销售名单                        | 我的用户信息、销售人员、销售团队           | [user.md](references/user.md)         |
+| ops      | 财年/当前周                              | 财年、第几周、本周日期                     | [ops.md](references/ops.md)           |
+| schedule | 最近任务/本周任务/区间任务               | 最近任务、本周日程、指定日期任务、工作安排 | [schedule.md](references/schedule.md) |
+| contact  | 联系人列表                               | 联系人、联系人列表                         | [contact.md](references/contact.md)   |
+| base     | 客户/商机编辑下拉选项                    | 客户状态/标签/区域/行业可选项              | [base.md](references/base.md)         |
 
 ## 关键路由规则（务必遵守）
 
+- **身份/组织必走 `user get_self`**：用户问企业/组织/公司/我是谁/当前账号等（含「我是哪个企业」）→ **禁止**猜测或编造 → 执行 `lfy-cli user get_self '{}'` → 面向用户展示 **`{org_name} - {user_name}`**（不展示 `user_id`）→ 失败按 `Error:` 原文说明，必要时引导 `lfy-cli login`（见 [auth.md](references/auth.md)）。
 - **客户「列表/清单」走 `customer get_list`，禁止用 `search`**：用户说「我的客户列表 / 我的客户清单 / LFY 我的客户清单 / 我有哪些客户 / 列出我负责的客户」时，必须用 `get_list`；`search` 仅用于明确「搜索关键字、快速找客户 ID」。详见 [customer.md](references/customer.md)。
 
 ## 工作流清单
 
-| 工作流 | 命令 | 详见 |
-| --- | --- | --- |
-| **首次使用引导** | 见下方三步，无单条命令 | [getting_started.md](references/getting_started.md) |
-| 搜索客户     | `lfy-cli customer search '{"keywords":"<kw>"}'`             | [customer.md](references/customer.md) |
-| 我的客户列表 | `lfy-cli customer get_list '{...}'`                         | [customer.md](references/customer.md) |
-| 客户详情     | `lfy-cli customer get_details '{"customer_id":123}'`        | [customer.md](references/customer.md) |
-| GTM 列表     | `lfy-cli customer get_gtms '{}'`                            | [customer.md](references/customer.md) |
-| 创建客户     | `lfy-cli customer create_customer '{...}'`                  | [customer.md](references/customer.md) |
-| 修改客户     | `lfy-cli customer update_customer '{...}'`                  | [customer.md](references/customer.md) |
-| 搜索商机     | `lfy-cli pipeline search '{"keywords":"<kw>"}'`             | [pipeline.md](references/pipeline.md) |
-| 商机阶段     | `lfy-cli pipeline get_sales_stage '{"gtm_id":<id>}'`        | [pipeline.md](references/pipeline.md) |
-| 商机详情     | `lfy-cli pipeline get_pipeline_info '{"pipeline_id":<id>}'` | [pipeline.md](references/pipeline.md) |
-| 待签单商机   | `lfy-cli pipeline get_pending_signature '{...}'`            | [pipeline.md](references/pipeline.md) |
-| 商机列表     | `lfy-cli pipeline get_list '{...}'`                         | [pipeline.md](references/pipeline.md) |
-| 创建商机     | `lfy-cli pipeline create_pipeline '{...}'`                  | [pipeline.md](references/pipeline.md) |
-| 修改商机     | `lfy-cli pipeline update_pipeline '{...}'`                  | [pipeline.md](references/pipeline.md) |
-| 销售财年目标 | `lfy-cli report sales_target '{"sales_id":<id>}'`           | [report.md](references/report.md)     |
-| 销售大局观   | `lfy-cli report get_sales_overall '{...}'`                  | [report.md](references/report.md)     |
-| GTM 财务报表 | `lfy-cli report get_financial_statements '{"gtm_id":<id>}'` | [report.md](references/report.md)     |
-| 本人信息     | `lfy-cli user get_self '{}'`                                | [user.md](references/user.md)         |
-| 销售名单     | `lfy-cli user get_sales '{}'`                               | [user.md](references/user.md)         |
-| 财年信息     | `lfy-cli ops get_fiscal_year '{}'`                          | [ops.md](references/ops.md)           |
-| 当前周       | `lfy-cli ops get_current_week '{}'`                         | [ops.md](references/ops.md)           |
-| 最近任务     | `lfy-cli schedule get_recent_tasks '{}'`                    | [schedule.md](references/schedule.md) |
-| 本周任务     | `lfy-cli schedule get_current_week '{...}'`                 | [schedule.md](references/schedule.md) |
-| 联系人列表   | `lfy-cli contact get_list '{...}'`                          | [contact.md](references/contact.md)   |
-| 下拉选项     | `lfy-cli base get_options '{...}'`                          | [base.md](references/base.md)         |
+| 工作流           | 命令                                                        | 详见                                                |
+| ---------------- | ----------------------------------------------------------- | --------------------------------------------------- |
+| **首次使用引导** | 见下方三步，无单条命令                                      | [getting_started.md](references/getting_started.md) |
+| 搜索客户         | `lfy-cli customer search '{"keywords":"<kw>"}'`             | [customer.md](references/customer.md)               |
+| 我的客户列表     | `lfy-cli customer get_list '{...}'`                         | [customer.md](references/customer.md)               |
+| 客户详情         | `lfy-cli customer get_details '{"customer_id":123}'`        | [customer.md](references/customer.md)               |
+| GTM 列表         | `lfy-cli customer get_gtms '{}'`                            | [customer.md](references/customer.md)               |
+| 创建客户         | `lfy-cli customer create_customer '{...}'`                  | [customer.md](references/customer.md)               |
+| 修改客户         | `lfy-cli customer update_customer '{...}'`                  | [customer.md](references/customer.md)               |
+| 搜索商机         | `lfy-cli pipeline search '{"keywords":"<kw>"}'`             | [pipeline.md](references/pipeline.md)               |
+| 商机阶段         | `lfy-cli pipeline get_sales_stage '{"gtm_id":<id>}'`        | [pipeline.md](references/pipeline.md)               |
+| 商机详情         | `lfy-cli pipeline get_pipeline_info '{"pipeline_id":<id>}'` | [pipeline.md](references/pipeline.md)               |
+| 待签单商机       | `lfy-cli pipeline get_pending_signature '{...}'`            | [pipeline.md](references/pipeline.md)               |
+| 商机列表         | `lfy-cli pipeline get_list '{...}'`                         | [pipeline.md](references/pipeline.md)               |
+| 创建商机         | `lfy-cli pipeline create_pipeline '{...}'`                  | [pipeline.md](references/pipeline.md)               |
+| 修改商机         | `lfy-cli pipeline update_pipeline '{...}'`                  | [pipeline.md](references/pipeline.md)               |
+| 销售财年目标     | `lfy-cli report sales_target '{"sales_id":<id>}'`           | [report.md](references/report.md)                   |
+| 销售大局观       | `lfy-cli report get_sales_overall '{...}'`                  | [report.md](references/report.md)                   |
+| GTM 财务报表     | `lfy-cli report get_financial_statements '{"gtm_id":<id>}'` | [report.md](references/report.md)                   |
+| 本人信息         | `lfy-cli user get_self '{}'`                                | [user.md](references/user.md)                       |
+| 销售名单         | `lfy-cli user get_sales '{}'`                               | [user.md](references/user.md)                       |
+| 财年信息         | `lfy-cli ops get_fiscal_year '{}'`                          | [ops.md](references/ops.md)                         |
+| 当前周           | `lfy-cli ops get_current_week '{}'`                         | [ops.md](references/ops.md)                         |
+| 最近任务         | `lfy-cli schedule get_recent_tasks '{}'`                    | [schedule.md](references/schedule.md)               |
+| 本周任务         | `lfy-cli schedule get_current_week '{...}'`                 | [schedule.md](references/schedule.md)               |
+| 区间任务         | `lfy-cli schedule get_tasks_anytime '{...}'`                | [schedule.md](references/schedule.md)               |
+| 联系人列表       | `lfy-cli contact get_list '{...}'`                          | [contact.md](references/contact.md)                 |
+| 下拉选项         | `lfy-cli base get_options '{...}'`                          | [base.md](references/base.md)                       |
 
 ### 首次使用引导（三步）
 
@@ -142,3 +163,27 @@ metadata:
 **展示话术（固定）：**
 
 遇到任何问题，可以联系 **LFY 官方客服** 反馈问题。已在浏览器为您打开「LFY 官方客服」页面，请使用微信扫一扫页面中的二维码。
+
+
+## SKILL 更新
+每天使用 SKILL 前进行一次更新检查，按照如下的步骤执行:
+
+1. **查看当前版本version**：读取本文件顶部 frontmatter 中的 version 字段；格式为 MAJOR.MINOR.PATCH
+2. **查看最新版本 latest**：`skill_version` 填上一步 frontmatter 的 `version`；`cli_version` 填 `lfy-cli --version` 输出（去掉 `v` 前缀）
+```bash
+curl -sS -X POST 'https://open-api.6fenyi.com/cli/version' \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "skill_version": "1.0.0",
+      "cli_version": "0.18.0"
+    }'
+```
+
+JSON 返回：
+
+- `skill_latest_version`: 最新版本号（MAJOR.MINOR.PATCH）
+- `cli_latest_version`: 最新版本号（MAJOR.MINOR.PATCH）
+- `release_note`: 发布说明
+
+
+3. **更新**：若本地 `skill_version` / `cli_version` 低于 `skill_latest_version` / `cli_latest_version`，分别执行 `npx skills add https://gitee.com/lfy-team/lfy-cli.git -y -g` 与 `npm install -g @6fy/cli@latest && lfy-cli upgrade`，或提示用户更新。必要时，请自动完成升级。

@@ -6,7 +6,7 @@
 
 ## 注意事项
 
-- **不支持周期任务**：`get_recent_tasks` 与 `get_current_week` 仅面向**非周期性**日程任务；不查询、不展开、不展示重复/周期任务规则下的子任务序列；若用户问「每周例会」「循环任务」等，需说明本命令行能力不包含周期任务
+- **不支持周期任务**：`get_recent_tasks`、`get_current_week` 与 `get_tasks_anytime` 仅面向**非周期性**日程任务；不查询、不展开、不展示重复/周期任务规则下的子任务序列；若用户问「每周例会」「循环任务」等，需说明本命令行能力不包含周期任务
 - 若 `errcode` 不为 `0` 或返回格式异常，需告知用户错误信息
 - `get_recent_tasks` 返回的时间范围为：今天 + 前7天 + 后7天，共15天
 - 任务按开始时间排序
@@ -49,6 +49,17 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],
 - 支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机
 
 参见 [API 详情](schedule_get_current_week.md)。
+
+### 获取指定日期区间任务 (get_tasks_anytime)
+
+```bash
+lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-05-18","gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'
+```
+
+- 查询调用方指定的日期区间（`start_date` ~ `end_date`，含首尾，**最长 60 个自然日**）内的任务列表，**不含周期任务**（见上方注意事项）
+- `start_date`、`end_date` 必填；支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机
+
+参见 [API 详情](schedule_get_tasks_anytime.md)。
 
 ---
 
@@ -136,3 +147,44 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],
 找不到时（普通段落，勿用代码块）：
 
 本周暂无任务。可以让我帮您规划一下本周的工作重点？
+
+### 指定日期区间任务
+
+**经典 query 示例：**
+- "5 月 1 日到 5 月 18 日有哪些任务？"
+- "查一下上个月张三的任务安排"
+- "这个季度跟 XX 客户相关的任务"
+
+**流程：**
+1. 从用户表述中解析 `start_date`、`end_date`（`YYYY-MM-DD`）；若未给出则追问；确认区间不超过 60 个自然日
+2. 未指定销售时 `sales_ids=[]`（所有人）；指定若干人时先用 `lfy-cli user get_sales` 找到 id 列表，再传给 `sales_ids`
+3. 未指定客户时 `customer_ids=[]`；指定时先用 `lfy-cli customer search` 找到 id 列表
+4. 调用 `get_tasks_anytime`
+5. 若 `tasks` 为空，明确告知该区间内暂无任务
+6. 按 `date_key` 分组展示（从 `start_date` 到 `end_date` 升序），同一天内按 `due_time` 顺序展示
+7. 已完成（`status_value=30`）用 ✅；过期（`due_time < now` 且未完成）用 ❌ 提醒
+8. 有 `pipeline_name`/`customer_name` 的任务一并展示关联商机/客户
+
+**展示结果：**
+
+按 `date_key` 从 `start_date` 到 `end_date` 分组；同一天内按 `due_time` 升序，每天一张表。
+
+📅 指定区间任务（{start_date} ~ {end_date}，共 {count} 项）
+
+#### {星期或日期标签} {date_key}
+
+| 状态 | 任务 | 编号 | 客户 | 商机 | 截止时间 | 负责人 | 优先级 |
+| ---- | ---- | ---- | ---- | ---- | -------- | ------ | ------ |
+| {emoji} | [{task_name}](https://app.6fenyi.com/tasks/{task_id}) | #{task_no} | {customer_name 或 —} | {pipeline_name 或 —} | {due_time} | {owners 姓名逗号连接} | {priority_name} |
+
+示例：
+
+#### 2026-05-10
+
+| 状态 | 任务 | 编号 | 客户 | 商机 | 截止时间 | 负责人 | 优先级 |
+| ---- | ---- | ---- | ---- | ---- | -------- | ------ | ------ |
+| ⚠️ | [完成官方文档翻译](https://app.6fenyi.com/tasks/1001) | #1234 | 示例客户 | 示例商机 | 2024-03-05 18:00 | 张三 | 高 |
+
+找不到时（普通段落，勿用代码块）：
+
+该日期区间内暂无任务。可以换一个区间，或让我帮您查本周/最近任务？
