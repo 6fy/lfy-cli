@@ -1,5 +1,11 @@
 # @6fy/cli-win32-x64
 
+## 0.19.0
+
+### Minor Changes
+
+- 无
+
 ## 0.18.0
 
 ### Minor Changes
