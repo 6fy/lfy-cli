@@ -1,5 +1,11 @@
 # @6fy/cli-darwin-x64
 
+## 0.20.0
+
+### Minor Changes
+
+- 支持创建日程
+
 ## 0.19.0
 
 ### Minor Changes
