@@ -28,9 +28,12 @@ cargo run -- contact get_list '{"gtm_id":0,"contacts_name":"张","sales_ids":[],
 ## 6.4 创建日程
 
 ```bash
-cargo run -- schedule create_task '{"task_name":"名称","start_time":"2026-06-04","end_time":"2026-06-07"}'
+cargo run -- schedule create_task '{"task_name":"名称","start_time":"2026-06-04","end_time":"2026-06-07","content":"<p>任务详细内容，支持 HTML</p><ul><li>跟进客户 A</li><li>准备方案</li></ul>"}'
 
 cargo run -- schedule create_task '{"task_name":"名称","end_time":"2026-06-12"}'
+
+# 仅截止日期 + 任务详情
+cargo run -- schedule create_task '{"task_name":"跟进客户","end_time":"2026-06-12","content":"<p>下午电话确认需求，备注重点价格与交付周期。</p>"}'
 ```
 
 ## 6.5 获取日程列表

@@ -69,7 +69,7 @@ lfy-cli schedule create_task '{"task_name":"名称","end_time":"2026-06-07"}'
 
 - 创建**非周期**任务；负责人固定为当前登录用户
 - `task_name` 必填；`end_time` 必填；`start_time` 可省略（省略时等于 `end_time`）
-- `content` 可传但首期不落库
+- `content` 可选；HTML 详情，≤ 10000 字符；非空时写入 MongoDB 并关联任务
 
 参见 [API 详情](schedule_create_task.md)。
 
@@ -213,8 +213,8 @@ lfy-cli schedule create_task '{"task_name":"名称","end_time":"2026-06-07"}'
 2. 用户只给**某一天**（无时分）→ `start_time` = `end_time` = 该日（`YYYY-MM-DD`）
 3. 用户给**区间** → 分别填 `start_time`、`end_time`
 4. 用户提到**几点几分** → 说明 CLI 只支持到自然日，询问是否按该日创建
-5. 调用 `create_task`；成功展示任务名、日期、`task_id` 与详情链接
-6. 若用户提供了详情 HTML，可说明需在 App 内补充（首期 CLI 不写 content）
+5. 调用 `create_task`；成功展示任务名、日期、`task_id`、`detail_saved` 与详情链接
+6. 若用户提供了详情，填入 `content`；若响应 `detail_saved=false`，转述 `warning_message`
 
 **展示结果（普通段落）：**
 
