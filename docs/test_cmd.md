@@ -25,6 +25,20 @@ cargo run -- contact get_list '{"gtm_id":24685820686,"contacts_name":"","sales_i
 cargo run -- contact get_list '{"gtm_id":0,"contacts_name":"张","sales_ids":[],"page_size":10,"page":1}'
 ```
 
+## 6.4 创建日程
+
+```bash
+cargo run -- schedule create_task '{"task_name":"名称","start_time":"2026-06-04","end_time":"2026-06-07"}'
+
+cargo run -- schedule create_task '{"task_name":"名称","end_time":"2026-06-12"}'
+```
+
+## 6.5 获取日程列表
+
+```bash
+cargo run -- schedule get_recent_tasks '{}'
+```
+
 ## 10.2 测试获取下拉数据命令
 
 ```bash

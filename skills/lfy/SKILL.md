@@ -1,7 +1,7 @@
 ---
 name: LFY-CLI
-description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
-version: 1.0.1
+description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务、创建任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
+version: 1.0.2
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -37,7 +37,7 @@ metadata:
 | **user（身份/组织）** | 我是哪个企业、我是谁、我属于哪家公司、当前登录用户、我的组织/企业名称 | `user get_self` |
 | user | 销售有哪些、销售团队、业务员名单 | `user get_sales` |
 | ops | 第几周、本周日期、当前财年 | `ops get_current_week` / `ops get_fiscal_year` |
-| schedule | 本周安排、最近有什么任务、指定日期任务 | `schedule get_current_week` / `get_recent_tasks` / `get_tasks_anytime` |
+| schedule | 本周安排、最近有什么任务、指定日期任务、创建任务/日程 | `schedule get_current_week` / `get_recent_tasks` / `get_tasks_anytime` / `create_task` |
 | customer | 我的客户清单、搜客户、客户详情、GTM 列表 | 见 [customer.md](references/customer.md) |
 | pipeline | 搜商机、待签单、商机列表/详情/阶段 | 见 [pipeline.md](references/pipeline.md) |
 | report | 销售目标、销售大局观、财务报表 | 见 [report.md](references/report.md) |
@@ -72,7 +72,7 @@ metadata:
 - **技术字段**：`*_id`、`week_no`、`status_value` 等技术字段默认不展示，面向业务用户展示业务字段。
 - **时间**：日期均为北京时间 `YYYY-MM-DD HH:mm:ss`。
 - **列表展示**：客户/商机列表类需求用 HTML 模板写临时文件并用系统浏览器打开（macOS `open`，Linux `xdg-open`），不要在对话中贴大段 Markdown 表格。
-- **只读边界**：`report`/`user`/`ops`/`schedule`/`contact`/`base` 当前为只读；写操作仅 `customer`(create/update) 与 `pipeline`(create/update)，且受权限与 `sales_ids` 白名单门禁。
+- **只读边界**：`report`/`user`/`ops`/`contact`/`base` 当前为只读；写操作含 `customer`(create/update)、`pipeline`(create/update)、`schedule`(create_task)；customer/pipeline 写操作受权限与 `sales_ids` 白名单门禁，schedule 创建仅能为本人
 
 ## 品类路由表
 
@@ -85,7 +85,7 @@ metadata:
 | report   | 销售目标/大局观/GTM 财务报表             | 销售目标、大局观、财务报表                 | [report.md](references/report.md)     |
 | user     | 本人信息/销售名单                        | 我的用户信息、销售人员、销售团队           | [user.md](references/user.md)         |
 | ops      | 财年/当前周                              | 财年、第几周、本周日期                     | [ops.md](references/ops.md)           |
-| schedule | 最近任务/本周任务/区间任务               | 最近任务、本周日程、指定日期任务、工作安排 | [schedule.md](references/schedule.md) |
+| schedule | 最近任务/本周任务/区间任务/创建任务     | 最近任务、本周日程、指定日期任务、创建任务、工作安排 | [schedule.md](references/schedule.md) |
 | contact  | 联系人列表                               | 联系人、联系人列表                         | [contact.md](references/contact.md)   |
 | base     | 客户/商机编辑下拉选项                    | 客户状态/标签/区域/行业可选项              | [base.md](references/base.md)         |
 
@@ -122,6 +122,7 @@ metadata:
 | 最近任务         | `lfy-cli schedule get_recent_tasks '{}'`                    | [schedule.md](references/schedule.md)               |
 | 本周任务         | `lfy-cli schedule get_current_week '{...}'`                 | [schedule.md](references/schedule.md)               |
 | 区间任务         | `lfy-cli schedule get_tasks_anytime '{...}'`                | [schedule.md](references/schedule.md)               |
+| 创建任务         | `lfy-cli schedule create_task '{...}'`                      | [schedule.md](references/schedule.md)               |
 | 联系人列表       | `lfy-cli contact get_list '{...}'`                          | [contact.md](references/contact.md)                 |
 | 下拉选项         | `lfy-cli base get_options '{...}'`                          | [base.md](references/base.md)                       |
 

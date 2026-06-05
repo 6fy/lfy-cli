@@ -1,8 +1,8 @@
-# 日程任务查询技能
+# 日程任务技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
 
-通过 `lfy-cli schedule <接口名> '{}'` 与日程系统交互。
+通过 `lfy-cli schedule <接口名> '{}'` 与日程系统交互（查询与创建）。
 
 ## 注意事项
 
@@ -11,7 +11,7 @@
 - `get_recent_tasks` 返回的时间范围为：今天 + 前7天 + 后7天，共15天
 - 任务按开始时间排序
 - `task_type`、`status_value` 等技术字段默认不展示；`task_id` 仅用于拼任务详情链接，不在列表中单独列出
-- 当前版本不支持对日程任务进行任何修改操作
+- 当前版本**不支持修改/删除**已有任务；**支持创建**个人非周期任务，见 [create_task](schedule_create_task.md)
 - **任务详情页**：`https://app.6fenyi.com/tasks/{task_id}`（将 `{task_id}` 换为接口返回的 `task_id` 数值）
 
 ## 展示格式约定（对话内 Markdown 表格）
@@ -60,6 +60,18 @@ lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-
 - `start_date`、`end_date` 必填；支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机
 
 参见 [API 详情](schedule_get_tasks_anytime.md)。
+
+### 创建日程/任务 (create_task)
+
+```bash
+lfy-cli schedule create_task '{"task_name":"名称","end_time":"2026-06-07"}'
+```
+
+- 创建**非周期**任务；负责人固定为当前登录用户
+- `task_name` 必填；`end_time` 必填；`start_time` 可省略（省略时等于 `end_time`）
+- `content` 可传但首期不落库
+
+参见 [API 详情](schedule_create_task.md)。
 
 ---
 
@@ -188,3 +200,23 @@ lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-
 找不到时（普通段落，勿用代码块）：
 
 该日期区间内暂无任务。可以换一个区间，或让我帮您查本周/最近任务？
+
+### 创建任务
+
+**经典 query 示例：**
+- "帮我创建一个下周三的任务"
+- "6 月 10 号提醒我跟进客户"
+- "创建一个任务叫 XXX"
+
+**流程：**
+1. 从用户表述解析任务名称；若未给出则追问
+2. 用户只给**某一天**（无时分）→ `start_time` = `end_time` = 该日（`YYYY-MM-DD`）
+3. 用户给**区间** → 分别填 `start_time`、`end_time`
+4. 用户提到**几点几分** → 说明 CLI 只支持到自然日，询问是否按该日创建
+5. 调用 `create_task`；成功展示任务名、日期、`task_id` 与详情链接
+6. 若用户提供了详情 HTML，可说明需在 App 内补充（首期 CLI 不写 content）
+
+**展示结果（普通段落）：**
+
+已为您创建任务「{task_name}」，时间 {start_time} ~ {end_time}。  
+详情页：[{task_name}](https://app.6fenyi.com/tasks/{task_id})

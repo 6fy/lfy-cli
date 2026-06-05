@@ -40,7 +40,7 @@ pub fn get_categories() -> Vec<CategoryInfo> {
 
     categories.push(CategoryInfo {
         name: "schedule",
-        description: "日程 - 提供日历中工作任务相关查询",
+        description: "日程 - 提供日历中工作任务相关查询与创建",
     });
 
     categories.push(CategoryInfo {
