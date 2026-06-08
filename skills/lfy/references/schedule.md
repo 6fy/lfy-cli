@@ -60,12 +60,24 @@ lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],
 
 ### 获取指定日期区间任务 (get_tasks_anytime)
 
+> **调用前置（缺任一项不要调用，否则会报 `missing start_date` / `missing end_date`）：**
+> 1. 已确定 `start_date`（`YYYY-MM-DD`）
+> 2. 已确定 `end_date`（`YYYY-MM-DD`）
+> 3. 二者间隔 ≤ 60 个自然日
+> 缺日期时：先向用户追问，或改用 `get_recent_tasks`；**禁止**用 `{}` 试探。
+
 ```bash
 lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-05-18","gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'
 ```
 
 - 查询调用方指定的日期区间（`start_date` ~ `end_date`，含首尾，**最长 60 个自然日**）内的任务列表，**不含周期任务**（见上方注意事项）
 - `start_date`、`end_date` 必填；支持按 GTM / 销售 / 客户过滤。`sales_ids=[]` 表示查**所有人**（不走权限表）；非空时按 `c.user_id IN (sales_ids) AND user_type=2` 多人过滤；服务端会过滤 `<=0`、去重、截前 50。返回带 `name`、`start_date`、`end_date` 外壳，`tasks[]` 每条含 `date_key`、`status_color`、`tags`、`owners`、关联的客户和商机
+
+**把口语转成日期（`start_date` / `end_date`）：**
+
+- 需要「今天」锚点时，先用 `lfy-cli ops get_current_week '{}'` 取当前日期，**不要**凭模型内部时钟猜。
+- 「上个月」= 上月 1 日 ~ 上月最后一日；「本季度」= 季度首日 ~ 今日；「最近一个月」= 今日往前 30 天 ~ 今日。
+- 跨度 > 60 天 → 截断为 60 天或分段多次调用，并告知用户。
 
 参见 [API 详情](schedule_get_tasks_anytime.md)。
 

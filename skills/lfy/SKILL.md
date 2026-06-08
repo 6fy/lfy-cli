@@ -69,6 +69,11 @@ metadata:
 ## 通用约定（所有品类适用）
 
 - **错误处理**：命令输出以 `Error:` 开头或 JSON 含 `error_message` 时，按原文向用户说明，**勿编造数据**。
+- **结构化报错自愈**（命中即按动作处理，不要把同一错误原样重试）：
+  - `missing <字段>`（如 `missing start_date`）→ 补齐该必填字段或向用户追问后再调用
+  - `日期区间不能超过60天` → 缩短区间或分段多次调用
+  - `结束日期不能早于开始日期` → 交换/修正日期后重试
+  - 其它 `Error:` → 原文转述，不编造
 - **技术字段**：`*_id`、`week_no`、`status_value` 等技术字段默认不展示，面向业务用户展示业务字段。
 - **时间**：日期均为北京时间 `YYYY-MM-DD HH:mm:ss`。
 - **列表展示**：客户/商机列表类需求用 HTML 模板写临时文件并用系统浏览器打开（macOS `open`，Linux `xdg-open`），不要在对话中贴大段 Markdown 表格。
@@ -94,6 +99,11 @@ metadata:
 - **身份/组织必走 `user get_self`**：用户问企业/组织/公司/我是谁/当前账号等（含「我是哪个企业」）→ **禁止**猜测或编造 → 执行 `lfy-cli user get_self '{}'` → 面向用户展示 **`{org_name} - {user_name}`**（不展示 `user_id`）→ 失败按 `Error:` 原文说明，必要时引导 `lfy-cli login`（见 [auth.md](references/auth.md)）。
 - **客户「列表/清单」走 `customer get_list`，禁止用 `search`**：用户说「我的客户列表 / 我的客户清单 / LFY 我的客户清单 / 我有哪些客户 / 列出我负责的客户」时，必须用 `get_list`；`search` 仅用于明确「搜索关键字、快速找客户 ID」。详见 [customer.md](references/customer.md)。
 - **schedule 写能力边界**：用户要「新建/添加/创建一个任务或日程」→ `schedule create_task`；用户要「改/删/完成/取消/延期 **已有** `task_id` 的任务」→ 说明 CLI 不支持，引导 Web 详情页 `https://app.6fenyi.com/tasks/{task_id}`；**禁止**因「不支持修改已有任务」而拒绝 `create_task`。详见 [schedule.md](references/schedule.md)。
+- **schedule 查询命令选择（按顺序匹配，命中即停）**：
+  1. 问句**无明确日期/区间** → `get_recent_tasks`（参数固定 `{}`，最稳）
+  2. 问句是「本周/这周」 → `get_current_week`
+  3. 问句含**明确起止日期**或「上个月 / 某季度 / X 月到 Y 月」 → `get_tasks_anytime`
+  - **硬规则**：无法同时确定 `start_date` 与 `end_date` 时，**禁止**调用 `get_tasks_anytime`（会报 `missing start_date`），改用 `get_recent_tasks` 或先向用户追问；**不要**用 `{}` 试探带必填参的命令。
 
 ## 工作流清单
 
@@ -121,8 +131,8 @@ metadata:
 | 财年信息         | `lfy-cli ops get_fiscal_year '{}'`                          | [ops.md](references/ops.md)                         |
 | 当前周           | `lfy-cli ops get_current_week '{}'`                         | [ops.md](references/ops.md)                         |
 | 最近任务         | `lfy-cli schedule get_recent_tasks '{}'`                    | [schedule.md](references/schedule.md)               |
-| 本周任务         | `lfy-cli schedule get_current_week '{...}'`                 | [schedule.md](references/schedule.md)               |
-| 区间任务         | `lfy-cli schedule get_tasks_anytime '{...}'`                | [schedule.md](references/schedule.md)               |
+| 本周任务         | `lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'` | [schedule.md](references/schedule.md)               |
+| 区间任务         | `lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-05-18","gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'` | [schedule.md](references/schedule.md)               |
 | 创建任务         | `lfy-cli schedule create_task '{...}'`                      | [schedule.md](references/schedule.md)               |
 | 联系人列表       | `lfy-cli contact get_list '{...}'`                          | [contact.md](references/contact.md)                 |
 | 下拉选项         | `lfy-cli base get_options '{...}'`                          | [base.md](references/base.md)                       |
