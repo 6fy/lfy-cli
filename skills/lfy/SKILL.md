@@ -71,8 +71,10 @@ metadata:
 - **错误处理**：命令输出以 `Error:` 开头或 JSON 含 `error_message` 时，按原文向用户说明，**勿编造数据**。
 - **结构化报错自愈**（命中即按动作处理，不要把同一错误原样重试）：
   - `missing <字段>`（如 `missing start_date`）→ 补齐该必填字段或向用户追问后再调用
+  - `missing gtm_id` / `缺少 gtm_id`（含 `report get_financial_statements` 等必填 gtm_id 命令）→ **先 `customer get_gtms` 取 `gtm_id`**（名称匹配不到或多义时向用户确认 GTM）再调用；**禁止**用 `{}` 原样重试
   - `日期区间不能超过60天` → 缩短区间或分段多次调用
   - `结束日期不能早于开始日期` → 交换/修正日期后重试
+  - 写操作（`customer`/`pipeline` 的 create/update）返回 `参数错误` → 自检是否「把名称当 id」或「用错键名」（如改客户状态误用 `customer_status` 应为 `status_id`）→ 先 `base get_options`（客户字段）或 `pipeline get_sales_stage`（商机阶段）换成 id 再**重试一次**，禁止原样重试
   - 其它 `Error:` → 原文转述，不编造
 - **技术字段**：`*_id`、`week_no`、`status_value` 等技术字段默认不展示，面向业务用户展示业务字段。
 - **时间**：日期均为北京时间 `YYYY-MM-DD HH:mm:ss`。
@@ -104,38 +106,39 @@ metadata:
   2. 问句是「本周/这周」 → `get_current_week`
   3. 问句含**明确起止日期**或「上个月 / 某季度 / X 月到 Y 月」 → `get_tasks_anytime`
   - **硬规则**：无法同时确定 `start_date` 与 `end_date` 时，**禁止**调用 `get_tasks_anytime`（会报 `missing start_date`），改用 `get_recent_tasks` 或先向用户追问；**不要**用 `{}` 试探带必填参的命令。
+- **必填 `gtm_id` 命令禁止 `{}` 试探**：`report get_financial_statements`（以及 `pipeline get_sales_stage`、`customer create_customer`、`pipeline create_pipeline` 等 `gtm_id` 必填命令）在拿到 `gtm_id` 前，**禁止**用 `{}` 调用（会报 `缺少 gtm_id 参数`）；必须先 `customer get_gtms` 取 `gtm_id`，或向用户确认 GTM 后再调。
 
 ## 工作流清单
 
-| 工作流           | 命令                                                        | 详见                                                |
-| ---------------- | ----------------------------------------------------------- | --------------------------------------------------- |
-| **首次使用引导** | 见下方三步，无单条命令                                      | [getting_started.md](references/getting_started.md) |
-| 搜索客户         | `lfy-cli customer search '{"keywords":"<kw>"}'`             | [customer.md](references/customer.md)               |
-| 我的客户列表     | `lfy-cli customer get_list '{...}'`                         | [customer.md](references/customer.md)               |
-| 客户详情         | `lfy-cli customer get_details '{"customer_id":123}'`        | [customer.md](references/customer.md)               |
-| GTM 列表         | `lfy-cli customer get_gtms '{}'`                            | [customer.md](references/customer.md)               |
-| 创建客户         | `lfy-cli customer create_customer '{...}'`                  | [customer.md](references/customer.md)               |
-| 修改客户         | `lfy-cli customer update_customer '{...}'`                  | [customer.md](references/customer.md)               |
-| 搜索商机         | `lfy-cli pipeline search '{"keywords":"<kw>"}'`             | [pipeline.md](references/pipeline.md)               |
-| 商机阶段         | `lfy-cli pipeline get_sales_stage '{"gtm_id":<id>}'`        | [pipeline.md](references/pipeline.md)               |
-| 商机详情         | `lfy-cli pipeline get_pipeline_info '{"pipeline_id":<id>}'` | [pipeline.md](references/pipeline.md)               |
-| 待签单商机       | `lfy-cli pipeline get_pending_signature '{...}'`            | [pipeline.md](references/pipeline.md)               |
-| 商机列表         | `lfy-cli pipeline get_list '{...}'`                         | [pipeline.md](references/pipeline.md)               |
-| 创建商机         | `lfy-cli pipeline create_pipeline '{...}'`                  | [pipeline.md](references/pipeline.md)               |
-| 修改商机         | `lfy-cli pipeline update_pipeline '{...}'`                  | [pipeline.md](references/pipeline.md)               |
-| 销售财年目标     | `lfy-cli report sales_target '{"sales_id":<id>}'`           | [report.md](references/report.md)                   |
-| 销售大局观       | `lfy-cli report get_sales_overall '{...}'`                  | [report.md](references/report.md)                   |
-| GTM 财务报表     | `lfy-cli report get_financial_statements '{"gtm_id":<id>}'` | [report.md](references/report.md)                   |
-| 本人信息         | `lfy-cli user get_self '{}'`                                | [user.md](references/user.md)                       |
-| 销售名单         | `lfy-cli user get_sales '{}'`                               | [user.md](references/user.md)                       |
-| 财年信息         | `lfy-cli ops get_fiscal_year '{}'`                          | [ops.md](references/ops.md)                         |
-| 当前周           | `lfy-cli ops get_current_week '{}'`                         | [ops.md](references/ops.md)                         |
-| 最近任务         | `lfy-cli schedule get_recent_tasks '{}'`                    | [schedule.md](references/schedule.md)               |
-| 本周任务         | `lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'` | [schedule.md](references/schedule.md)               |
-| 区间任务         | `lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-05-18","gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'` | [schedule.md](references/schedule.md)               |
-| 创建任务         | `lfy-cli schedule create_task '{...}'`                      | [schedule.md](references/schedule.md)               |
-| 联系人列表       | `lfy-cli contact get_list '{...}'`                          | [contact.md](references/contact.md)                 |
-| 下拉选项         | `lfy-cli base get_options '{...}'`                          | [base.md](references/base.md)                       |
+| 工作流           | 命令                                                                                                                                                | 详见                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **首次使用引导** | 见下方三步，无单条命令                                                                                                                              | [getting_started.md](references/getting_started.md) |
+| 搜索客户         | `lfy-cli customer search '{"keywords":"<kw>"}'`                                                                                                     | [customer.md](references/customer.md)               |
+| 我的客户列表     | `lfy-cli customer get_list '{...}'`                                                                                                                 | [customer.md](references/customer.md)               |
+| 客户详情         | `lfy-cli customer get_details '{"customer_id":123}'`                                                                                                | [customer.md](references/customer.md)               |
+| GTM 列表         | `lfy-cli customer get_gtms '{}'`                                                                                                                    | [customer.md](references/customer.md)               |
+| 创建客户         | `lfy-cli customer create_customer '{...}'`                                                                                                          | [customer.md](references/customer.md)               |
+| 修改客户         | `lfy-cli customer update_customer '{...}'`                                                                                                          | [customer.md](references/customer.md)               |
+| 搜索商机         | `lfy-cli pipeline search '{"keywords":"<kw>"}'`                                                                                                     | [pipeline.md](references/pipeline.md)               |
+| 商机阶段         | `lfy-cli pipeline get_sales_stage '{"gtm_id":<id>}'`                                                                                                | [pipeline.md](references/pipeline.md)               |
+| 商机详情         | `lfy-cli pipeline get_pipeline_info '{"pipeline_id":<id>}'`                                                                                         | [pipeline.md](references/pipeline.md)               |
+| 待签单商机       | `lfy-cli pipeline get_pending_signature '{...}'`                                                                                                    | [pipeline.md](references/pipeline.md)               |
+| 商机列表         | `lfy-cli pipeline get_list '{...}'`                                                                                                                 | [pipeline.md](references/pipeline.md)               |
+| 创建商机         | `lfy-cli pipeline create_pipeline '{...}'`                                                                                                          | [pipeline.md](references/pipeline.md)               |
+| 修改商机         | `lfy-cli pipeline update_pipeline '{...}'`                                                                                                          | [pipeline.md](references/pipeline.md)               |
+| 销售财年目标     | `lfy-cli report sales_target '{"sales_id":<id>}'`                                                                                                   | [report.md](references/report.md)                   |
+| 销售大局观       | `lfy-cli report get_sales_overall '{...}'`                                                                                                          | [report.md](references/report.md)                   |
+| GTM 财务报表     | `lfy-cli report get_financial_statements '{"gtm_id":<id>}'`                                                                                         | [report.md](references/report.md)                   |
+| 本人信息         | `lfy-cli user get_self '{}'`                                                                                                                        | [user.md](references/user.md)                       |
+| 销售名单         | `lfy-cli user get_sales '{}'`                                                                                                                       | [user.md](references/user.md)                       |
+| 财年信息         | `lfy-cli ops get_fiscal_year '{}'`                                                                                                                  | [ops.md](references/ops.md)                         |
+| 当前周           | `lfy-cli ops get_current_week '{}'`                                                                                                                 | [ops.md](references/ops.md)                         |
+| 最近任务         | `lfy-cli schedule get_recent_tasks '{}'`                                                                                                            | [schedule.md](references/schedule.md)               |
+| 本周任务         | `lfy-cli schedule get_current_week '{"gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'`                                                      | [schedule.md](references/schedule.md)               |
+| 区间任务         | `lfy-cli schedule get_tasks_anytime '{"start_date":"2026-05-01","end_date":"2026-05-18","gtm_id":0,"sales_ids":[],"customer_ids":[],"limit":50}'`   | [schedule.md](references/schedule.md)               |
+| 创建任务         | `lfy-cli schedule create_task '{...}'`                                                                                                              | [schedule.md](references/schedule.md)               |
+| 联系人列表       | `lfy-cli contact get_list '{...}'`                                                                                                                  | [contact.md](references/contact.md)                 |
+| 下拉选项         | `lfy-cli base get_options '{"object_id":<customer_id>,"property":"customer_status\|customer_tags\|customer_region\|customer_industry","cli":true}'` | [base.md](references/base.md)                       |
 
 ### 首次使用引导（三步）
 

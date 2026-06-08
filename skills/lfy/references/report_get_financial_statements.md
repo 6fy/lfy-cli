@@ -23,6 +23,8 @@
 2. 在返回列表里找到名称匹配的项，取其 `gtm_id`。
 3. 若名称对应多个 GTM，或用户表述不清，需请用户确认后再查。
 
+> **硬规则**：未取得 `gtm_id` 前，**禁止**用 `{}` 调用本命令（会返回 `缺少 gtm_id 参数`）。务必先 `lfy-cli customer get_gtms '{}'` 取到 `gtm_id`，或向用户确认 GTM 后再查。
+
 ## 请求示例
 
 ```bash
@@ -116,6 +118,10 @@ lfy-cli report get_financial_statements '{"gtm_id": 24685820686}'
 若今天已是某月最后一天，则没有「明天到月末」的预测段，该月总收入就等于「月初到今天」的已签单合计。
 
 ## 错误示例
+
+```json
+{"code": 400, "error_message": "缺少 gtm_id 参数，请先用 customer get_gtms 获取 GTM 后再查询"}
+```
 
 ```json
 {"code": 400, "error_message": "参数错误"}
