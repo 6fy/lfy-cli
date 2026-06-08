@@ -11,8 +11,16 @@
 - `get_recent_tasks` 返回的时间范围为：今天 + 前7天 + 后7天，共15天
 - 任务按开始时间排序
 - `task_type`、`status_value` 等技术字段默认不展示；`task_id` 仅用于拼任务详情链接，不在列表中单独列出
-- 当前版本**不支持修改/删除**已有任务；**支持创建**个人非周期任务，见 [create_task](schedule_create_task.md)
+- 当前版本**不支持修改/删除/标记完成**已有任务；**支持创建**个人非周期任务，见 [create_task](schedule_create_task.md)
 - **任务详情页**：`https://app.6fenyi.com/tasks/{task_id}`（将 `{task_id}` 换为接口返回的 `task_id` 数值）
+
+### 改/删/完成已有任务（Agent 路由）
+
+| 用户意图 | Agent 行为 |
+| -------- | ---------- |
+| 新建、添加、创建一个任务/日程/提醒 | 走 `create_task` |
+| 修改、删除、完成、取消、延期 **已有** 任务（含提供了 `task_id`） | 说明 CLI **不支持**；引导用户在 Web 打开 `https://app.6fenyi.com/tasks/{task_id}` |
+| 误用「不支持任何修改」拒绝创建 | **禁止**；「创建」与「改已有」是不同能力 |
 
 ## 展示格式约定（对话内 Markdown 表格）
 

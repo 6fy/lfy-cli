@@ -20,6 +20,6 @@
 | `report` | `references/report.md` | 销售目标、销售大局观、GTM 财务报表（只读） |
 | `user` | `references/user.md` | 本人信息、销售人员名单（只读） |
 | `ops` | `references/ops.md` | 财年、当前周（只读） |
-| `schedule` | `references/schedule.md` | 最近任务、本周任务（只读） |
+| `schedule` | `references/schedule.md` | 最近/本周/区间任务查询 + 创建任务（不可改删已有） |
 | `contact` | `references/contact.md` | 联系人列表（只读） |
 | `base` | `references/base.md` | 客户/商机编辑场景下拉选项（只读） |

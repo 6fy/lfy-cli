@@ -1,7 +1,7 @@
 ---
 name: LFY-CLI
 description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务、创建任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
-version: 1.0.2
+version: 1.0.3
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -32,16 +32,16 @@ metadata:
 
 以下说法**常不含 LFY 字眼**，但只要意图落在对应能力，即适用上文「能力命中」，**禁止**跳过本技能：
 
-| 品类 | 示例说法（节选） | 命令 |
-| ------ | ---------------- | ---- |
-| **user（身份/组织）** | 我是哪个企业、我是谁、我属于哪家公司、当前登录用户、我的组织/企业名称 | `user get_self` |
-| user | 销售有哪些、销售团队、业务员名单 | `user get_sales` |
-| ops | 第几周、本周日期、当前财年 | `ops get_current_week` / `ops get_fiscal_year` |
-| schedule | 本周安排、最近有什么任务、指定日期任务、创建任务/日程 | `schedule get_current_week` / `get_recent_tasks` / `get_tasks_anytime` / `create_task` |
-| customer | 我的客户清单、搜客户、客户详情、GTM 列表 | 见 [customer.md](references/customer.md) |
-| pipeline | 搜商机、待签单、商机列表/详情/阶段 | 见 [pipeline.md](references/pipeline.md) |
-| report | 销售目标、销售大局观、财务报表 | 见 [report.md](references/report.md) |
-| contact / base | 联系人列表、客户状态下拉选项等 | 见 [contact.md](references/contact.md)、[base.md](references/base.md) |
+| 品类                  | 示例说法（节选）                                                      | 命令                                                                                   |
+| --------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **user（身份/组织）** | 我是哪个企业、我是谁、我属于哪家公司、当前登录用户、我的组织/企业名称 | `user get_self`                                                                        |
+| user                  | 销售有哪些、销售团队、业务员名单                                      | `user get_sales`                                                                       |
+| ops                   | 第几周、本周日期、当前财年                                            | `ops get_current_week` / `ops get_fiscal_year`                                         |
+| schedule              | 本周安排、最近有什么任务、指定日期任务、创建任务/日程                 | `schedule get_current_week` / `get_recent_tasks` / `get_tasks_anytime` / `create_task` |
+| customer              | 我的客户清单、搜客户、客户详情、GTM 列表                              | 见 [customer.md](references/customer.md)                                               |
+| pipeline              | 搜商机、待签单、商机列表/详情/阶段                                    | 见 [pipeline.md](references/pipeline.md)                                               |
+| report                | 销售目标、销售大局观、财务报表                                        | 见 [report.md](references/report.md)                                                   |
+| contact / base        | 联系人列表、客户状态下拉选项等                                        | 见 [contact.md](references/contact.md)、[base.md](references/base.md)                  |
 
 更全触发词见「品类路由表」与各 `references/<品类>.md`。
 
@@ -78,21 +78,22 @@ metadata:
 
 处理某类任务前，Agent **按需自动读取** `references/<品类>.md` 获取接口清单与详细工作流（无需用户手动打开文件）。
 
-| 品类     | 能力                                     | 触发词                                     | 指南                                  |
-| -------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------- |
-| customer | 客户搜索/清单/详情/GTM/创建/修改         | 客户、我的客户清单、GTM、创建客户、改客户  | [customer.md](references/customer.md) |
-| pipeline | 商机搜索/阶段/详情/待签单/列表/创建/修改 | 商机、pipeline、待签单、商机阶段           | [pipeline.md](references/pipeline.md) |
-| report   | 销售目标/大局观/GTM 财务报表             | 销售目标、大局观、财务报表                 | [report.md](references/report.md)     |
-| user     | 本人信息/销售名单                        | 我的用户信息、销售人员、销售团队           | [user.md](references/user.md)         |
-| ops      | 财年/当前周                              | 财年、第几周、本周日期                     | [ops.md](references/ops.md)           |
-| schedule | 最近任务/本周任务/区间任务/创建任务     | 最近任务、本周日程、指定日期任务、创建任务、工作安排 | [schedule.md](references/schedule.md) |
-| contact  | 联系人列表                               | 联系人、联系人列表                         | [contact.md](references/contact.md)   |
-| base     | 客户/商机编辑下拉选项                    | 客户状态/标签/区域/行业可选项              | [base.md](references/base.md)         |
+| 品类     | 能力                                     | 触发词                                               | 指南                                  |
+| -------- | ---------------------------------------- | ---------------------------------------------------- | ------------------------------------- |
+| customer | 客户搜索/清单/详情/GTM/创建/修改         | 客户、我的客户清单、GTM、创建客户、改客户            | [customer.md](references/customer.md) |
+| pipeline | 商机搜索/阶段/详情/待签单/列表/创建/修改 | 商机、pipeline、待签单、商机阶段                     | [pipeline.md](references/pipeline.md) |
+| report   | 销售目标/大局观/GTM 财务报表             | 销售目标、大局观、财务报表                           | [report.md](references/report.md)     |
+| user     | 本人信息/销售名单                        | 我的用户信息、销售人员、销售团队                     | [user.md](references/user.md)         |
+| ops      | 财年/当前周                              | 财年、第几周、本周日期                               | [ops.md](references/ops.md)           |
+| schedule | 最近任务/本周任务/区间任务/创建任务      | 最近任务、本周日程、指定日期任务、创建任务、工作安排 | [schedule.md](references/schedule.md) |
+| contact  | 联系人列表                               | 联系人、联系人列表                                   | [contact.md](references/contact.md)   |
+| base     | 客户/商机编辑下拉选项                    | 客户状态/标签/区域/行业可选项                        | [base.md](references/base.md)         |
 
 ## 关键路由规则（务必遵守）
 
 - **身份/组织必走 `user get_self`**：用户问企业/组织/公司/我是谁/当前账号等（含「我是哪个企业」）→ **禁止**猜测或编造 → 执行 `lfy-cli user get_self '{}'` → 面向用户展示 **`{org_name} - {user_name}`**（不展示 `user_id`）→ 失败按 `Error:` 原文说明，必要时引导 `lfy-cli login`（见 [auth.md](references/auth.md)）。
 - **客户「列表/清单」走 `customer get_list`，禁止用 `search`**：用户说「我的客户列表 / 我的客户清单 / LFY 我的客户清单 / 我有哪些客户 / 列出我负责的客户」时，必须用 `get_list`；`search` 仅用于明确「搜索关键字、快速找客户 ID」。详见 [customer.md](references/customer.md)。
+- **schedule 写能力边界**：用户要「新建/添加/创建一个任务或日程」→ `schedule create_task`；用户要「改/删/完成/取消/延期 **已有** `task_id` 的任务」→ 说明 CLI 不支持，引导 Web 详情页 `https://app.6fenyi.com/tasks/{task_id}`；**禁止**因「不支持修改已有任务」而拒绝 `create_task`。详见 [schedule.md](references/schedule.md)。
 
 ## 工作流清单
 
