@@ -59,4 +59,15 @@ lfy-cli customer search '{"keywords": "<名称或关键字片段>"}'
 - **已知 id**：会话、工单、CRM 链接、或其它工具已给出数字 id，可直接用作 `object_id`。
 - **列表/详情里已有**：若在走 `customer get_list`、`get_details` 等流程，响应里的客户主键同为 **`customer_id`**，与这里 `object_id` 含义一致。
 
-下拉选项里各字段的 **`id`** 如何用（写回客户），见 [customer.md](customer.md) 客户指南正文与 references。
+### 拿到的 `id` 写回客户时对应哪个键
+
+下拉选项里各字段的 **`id`**，写回 `update_customer` 时**不能用 property 名当键**，要按下表换成对应的 `updates` 键（详见 [customer_update.md](customer_update.md) 映射表）：
+
+| property | 写回 updates 的键 |
+|----------|-------------------|
+| customer_status | `status_id` |
+| customer_tags | `tags`（逗号分隔 id） |
+| customer_region | `region_id` |
+| customer_industry | `industry_id` |
+
+完整写回流程见 [customer.md](customer.md) 「修改客户」工作流。

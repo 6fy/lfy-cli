@@ -204,3 +204,32 @@ Error: 客户不存在
    - 写入临时 HTML 文件（如 `/tmp/lfy-customer-get_list-<时间戳>.html`）
    - **用浏览器打开**：macOS 执行 `open "<绝对路径>"`；Linux 执行 `xdg-open "<绝对路径>"`
 8. 对话中仅简要说明：报告已在浏览器打开、共 total 条、当前第 page 页、文件路径；勿再贴 Markdown 大表
+
+### 修改客户
+
+**经典 query 示例：**
+
+- "把客户 XX 的状态改成'可能性客户'"
+- "给客户 123 改个简称"
+- "把这个客户的区域改成华东"
+
+**流程：**
+
+1. 拿到 `customer_id`（已知则直接用；只有名称时先 `search`）
+2. **判断要改的字段是否下拉字段**（状态/标签/区域/行业）：
+   - 是 → **必须**先 `lfy-cli base get_options '{"object_id": <customer_id>, "property": "customer_status", "cli": true}'` 拿到目标选项的 `id`，再按 [customer_update.md](customer_update.md) 映射表用 `status_id / tags / region_id / industry_id` 写回。**禁止**把中文名称当 `updates` 的键或值。
+   - 否（如 `customer_name`、`customer_alias` 等自由文本）→ 直接写值
+3. 调用 `update_customer`，`updates` 里**只放要改的键**
+4. 返回 `参数错误` → 多半是把名称当成了 id 或用错键名（如误用 `customer_status` 应为 `status_id`），按第 2 步换成 id 后重试一次
+
+**正例（把状态改成「可能性客户」）：**
+
+```bash
+# 1) 拿选项 id
+lfy-cli base get_options '{"object_id": 189242165298, "property": "customer_status", "cli": true}'
+# 假设返回里「可能性客户」的 id 为 5
+# 2) 用 status_id 写回
+lfy-cli customer update_customer '{"customer_id": 189242165298, "updates": {"status_id": 5}}'
+```
+
+参见 [API 详情](customer_update.md)。
