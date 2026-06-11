@@ -1,7 +1,7 @@
 ---
 name: LFY-CLI
 description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务、创建任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
-version: 1.0.3
+version: 1.0.4
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -79,7 +79,6 @@ metadata:
 - **技术字段**：`*_id`、`week_no`、`status_value` 等技术字段默认不展示，面向业务用户展示业务字段。
 - **时间**：日期均为北京时间 `YYYY-MM-DD HH:mm:ss`。
 - **列表展示**：客户/商机列表类需求用 HTML 模板写临时文件并用系统浏览器打开（macOS `open`，Linux `xdg-open`），不要在对话中贴大段 Markdown 表格。
-- **只读边界**：`report`/`user`/`ops`/`contact`/`base` 当前为只读；写操作含 `customer`(create/update)、`pipeline`(create/update)、`schedule`(create_task)；customer/pipeline 写操作受权限与 `sales_ids` 白名单门禁，schedule 创建仅能为本人
 
 ## 品类路由表
 
