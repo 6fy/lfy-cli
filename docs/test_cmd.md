@@ -56,3 +56,9 @@ cargo run -- base get_options '{"object_id": 87357490413632, "property": "custom
 cargo run -- pipeline get_list '{"gtm_id":0,"pipeline_name":"","pipeline_status_ids":[],"sales_ids":[],"page_size":20,"page":1}'
 
 ```
+
+## 1.7 添加客户跟进记录
+
+```bash
+cargo run -- customer add_follow_up  '{"customer_id": 310381903118,"content":"<p>xxx</p>"}'
+```

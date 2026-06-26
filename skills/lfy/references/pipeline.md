@@ -1,3 +1,13 @@
+---
+name: lfy-pipeline
+description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，添加跟进记录，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表、新建/修改一条商机、记录商机跟进时使用此技能。
+version: 1.9.1
+metadata:
+  requires:
+    bins: ["lfy-cli"]
+  cliHelp: "lfy-cli pipeline --help"
+---
+
 # 商机技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -107,6 +117,17 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 | `stage_id` | >0，传 `get_sales_stage` 的 `stage_id`；≤0 或非法报参数错误 | `lfy-cli pipeline get_sales_stage '{"gtm_id":<gtm_id>}'` |
 
 参见 [API 详情](pipeline_update.md)。
+
+### 添加商机跟进记录 (add_follow_up)
+
+```bash
+lfy-cli pipeline add_follow_up '{"pipeline_id": 123, "content": "<p>xxx</p>"}'
+```
+
+- `pipeline_id`：必填，>0
+- `content`：必填，跟进内容须以 `<p></p>` 包裹
+
+参见 [API 详情](references/add_follow_up.md)。
 
 ---
 
@@ -254,3 +275,26 @@ lfy-cli pipeline update_pipeline '{"pipeline_id":111,"updates":{"projectname":"�
 3. 仅把用户要改的字段放入 `updates`，调用 `update_pipeline`
 4. `error_message`/CLI `Error` 含「您暂无权限」→ 说明无 detail 或 sales 不在白名单；含「商机不存在」→ 重新检查 `pipeline_id`
 5. 成功后展示 `pipeline_id` 与 `updated_time`，并对已修改字段做回显确认
+
+### 添加商机跟进记录
+
+**经典 query 示例：**
+- "给商机 123 记一条跟进：已与客户确认方案"
+- "帮我在这个商机下添加跟进记录"
+- "记录一下刚才关于这条商机的沟通"
+
+**流程：**
+1. 若只有商机名称没有 ID，先用 `search` 得到 `pipeline_id`
+2. 将用户描述的跟进内容整理为 HTML，**用 `<p></p>` 包裹**（如 `<p>已与客户确认方案，下周签约</p>`）
+3. 调用 `add_follow_up`
+4. 成功后告知用户跟进已记录（**勿向用户展示** `follow_up_id`、`create_time`）；`Error` 含「暂无权限」「商机不存在」或参数错误时按返回原文提示
+
+**展示结果：**
+
+成功时：
+
+```
+已为商机记录跟进。
+```
+
+失败时按 CLI 返回的 `Error: ...` 原文告知用户。

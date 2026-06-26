@@ -1,3 +1,13 @@
+---
+name: lfy-customer
+description: 客户查询、创建、修改与跟进记录技能。当用户需要：(1) 我的客户列表/清单（须用 get_list，勿用 search），(2) 按关键字搜索客户，(3) 获取 GTM 列表，(4) 客户详情，(5) 创建客户，(6) 修改客户字段，(7) 添加客户跟进记录时使用此技能。
+version: 1.7.1
+metadata:
+  requires:
+    bins: ["lfy-cli"]
+  cliHelp: "lfy-cli customer --help"
+---
+
 # 客户技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -74,6 +84,17 @@ lfy-cli customer update_customer '{"customer_id": 123, "updates": {"customer_ali
 ```
 
 参见 [API 详情](customer_update.md)。
+
+### 添加客户跟进记录 (add_follow_up)
+
+```bash
+lfy-cli customer add_follow_up '{"customer_id": 123, "content": "<p>xxx</p>"}'
+```
+
+- `customer_id`：必填，>0
+- `content`：必填，跟进内容须以 `<p></p>` 包裹
+
+参见 [API 详情](references/add_follow_up.md)。
 
 ### 客户列表 (get_list)
 
@@ -162,6 +183,29 @@ Error: 您没有访问此客户的权限
 ```
 Error: 客户不存在
 ```
+
+### 添加客户跟进记录
+
+**经典 query 示例：**
+- "给客户 123 记一条跟进：今天电话沟通，客户意向良好"
+- "帮我在客户 XX 下添加跟进记录"
+- "记录一下刚才和客户的沟通内容"
+
+**流程：**
+1. 若只有客户名称没有 ID，先用 `search` 或 `get_list` 得到 `customer_id`
+2. 将用户描述的跟进内容整理为 HTML，**用 `<p></p>` 包裹**（如 `<p>今日电话沟通，客户意向良好</p>`）
+3. 调用 `add_follow_up`
+4. 成功后告知用户跟进已记录（**勿向用户展示** `follow_up_id`、`create_time`）；`Error` 含「暂无权限」「客户不存在」或参数错误时按返回原文提示
+
+**展示结果：**
+
+成功时：
+
+```
+已为客户记录跟进。
+```
+
+失败时按 CLI 返回的 `Error: ...` 原文告知用户。
 
 ### 获取 GTM 列表
 
