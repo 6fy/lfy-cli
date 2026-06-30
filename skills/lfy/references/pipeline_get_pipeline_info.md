@@ -33,6 +33,7 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 | `customer_contacts`        | array   | 客户侧联系人（无 `role`） |
 | `sales_stages`             | array   | 该商机所属 GTM 的销售阶段配置，含每阶段已挂接的推荐任务；无则 `[]` |
 | `schedule`                 | array   | 商机相关近期任务列表（按计划完成时间升序，最多 50 条）；无则 `[]` |
+| `previous_followup_records`| array   | 跟进记录列表（最近 20 条，按创建时间倒序）；无则 `[]` |
 
 `current_sales_stage` 对象字段：`due_date`、`stage_name`、`milestone_goal`、`value_proposition`、`suggested_stage_days`、`elapsed_days`（日期为 `YYYY-MM-DD` 字符串）。
 
@@ -55,6 +56,14 @@ lfy-cli pipeline get_pipeline_info '{"pipeline_id": <pipeline_id>}'
 | ------------- | ------- | ---- |
 | `name`        | string  | 任务名称 |
 | `is_key_task` | boolean | 是否关键任务 |
+
+### previous_followup_records 数组元素
+
+| 字段名        | 类型   | 说明 |
+| ------------- | ------ | ---- |
+| `sales_name`  | string | 销售名称 |
+| `content`     | string | 事件内容 |
+| `create_time` | string | 创建时间 `YYYY-MM-DD HH:mm` |
 
 `schedule` 数组元素字段：
 
