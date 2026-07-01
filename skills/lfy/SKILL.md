@@ -1,7 +1,7 @@
 ---
 name: LFY-CLI
-description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改）、商机（搜索、阶段、详情、待签单、列表、创建/修改）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务、创建任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
-version: 1.0.4
+description: 凡问题可用本技能 8 品类 lfy-cli 命令回答（含「我是哪个企业」等身份/组织、客户商机报表日程等，即使用户未提 LFY），或出现 LFY/lfy、明显 LFY 销售业务语境，均必须使用本技能。LFY 销售业务命令行技能，统一覆盖 8 个品类的查询/创建/修改。当用户需要：客户（搜索、我的客户清单、详情、GTM、创建/修改、添加/查看跟进记录）、商机（搜索、阶段、详情、待签单、列表、创建/修改、添加/查看跟进记录）、报表（销售目标、销售大局观、GTM 财务报表）、用户（本人信息、销售名单）、运营（财年、当前周）、日程（最近任务、本周任务、指定日期区间任务、创建任务）、联系人列表、客户/商机编辑下拉选项时使用此技能。首次使用/新手入门/怎么开始用 lfy-cli 时，按 getting_started 引导：安装 → 授权登录 → 查本周日程。用户联系客服或反馈问题时，用浏览器打开客服二维码页面，无需前置条件。
+version: 1.0.5
 metadata:
   requires:
     bins: ["lfy-cli"]
@@ -38,8 +38,8 @@ metadata:
 | user                  | 销售有哪些、销售团队、业务员名单                                      | `user get_sales`                                                                       |
 | ops                   | 第几周、本周日期、当前财年                                            | `ops get_current_week` / `ops get_fiscal_year`                                         |
 | schedule              | 本周安排、最近有什么任务、指定日期任务、创建任务/日程                 | `schedule get_current_week` / `get_recent_tasks` / `get_tasks_anytime` / `create_task` |
-| customer              | 我的客户清单、搜客户、客户详情、GTM 列表                              | 见 [customer.md](references/customer.md)                                               |
-| pipeline              | 搜商机、待签单、商机列表/详情/阶段                                    | 见 [pipeline.md](references/pipeline.md)                                               |
+| customer              | 我的客户清单、搜客户、客户详情、GTM 列表、记跟进、写备注、记录沟通、查看跟进记录 | `customer add_follow_up` / `get_details`；详见 [customer.md](references/customer.md) |
+| pipeline              | 搜商机、待签单、商机列表/详情/阶段、记跟进、写备注、记录沟通、查看商机跟进       | `pipeline add_follow_up` / `get_pipeline_info`；详见 [pipeline.md](references/pipeline.md) |
 | report                | 销售目标、销售大局观、财务报表                                        | 见 [report.md](references/report.md)                                                   |
 | contact / base        | 联系人列表、客户状态下拉选项等                                        | 见 [contact.md](references/contact.md)、[base.md](references/base.md)                  |
 
@@ -75,6 +75,8 @@ metadata:
   - `日期区间不能超过60天` → 缩短区间或分段多次调用
   - `结束日期不能早于开始日期` → 交换/修正日期后重试
   - 写操作（`customer`/`pipeline` 的 create/update）返回 `参数错误` → 自检是否「把名称当 id」或「用错键名」（如改客户状态误用 `customer_status` 应为 `status_id`）→ 先 `base get_options`（客户字段）或 `pipeline get_sales_stage`（商机阶段）换成 id 再**重试一次**，禁止原样重试
+  - `add_follow_up` 返回 content 相关参数错误（如 `content 不能为空`）→ 检查是否未包 `<p></p>`，自动包裹后**重试一次**
+  - `add_follow_up` 返回 `客户不存在` / `商机不存在` → 先 `customer search` / `pipeline search` 确认 ID 再重试
   - 其它 `Error:` → 原文转述，不编造
 - **技术字段**：`*_id`、`week_no`、`status_value` 等技术字段默认不展示，面向业务用户展示业务字段。
 - **时间**：日期均为北京时间 `YYYY-MM-DD HH:mm:ss`。
@@ -86,8 +88,8 @@ metadata:
 
 | 品类     | 能力                                     | 触发词                                               | 指南                                  |
 | -------- | ---------------------------------------- | ---------------------------------------------------- | ------------------------------------- |
-| customer | 客户搜索/清单/详情/GTM/创建/修改         | 客户、我的客户清单、GTM、创建客户、改客户            | [customer.md](references/customer.md) |
-| pipeline | 商机搜索/阶段/详情/待签单/列表/创建/修改 | 商机、pipeline、待签单、商机阶段                     | [pipeline.md](references/pipeline.md) |
+| customer | 客户搜索/清单/详情/GTM/创建/修改/添加·查看跟进 | 客户、我的客户清单、GTM、创建客户、改客户、添加跟进、写备注、跟进记录、记录沟通 | [customer.md](references/customer.md) |
+| pipeline | 商机搜索/阶段/详情/待签单/列表/创建/修改/添加·查看跟进 | 商机、pipeline、待签单、商机阶段、添加跟进、写备注、跟进记录、记录沟通 | [pipeline.md](references/pipeline.md) |
 | report   | 销售目标/大局观/GTM 财务报表             | 销售目标、大局观、财务报表                           | [report.md](references/report.md)     |
 | user     | 本人信息/销售名单                        | 我的用户信息、销售人员、销售团队                     | [user.md](references/user.md)         |
 | ops      | 财年/当前周                              | 财年、第几周、本周日期                               | [ops.md](references/ops.md)           |
@@ -106,6 +108,12 @@ metadata:
   3. 问句含**明确起止日期**或「上个月 / 某季度 / X 月到 Y 月」 → `get_tasks_anytime`
   - **硬规则**：无法同时确定 `start_date` 与 `end_date` 时，**禁止**调用 `get_tasks_anytime`（会报 `missing start_date`），改用 `get_recent_tasks` 或先向用户追问；**不要**用 `{}` 试探带必填参的命令。
 - **必填 `gtm_id` 命令禁止 `{}` 试探**：`report get_financial_statements`（以及 `pipeline get_sales_stage`、`customer create_customer`、`pipeline create_pipeline` 等 `gtm_id` 必填命令）在拿到 `gtm_id` 前，**禁止**用 `{}` 调用（会报 `缺少 gtm_id 参数`）；必须先 `customer get_gtms` 取 `gtm_id`，或向用户确认 GTM 后再调。
+- **跟进记录路由（按顺序匹配，命中即停）**：
+  1. 用户要**查看/列出**跟进历史 → 客户：`get_details` 展示 `previous_followup_records`；商机：`get_pipeline_info` 展示 `previous_followup_records`
+  2. 用户要**记一条/添加/写备注/记录沟通**且对象为客户 → `customer add_follow_up`；**禁止** `update_customer`（无备注字段）；**禁止** `schedule create_task`
+  3. 同上且对象为商机 → `pipeline add_follow_up`；**禁止** `update_pipeline`；**禁止** `schedule create_task`
+  4. 用户要**带截止日的提醒/任务**（如「6 月 10 号提醒我跟进客户 A」）且无「记到客户/商机时间线」语义 → `schedule create_task`（见 schedule 边界）
+  - **硬规则**：`content` 须以 `<p></p>` 包裹；用户给纯文本时自动包一层再调用；无 `customer_id` / `pipeline_id` 时先 `search`；「备注」在 LFY CLI 语境下指跟进记录（`add_follow_up`），不是主档字段修改。详见 [customer.md](references/customer.md)、[pipeline.md](references/pipeline.md)。
 
 ## 工作流清单
 
@@ -118,6 +126,7 @@ metadata:
 | GTM 列表         | `lfy-cli customer get_gtms '{}'`                                                                                                                    | [customer.md](references/customer.md)               |
 | 创建客户         | `lfy-cli customer create_customer '{...}'`                                                                                                          | [customer.md](references/customer.md)               |
 | 修改客户         | `lfy-cli customer update_customer '{...}'`                                                                                                          | [customer.md](references/customer.md)               |
+| 添加客户跟进     | `lfy-cli customer add_follow_up '{"customer_id":123,"content":"<p>...</p>"}'`                                                                       | [customer.md](references/customer.md)               |
 | 搜索商机         | `lfy-cli pipeline search '{"keywords":"<kw>"}'`                                                                                                     | [pipeline.md](references/pipeline.md)               |
 | 商机阶段         | `lfy-cli pipeline get_sales_stage '{"gtm_id":<id>}'`                                                                                                | [pipeline.md](references/pipeline.md)               |
 | 商机详情         | `lfy-cli pipeline get_pipeline_info '{"pipeline_id":<id>}'`                                                                                         | [pipeline.md](references/pipeline.md)               |
@@ -125,6 +134,7 @@ metadata:
 | 商机列表         | `lfy-cli pipeline get_list '{...}'`                                                                                                                 | [pipeline.md](references/pipeline.md)               |
 | 创建商机         | `lfy-cli pipeline create_pipeline '{...}'`                                                                                                          | [pipeline.md](references/pipeline.md)               |
 | 修改商机         | `lfy-cli pipeline update_pipeline '{...}'`                                                                                                          | [pipeline.md](references/pipeline.md)               |
+| 添加商机跟进     | `lfy-cli pipeline add_follow_up '{"pipeline_id":123,"content":"<p>...</p>"}'`                                                                       | [pipeline.md](references/pipeline.md)               |
 | 销售财年目标     | `lfy-cli report sales_target '{"sales_id":<id>}'`                                                                                                   | [report.md](references/report.md)                   |
 | 销售大局观       | `lfy-cli report get_sales_overall '{...}'`                                                                                                          | [report.md](references/report.md)                   |
 | GTM 财务报表     | `lfy-cli report get_financial_statements '{"gtm_id":<id>}'`                                                                                         | [report.md](references/report.md)                   |
@@ -154,7 +164,8 @@ metadata:
 - 改/查商机负责人、按销售筛选 → 先 `user get_sales` 拿 `sales_id`。
 - 按 GTM 操作 → 先 `customer get_gtms` 拿 `gtm_id`。
 - 修改客户/商机的下拉字段（状态、标签、区域、行业、阶段等）→ 先 `base get_options`（客户字段）或 `pipeline get_sales_stage`（商机阶段）拿可选 `id`。
-- 只有名称没有 ID 时 → 先 `customer search` / `pipeline search` 拿 `customer_id` / `pipeline_id`，再 `get_details` / `update_*`。
+- 只有名称没有 ID 时 → 先 `customer search` / `pipeline search` 拿 `customer_id` / `pipeline_id`，再 `get_details` / `update_*` / `add_follow_up`。
+- 记客户/商机跟进 → 无 ID 时先 search；`content` 用 `<p></p>` 包裹。
 
 ## 反馈与支持
 

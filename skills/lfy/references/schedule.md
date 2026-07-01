@@ -21,6 +21,7 @@
 | 新建、添加、创建一个任务/日程/提醒 | 走 `create_task` |
 | 修改、删除、完成、取消、延期 **已有** 任务（含提供了 `task_id`） | 说明 CLI **不支持**；引导用户在 Web 打开 `https://app.6fenyi.com/tasks/{task_id}` |
 | 误用「不支持任何修改」拒绝创建 | **禁止**；「创建」与「改已有」是不同能力 |
+| 记跟进 / 写备注 / 记录沟通，且提到客户或商机 | **不要** `create_task`；改走 [customer.md](customer.md) / [pipeline.md](pipeline.md) 的 `add_follow_up` |
 
 ## 展示格式约定（对话内 Markdown 表格）
 

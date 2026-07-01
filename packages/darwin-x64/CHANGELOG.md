@@ -1,5 +1,11 @@
 # @6fy/cli-darwin-x64
 
+## 0.21.0
+
+### Minor Changes
+
+- 添加客户\商机的跟进记录
+
 ## 0.20.0
 
 ### Minor Changes

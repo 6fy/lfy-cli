@@ -268,6 +268,8 @@ lfy-cli pipeline add_follow_up '{"pipeline_id": 123, "content": "<p>xxx</p>"}'
 
 ### 添加商机跟进记录
 
+> **STOP**：用户意图是「记跟进 / 写备注 / 记录沟通」→ **仅** `pipeline add_follow_up`；**禁止** `update_pipeline`（无备注字段）；**禁止** `schedule create_task`（除非用户明确要建带截止日的任务）。
+
 **经典 query 示例：**
 - "给商机 123 记一条跟进：已与客户确认方案"
 - "帮我在这个商机下添加跟进记录"
