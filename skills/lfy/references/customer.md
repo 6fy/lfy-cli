@@ -1,13 +1,3 @@
----
-name: lfy-customer
-description: 客户查询、创建、修改与跟进记录技能。当用户需要：(1) 我的客户列表/清单（须用 get_list，勿用 search），(2) 按关键字搜索客户，(3) 获取 GTM 列表，(4) 客户详情，(5) 创建客户，(6) 修改客户字段，(7) 添加客户跟进记录时使用此技能。
-version: 1.7.1
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli customer --help"
----
-
 # 客户技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -94,7 +84,7 @@ lfy-cli customer add_follow_up '{"customer_id": 123, "content": "<p>xxx</p>"}'
 - `customer_id`：必填，>0
 - `content`：必填，跟进内容须以 `<p></p>` 包裹
 
-参见 [API 详情](references/add_follow_up.md)。
+参见 [API 详情](customer_add_follow_up.md)。
 
 ### 客户列表 (get_list)
 

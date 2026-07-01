@@ -1,13 +1,3 @@
----
-name: lfy-pipeline
-description: 商机技能。适用于按关键字搜索商机、查看详情、阶段配置、待签单列表、分页列表查询，添加跟进记录，以及在有权限时创建、修改商机。当用户需要搜索商机、查看详情/阶段、待签单或商机列表、新建/修改一条商机、记录商机跟进时使用此技能。
-version: 1.9.1
-metadata:
-  requires:
-    bins: ["lfy-cli"]
-  cliHelp: "lfy-cli pipeline --help"
----
-
 # 商机技能
 
 > `lfy-cli` 是LFY提供的命令行程序，所有操作通过执行 `lfy-cli` 命令完成。
@@ -127,7 +117,7 @@ lfy-cli pipeline add_follow_up '{"pipeline_id": 123, "content": "<p>xxx</p>"}'
 - `pipeline_id`：必填，>0
 - `content`：必填，跟进内容须以 `<p></p>` 包裹
 
-参见 [API 详情](references/add_follow_up.md)。
+参见 [API 详情](pipeline_add_follow_up.md)。
 
 ---
 
