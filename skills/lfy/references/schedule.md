@@ -90,6 +90,8 @@ lfy-cli schedule create_task '{"task_name":"名称","end_time":"2026-06-07"}'
 
 - 创建**非周期**任务；负责人固定为当前登录用户
 - `task_name` 必填；`end_time` 必填；`start_time` 可省略（省略时等于 `end_time`）
+- `start_time`/`end_time` 支持 `YYYY-MM-DD` 或 `YYYY-MM-DD HH:mm`（到分钟，**不支持秒**）；两端**必须同粒度**，不能一个带时分一个不带
+- 带 `HH:mm` 时：`start_time` **必填**（不能省略、不能只给日期），且 `end_time` 须比 `start_time` **至少晚 15 分钟**（不能相同）；纯日期则可省略 `start_time`、可同一天
 - `content` 可选；HTML 详情，≤ 10000 字符；非空时写入 MongoDB 并关联任务
 
 参见 [API 详情](schedule_create_task.md)。
@@ -232,10 +234,11 @@ lfy-cli schedule create_task '{"task_name":"名称","end_time":"2026-06-07"}'
 **流程：**
 1. 从用户表述解析任务名称；若未给出则追问
 2. 用户只给**某一天**（无时分）→ `start_time` = `end_time` = 该日（`YYYY-MM-DD`）
-3. 用户给**区间** → 分别填 `start_time`、`end_time`
-4. 用户提到**几点几分** → 说明 CLI 只支持到自然日，询问是否按该日创建
-5. 调用 `create_task`；成功展示任务名、日期、`task_id`、`detail_saved` 与详情链接
-6. 若用户提供了详情，填入 `content`；若响应 `detail_saved=false`，转述 `warning_message`
+3. 用户给**区间** → 分别填 `start_time`、`end_time`（两端同粒度）
+4. 用户提到**几点几分** → 用 `YYYY-MM-DD HH:mm`；`start_time`、`end_time` **都必须带时分且都要填**（不能省略 start_time、不能一端带一端不带），且 `end_time` 比 `start_time` 至少晚 15 分钟
+5. 用户只说一个时间点、没给时长 → 先确认时长或按默认（如 30 分钟）设 `end_time`；**禁止**把起止填成同一时刻
+6. 调用 `create_task`；成功展示任务名、日期、`task_id`、`detail_saved` 与详情链接
+7. 若用户提供了详情，填入 `content`；若响应 `detail_saved=false`，转述 `warning_message`
 
 **展示结果（普通段落）：**
 
